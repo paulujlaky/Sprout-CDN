@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -9,7 +10,10 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"elucid503/SproutCDN/Routes"
+	"elucid503/SproutCDN/Types"
 )
+
+var ConfigFilePath string = "./Assets/Config.json"
 
 var RouteHandlers = map[string]func(*gin.Context){
 
@@ -43,8 +47,7 @@ func LoadRoutes(Router *gin.Engine, RootDir string) error {
 
 		if Handler, Exists := RouteHandlers[Route]; Exists {
 
-			Router.GET(Route, Handler)
-			fmt.Printf("Registered route: %s\n", Route)
+			Router.GET(Route, Handler) // TODO: Add POST, PUT, DELETE, etc.
 
 		}
 
@@ -54,7 +57,47 @@ func LoadRoutes(Router *gin.Engine, RootDir string) error {
 
 }
 
+func LoadConfig() (*Types.Config, error) {
+
+	// Read the file
+
+	File, Err := os.Open(ConfigFilePath)
+
+	if Err != nil {
+
+		return nil, Err
+
+	}
+
+	defer File.Close()
+
+	// Decode the file
+
+	Decoder := json.NewDecoder(File)
+
+	Config := &Types.Config{} // Get the pointer to the Config struct
+
+	if Err := Decoder.Decode(Config); Err != nil {
+
+		return nil, Err
+
+	}
+
+	return Config, nil
+
+}
+
 func main() {
+
+	Config, Error := LoadConfig()
+
+	if Error != nil {
+
+		panic(Error) // Can't continue
+
+	}
+
+	fmt.Println("Loaded Config... Version " + Config.Versions.Server)
 
 	gin.SetMode(gin.ReleaseMode)
 
@@ -68,6 +111,8 @@ func main() {
 
 	}
 
-	GinRouter.Run(":50300")
+	fmt.Printf("Loaded %d routes...\n", len(RouteHandlers))
+
+	GinRouter.Run(fmt.Sprintf(":%d", Config.Server.Port))
 
 }
