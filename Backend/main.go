@@ -97,7 +97,9 @@ func main() {
 
 	}
 
-	fmt.Println("Loaded Config... Version " + Config.Versions.Server)
+	fmt.Println("Loaded Config...")
+
+	fmt.Printf("Version %s", Config.Versions.Server)
 
 	gin.SetMode(gin.ReleaseMode)
 
@@ -112,6 +114,8 @@ func main() {
 	}
 
 	fmt.Printf("Loaded %d routes...\n", len(RouteHandlers))
+
+	fmt.Printf("Listening on port %d...\n", Config.Server.Port)
 
 	GinRouter.Run(fmt.Sprintf(":%d", Config.Server.Port))
 
