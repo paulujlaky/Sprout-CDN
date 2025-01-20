@@ -97,9 +97,7 @@ func main() {
 
 	}
 
-	fmt.Println("Loaded Config...")
-
-	fmt.Printf("Version %s", Config.Versions.Server)
+	fmt.Printf("Sprout CDN Backend; Version %s\n", Config.Versions.Server)
 
 	gin.SetMode(gin.ReleaseMode)
 
