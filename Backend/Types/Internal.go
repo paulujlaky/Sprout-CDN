@@ -2,6 +2,8 @@ package Types
 
 type Config struct {
 
+	GinMode string
+
 	Server struct {
 
 		Port int 

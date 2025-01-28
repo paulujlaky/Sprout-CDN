@@ -99,7 +99,7 @@ func main() {
 
 	fmt.Printf("Sprout CDN Backend; Version %s\n", Config.Versions.Server)
 
-	gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(Config.GinMode)
 
 	GinRouter := gin.Default()
 
