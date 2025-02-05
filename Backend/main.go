@@ -4,77 +4,25 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"path/filepath"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 
 	"elucid503/SproutCDN/Middleware"
-	"elucid503/SproutCDN/Routes"
+
 	"elucid503/SproutCDN/Types"
 )
 
 var ConfigFilePath string = "./Assets/Config.json"
 
-type RouteInfo struct {
-	Method  string
-	Handler func(*gin.Context)
+var RouteHandlers = GetRoutes()
 
-	RateLimitConfig *Middleware.RouteRateLimitConfig
-}
+func LoadRoutes(Router *gin.Engine) {
 
-var RouteHandlers = map[string]RouteInfo{
+	for Route, Handler := range RouteHandlers {
 
-	"/": {
+		Router.Handle(Handler.Method, Route, Middleware.RateLimit(Handler.RateLimitConfig), Handler.Handler)
 
-		"GET", Routes.Index,
-
-		&Middleware.RouteRateLimitConfig{
-
-			MaxRequestsAllowed: 10,
-			TimeWindow:         60,
-		},
-	},
-}
-
-func LoadRoutes(Router *gin.Engine, RootDir string) error {
-
-	return filepath.Walk(RootDir, func(Path string, Info os.FileInfo, Err error) error {
-
-		if Err != nil {
-			return Err
-		}
-
-		// Skip directories
-
-		if Info.IsDir() {
-			return nil
-		}
-
-		RelativePath, _ := filepath.Rel(RootDir, Path)
-		Route := "/" + strings.TrimSuffix(strings.ReplaceAll(RelativePath, string(os.PathSeparator), "/"), ".go")
-
-		// Replace certain names (index) with the root route
-
-		if Route == "/index" {
-			Route = "/"
-		}
-
-		// Registering the handler (and middleware if applicable)
-
-		if Handler, Exists := RouteHandlers[Route]; Exists {
-
-			Router.Handle(Handler.Method, Route, Middleware.RateLimit(Handler.RateLimitConfig), Handler.Handler)
-
-		} else {
-
-			fmt.Printf("No handler found for route %s\n", Route)
-
-		}
-
-		return nil
-
-	})
+	}
 
 }
 
@@ -124,13 +72,7 @@ func main() {
 
 	GinRouter := gin.Default()
 
-	RoutesDir := "./Routes"
-
-	if Err := LoadRoutes(GinRouter, RoutesDir); Err != nil {
-
-		panic(Err)
-
-	}
+	LoadRoutes(GinRouter)
 
 	fmt.Printf("Loaded %d routes...\n", len(RouteHandlers))
 
