@@ -9,15 +9,32 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"elucid503/SproutCDN/Middleware"
 	"elucid503/SproutCDN/Routes"
 	"elucid503/SproutCDN/Types"
 )
 
 var ConfigFilePath string = "./Assets/Config.json"
 
-var RouteHandlers = map[string]func(*gin.Context){
+type RouteInfo struct {
+	Method  string
+	Handler func(*gin.Context)
 
-	"/": Routes.Index,
+	RateLimitConfig *Middleware.RouteRateLimitConfig
+}
+
+var RouteHandlers = map[string]RouteInfo{
+
+	"/": {
+
+		"GET", Routes.Index,
+
+		&Middleware.RouteRateLimitConfig{
+
+			MaxRequestsAllowed: 10,
+			TimeWindow:         60,
+		},
+	},
 }
 
 func LoadRoutes(Router *gin.Engine, RootDir string) error {
@@ -43,11 +60,15 @@ func LoadRoutes(Router *gin.Engine, RootDir string) error {
 			Route = "/"
 		}
 
-		// Registering the handler
+		// Registering the handler (and middleware if applicable)
 
 		if Handler, Exists := RouteHandlers[Route]; Exists {
 
-			Router.GET(Route, Handler) // TODO: Add POST, PUT, DELETE, etc.
+			Router.Handle(Handler.Method, Route, Middleware.RateLimit(Handler.RateLimitConfig), Handler.Handler)
+
+		} else {
+
+			fmt.Printf("No handler found for route %s\n", Route)
 
 		}
 
