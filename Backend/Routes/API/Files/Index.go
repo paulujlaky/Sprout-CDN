@@ -6,11 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteFile(GinContext *gin.Context) {
+func AllFiles(GinContext *gin.Context) {
 
 	GinContext.JSON(200, Types.Response{
 
-		Message: "Delete!",
+		Message: "All files!",
 	})
 
 }

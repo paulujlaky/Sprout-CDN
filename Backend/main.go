@@ -7,24 +7,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"elucid503/SproutCDN/Middleware"
+	"elucid503/SproutCDN/Assets"
 
+	"elucid503/SproutCDN/Middleware"
 	"elucid503/SproutCDN/Types"
 )
 
 var ConfigFilePath string = "./Assets/Config.json"
-
-var RouteHandlers = GetRoutes()
-
-func LoadRoutes(Router *gin.Engine) {
-
-	for Route, Handler := range RouteHandlers {
-
-		Router.Handle(Handler.Method, Route, Middleware.RateLimit(Handler.RateLimitConfig), Handler.Handler)
-
-	}
-
-}
 
 func LoadConfig() (*Types.Config, error) {
 
@@ -53,6 +42,26 @@ func LoadConfig() (*Types.Config, error) {
 	}
 
 	return Config, nil
+
+}
+
+var RouteHandlers = Assets.GetRoutes()
+
+func LoadRoutes(Router *gin.Engine) {
+
+	for Route, Handler := range RouteHandlers {
+
+		if Handler.RateLimitConfig == nil {
+
+			Router.Handle(Handler.Method, Route, Handler.Handler)
+
+		} else {
+
+			Router.Handle(Handler.Method, Route, Middleware.RateLimit(Handler.RateLimitConfig), Handler.Handler)
+
+		}
+
+	}
 
 }
 

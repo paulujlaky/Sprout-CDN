@@ -6,11 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteFile(GinContext *gin.Context) {
+func FileInfo(GinContext *gin.Context) {
+
+	var FileID string = GinContext.Param("id")
 
 	GinContext.JSON(200, Types.Response{
 
-		Message: "Delete!",
+		Message: "File Info: " + FileID + "!",
 	})
 
 }
