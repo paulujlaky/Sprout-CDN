@@ -35,7 +35,7 @@ func (AssociatedFile *File) checkPreconditions(UserAction string) (bool, bool) {
 
 func (AssociatedFile *File) Write(UserID string, Data []byte) error {
 
-	if exists, authorized := AssociatedFile.checkPreconditions(UserID); !exists || !authorized {
+	if Exists, Authorized := AssociatedFile.checkPreconditions(UserID); !Exists || !Authorized {
 
 		return errors.New("Preconditions failed.")
 
@@ -47,7 +47,7 @@ func (AssociatedFile *File) Write(UserID string, Data []byte) error {
 
 func (AssociatedFile *File) Read(UserID string) ([]byte, error) {
 
-	if exists, authorized := AssociatedFile.checkPreconditions(UserID); !exists || !authorized {
+	if Exists, Authorized := AssociatedFile.checkPreconditions(UserID); !Exists || !Authorized {
 
 		return nil, errors.New("Preconditions failed.")
 
