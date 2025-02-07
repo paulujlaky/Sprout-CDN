@@ -1,6 +1,8 @@
 package Models
 
-import "elucid503/SproutCDN/Functions"
+import (
+	"elucid503/SproutCDN/Functions"
+)
 
 type SproutURLSchema struct {
 	BaseAPIURL string
@@ -25,19 +27,22 @@ type SproutAccount struct {
 
 	Avatar string `json:"Avatar"`
 
-	Flags []string `json:"Flags"`
+	Flags []interface{} `json:"Flags"`
 }
 
-func (Account SproutAccount) FromJSON(JSONData map[string]interface{}) SproutAccount {
+func (Account SproutAccount) FromJSON(JSONData *map[string]interface{}) SproutAccount {
 
-	Account.UID = JSONData["UID"].(string)
+	Data := (*JSONData)["Data"].(map[string]interface{})["Account"].(map[string]interface{})
 
-	Account.Username = JSONData["Username"].(string)
-	Account.Email = JSONData["Email"].(string)
+	Account.UID = Data["UID"].(string)
 
-	Account.Avatar = JSONData["Avatar"].(string)
+	Account.Username = Data["Username"].(string)
 
-	Account.Flags = JSONData["Flags"].([]string)
+	Account.Email = Data["Email"].(string)
+
+	Account.Avatar = Data["Avatar"].(string)
+
+	Account.Flags = Data["Flags"].([]interface{})
 
 	return Account
 
@@ -75,7 +80,7 @@ func GetSproutAccountByToken(Token string) (SproutAccount, error) {
 
 		}
 
-		return SproutAccount{}.FromJSON(JSONResp), nil
+		return SproutAccount{}.FromJSON(&JSONResp), nil
 
 	}
 

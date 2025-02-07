@@ -16,7 +16,10 @@ type RouteInfo struct {
 	Method  string
 	Handler func(*gin.Context)
 
+	// Middleware Opts
+
 	RateLimitConfig *Middleware.RouteRateLimitConfig
+	Authorized      bool
 }
 
 func GetRoutes() map[string]RouteInfo {
@@ -41,6 +44,8 @@ func GetRoutes() map[string]RouteInfo {
 				MaxRequestsAllowed: 120,
 				TimeWindow:         60,
 			},
+
+			Authorized: true,
 		},
 
 		"/API/Files/New": {
@@ -53,6 +58,8 @@ func GetRoutes() map[string]RouteInfo {
 				MaxRequestsAllowed: 60,
 				TimeWindow:         60,
 			},
+
+			Authorized: true,
 		},
 
 		"/API/Files/:id/Info": {
@@ -65,6 +72,8 @@ func GetRoutes() map[string]RouteInfo {
 				MaxRequestsAllowed: 240,
 				TimeWindow:         60,
 			},
+
+			Authorized: true,
 		},
 
 		"/API/Files/:id/Delete": {
@@ -77,6 +86,8 @@ func GetRoutes() map[string]RouteInfo {
 				MaxRequestsAllowed: 120,
 				TimeWindow:         60,
 			},
+
+			Authorized: true,
 		},
 
 		"/API/Misc/Auth": {
