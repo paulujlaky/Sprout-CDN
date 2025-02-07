@@ -1,0 +1,82 @@
+package Models
+
+import "elucid503/SproutCDN/Functions"
+
+type SproutURLSchema struct {
+	BaseAPIURL string
+
+	// Accounts
+
+	GetMyAccount string
+}
+
+var SproutAPIURLs = SproutURLSchema{
+
+	BaseAPIURL: "https://sprout.software/API",
+
+	GetMyAccount: "/Accounts/Me",
+}
+
+type SproutAccount struct {
+	UID string `json:"UID"`
+
+	Username string `json:"Username"`
+	Email    string `json:"Email"`
+
+	Avatar string `json:"Avatar"`
+
+	Flags []string `json:"Flags"`
+}
+
+func (Account SproutAccount) FromJSON(JSONData map[string]interface{}) SproutAccount {
+
+	Account.UID = JSONData["UID"].(string)
+
+	Account.Username = JSONData["Username"].(string)
+	Account.Email = JSONData["Email"].(string)
+
+	Account.Avatar = JSONData["Avatar"].(string)
+
+	Account.Flags = JSONData["Flags"].([]string)
+
+	return Account
+
+}
+
+func GetSproutAccountByToken(Token string) (SproutAccount, error) {
+
+	// Make a request to the Sprout API to get the account information
+
+	var URL string = SproutAPIURLs.BaseAPIURL + SproutAPIURLs.GetMyAccount
+
+	// Make the request
+
+	RequestOptions := Functions.RequestOptions{
+
+		Headers: map[string]string{
+
+			"Authorization": "Bearer " + Token,
+		},
+	}
+
+	RequestResponse, RequestError := Functions.MakeHTTPRequest("GET", URL, RequestOptions)
+
+	if (RequestError != nil) || (RequestResponse.StatusCode != 200) {
+
+		return SproutAccount{}, RequestError // Returning the error
+
+	} else {
+
+		JSONResp, Err := Functions.GetHTTPRequestJSONResponse(RequestResponse)
+
+		if Err != nil {
+
+			return SproutAccount{}, Err // Returning the error
+
+		}
+
+		return SproutAccount{}.FromJSON(JSONResp), nil
+
+	}
+
+}

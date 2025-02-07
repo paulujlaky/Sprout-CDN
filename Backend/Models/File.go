@@ -25,17 +25,17 @@ func (AssociatedFile *File) resolvePath() (string, error) {
 
 }
 
-func (AssociatedFile *File) checkPreconditions(UserAction string) (bool, bool) {
+func (AssociatedFile *File) checkPreconditions(RequestingUser string) (bool, bool) {
 
-	return slices.Contains(AssociatedFile.Authorized, UserAction), FileUtil.FileExists(AssociatedFile.Path)
+	return slices.Contains(AssociatedFile.Authorized, RequestingUser), FileUtil.FileExists(AssociatedFile.Path)
 
 }
 
 // Public
 
-func (AssociatedFile *File) Write(UserID string, Data []byte) error {
+func (AssociatedFile *File) Write(RequestingUser string, Data []byte) error {
 
-	if Exists, Authorized := AssociatedFile.checkPreconditions(UserID); !Exists || !Authorized {
+	if Exists, Authorized := AssociatedFile.checkPreconditions(RequestingUser); !Exists || !Authorized {
 
 		return errors.New("Preconditions failed.")
 
@@ -45,14 +45,26 @@ func (AssociatedFile *File) Write(UserID string, Data []byte) error {
 
 }
 
-func (AssociatedFile *File) Read(UserID string) ([]byte, error) {
+func (AssociatedFile *File) Read(RequestingUser string) ([]byte, error) {
 
-	if Exists, Authorized := AssociatedFile.checkPreconditions(UserID); !Exists || !Authorized {
+	if Exists, Authorized := AssociatedFile.checkPreconditions(RequestingUser); !Exists || !Authorized {
 
 		return nil, errors.New("Preconditions failed.")
 
 	}
 
 	return os.ReadFile(AssociatedFile.Path)
+
+}
+
+func (AssociatedFile *File) Delete(RequestingUser string) error {
+
+	if Exists, Authorized := AssociatedFile.checkPreconditions(RequestingUser); !Exists || !Authorized {
+
+		return errors.New("Preconditions failed.")
+
+	}
+
+	return os.Remove(AssociatedFile.Path)
 
 }
