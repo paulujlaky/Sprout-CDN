@@ -2,6 +2,7 @@ package Models
 
 import (
 	"elucid503/SproutCDN/Functions"
+	"errors"
 )
 
 type SproutURLSchema struct {
@@ -77,6 +78,14 @@ func GetSproutAccountByToken(Token string) (SproutAccount, error) {
 		if Err != nil {
 
 			return SproutAccount{}, Err // Returning the error
+
+		}
+
+		var Success bool = JSONResp["Success"].(bool)
+
+		if !Success {
+
+			return SproutAccount{}, errors.New("Failed to get account") // Returning the error
 
 		}
 

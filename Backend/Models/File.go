@@ -3,6 +3,7 @@ package Models
 import (
 	"elucid503/SproutCDN/Functions"
 	"encoding/json"
+	"path/filepath"
 	"strings"
 
 	"errors"
@@ -32,7 +33,7 @@ func NewFile(Name string, Authorized []string, Path string) *File {
 
 		Authorized: Authorized,
 
-		Path: Path,
+		Path: filepath.Join("../Store", Path, Name),
 	}
 
 }
@@ -85,7 +86,7 @@ func (AssociatedFile *File) resolvePath() (string, error) {
 
 func (AssociatedFile *File) checkPreconditions(RequestingUser string) (bool, bool) {
 
-	return slices.Contains(AssociatedFile.Authorized, RequestingUser), FileUtil.FileExists(AssociatedFile.Path)
+	return slices.Contains(AssociatedFile.Authorized, RequestingUser), FileUtil.DirectoryExists(filepath.Dir(AssociatedFile.Path))
 
 }
 

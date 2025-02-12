@@ -10,7 +10,6 @@ import (
 func NewFile(GinContext *gin.Context) {
 
 	Account, Exists := GinContext.Get("Account")
-	User := Account.(*Models.SproutAccount)
 
 	if !Exists {
 
@@ -20,15 +19,12 @@ func NewFile(GinContext *gin.Context) {
 
 	}
 
-	Body := gin.H{}
-
-	GinContext.BindJSON(&Body)
-
-	Path, PathExists := Body["Path"].(string)
+	User := Account.(Models.SproutAccount)
 
 	// Get form data
 
 	FileHeader, FileHeaderError := GinContext.FormFile("File")
+	Path, PathExists := GinContext.GetPostForm("Path")
 
 	if Path == "" || !PathExists || FileHeaderError != nil {
 
@@ -79,7 +75,7 @@ func NewFile(GinContext *gin.Context) {
 	if WriteError != nil {
 
 		GinContext.JSON(400, Types.Response{
-			Message: "Could not create file",
+			Message: WriteError.Error(),
 		})
 
 		return

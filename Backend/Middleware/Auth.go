@@ -2,6 +2,7 @@ package Middleware
 
 import (
 	"elucid503/SproutCDN/Models"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +18,8 @@ func Authorize() gin.HandlerFunc {
 			// Try auth header
 
 			Token = GinContext.GetHeader("Authorization")
+
+			Token = strings.Split(Token, " ")[1] // Bearer token
 
 		}
 

@@ -51,7 +51,23 @@ func LoadRoutes(Router *gin.Engine) {
 
 	for Route, Handler := range RouteHandlers {
 
-		Router.Handle(Handler.Method, Route, Middleware.RateLimit(Handler.RateLimitConfig), Handler.Handler)
+		MiddlewareFuncs := []gin.HandlerFunc{}
+
+		if Handler.Authorized {
+
+			MiddlewareFuncs = append(MiddlewareFuncs, Middleware.Authorize())
+
+		}
+
+		if Handler.RateLimitConfig != nil {
+
+			MiddlewareFuncs = append(MiddlewareFuncs, Middleware.RateLimit(Handler.RateLimitConfig))
+
+		}
+
+		MiddlewareFuncs = append(MiddlewareFuncs, Handler.Handler)
+
+		Router.Handle(Handler.Method, Route, MiddlewareFuncs...)
 
 	}
 
