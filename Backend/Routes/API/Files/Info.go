@@ -8,11 +8,11 @@ import (
 
 func FileInfo(GinContext *gin.Context) {
 
-	var FileID string = GinContext.Param("id")
+	var FileUID string = GinContext.Param("uid")
 
 	GinContext.JSON(200, Types.Response{
 
-		Message: "File Info: " + FileID + "!",
+		Message: "File Info: " + FileUID + "!",
 	})
 
 }

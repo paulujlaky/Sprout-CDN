@@ -62,7 +62,7 @@ func GetRoutes() map[string]RouteInfo {
 			Authorized: true,
 		},
 
-		"/API/Files/:id/Info": {
+		"/API/Files/:uid/Info": {
 
 			Method:  "GET",
 			Handler: FileRoutes.FileInfo,
@@ -76,7 +76,7 @@ func GetRoutes() map[string]RouteInfo {
 			Authorized: true,
 		},
 
-		"/API/Files/:id/Delete": {
+		"/API/Files/:uid/Delete": {
 
 			Method:  "DELETE",
 			Handler: FileRoutes.DeleteFile,

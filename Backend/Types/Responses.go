@@ -7,4 +7,6 @@ type Response struct {
 	// Message is the message that the server will send to the client
 
 	Message string `json:"Message"`
+
+	Data interface{} `json:"Data"`
 }

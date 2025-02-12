@@ -2,8 +2,11 @@ package Functions
 
 import (
 	"encoding/json"
+	"math/rand"
 	"net/http"
 )
+
+// HTTP Requests
 
 type RequestOptions struct {
 	Headers map[string]string
@@ -54,5 +57,25 @@ func GetHTTPRequestJSONResponse(Response *http.Response) (map[string]interface{}
 	}
 
 	return ResponseData, nil
+
+}
+
+// Random
+
+func RandomString(Length int) string {
+
+	const Charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+	CharsetLength := len(Charset)
+
+	RandomString := make([]byte, Length)
+
+	for i := range RandomString {
+
+		RandomString[i] = Charset[rand.Intn(CharsetLength)]
+
+	}
+
+	return string(RandomString)
 
 }
