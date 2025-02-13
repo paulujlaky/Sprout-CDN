@@ -67,6 +67,8 @@ func getInfoPath(OriginalPath string) string {
 
 func LoadFileFromDotInfo(Path string) (*File, error) {
 
+	Path = filepath.Join("../Store", Path)
+
 	// Load the file from the .info file
 
 	InfoPath := getInfoPath(Path)

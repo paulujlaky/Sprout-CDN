@@ -21,7 +21,7 @@ func NewFile(GinContext *gin.Context) {
 
 	}
 
-	User := Account.(Models.SproutAccount)
+	User := Account.(*Models.SproutAccount)
 
 	// Get form data
 

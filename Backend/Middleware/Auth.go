@@ -4,6 +4,7 @@ import (
 	"elucid503/SproutCDN/Models"
 	"elucid503/SproutCDN/Types"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -45,6 +46,8 @@ func Authorize() gin.HandlerFunc {
 
 	return func(GinContext *gin.Context) {
 
+		fmt.Println("Authorizing")
+
 		Account, AuthorizedError := AuthorizeFromRequest(GinContext)
 
 		if AuthorizedError != nil {
@@ -77,7 +80,11 @@ func AuthorizeFromRequest(GinContext *gin.Context) (*Models.SproutAccount, error
 
 		Token = GinContext.GetHeader("Authorization")
 
-		Token = strings.Split(Token, " ")[1] // Bearer token
+		if strings.Contains(Token, "Bearer") {
+
+			Token = strings.Split(Token, " ")[1] // Bearer token
+
+		}
 
 	}
 

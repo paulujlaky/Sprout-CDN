@@ -33,7 +33,7 @@ func GetFile(GinContext *gin.Context) {
 
 	}
 
-	if FileRequested.Private {
+	if FileRequested.Private == true {
 
 		// Authorize request (only doing here to avoid higher loading overhead on all requests)
 
