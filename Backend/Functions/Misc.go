@@ -64,18 +64,16 @@ func GetHTTPRequestJSONResponse(Response *http.Response) (map[string]interface{}
 
 func RandomString(Length int) string {
 
-	const Charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	var Charset string = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-	CharsetLength := len(Charset)
+	var RandomStr string
 
-	RandomString := make([]byte, Length)
+	for i := 0; i < Length; i++ {
 
-	for i := range RandomString {
-
-		RandomString[i] = Charset[rand.Intn(CharsetLength)]
+		RandomStr += string(Charset[rand.Intn(len(Charset))])
 
 	}
 
-	return string(RandomString)
+	return RandomStr
 
 }
