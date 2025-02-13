@@ -66,7 +66,7 @@ func NewFile(GinContext *gin.Context) {
 
 	// Create file struct and write
 
-	NewFile := Models.NewFile(FileHeader.Filename, []string{User.UID}, Path)
+	NewFile := Models.NewFile(FileHeader.Filename, FileHeader.Size, []string{User.UID}, Path)
 
 	// Write the file
 

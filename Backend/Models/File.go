@@ -2,7 +2,9 @@ package Models
 
 import (
 	"elucid503/SproutCDN/Functions"
+	"elucid503/SproutCDN/Types"
 	"encoding/json"
+	"fmt"
 	"path/filepath"
 	"strings"
 
@@ -17,6 +19,8 @@ type File struct {
 	UID  string `json:"UID"`
 	Name string `json:"Name"`
 
+	Size int64 `json:"Size"`
+
 	Authorized []string `json:"Authorized"`
 
 	Path string `json:"Path"`
@@ -24,12 +28,14 @@ type File struct {
 
 // General
 
-func NewFile(Name string, Authorized []string, Path string) *File {
+func NewFile(Name string, Size int64, Authorized []string, Path string) *File {
 
 	return &File{
 
 		UID:  Functions.RandomString(16),
 		Name: Name,
+
+		Size: Size,
 
 		Authorized: Authorized,
 
@@ -87,6 +93,12 @@ func (AssociatedFile *File) resolvePath() (string, error) {
 func (AssociatedFile *File) checkPreconditions(RequestingUser string) (bool, bool) {
 
 	return slices.Contains(AssociatedFile.Authorized, RequestingUser), FileUtil.DirectoryExists(filepath.Dir(AssociatedFile.Path))
+
+}
+
+func (AssociatedFile *File) getMimeTypeAndIcon() (string, string) {
+
+	return FileUtil.GetMimeTypeAndIcon(filepath.Ext(AssociatedFile.Path))
 
 }
 
@@ -163,5 +175,40 @@ func (AssociatedFile *File) Delete(RequestingUser string) error {
 	}
 
 	return os.Remove(AssociatedFile.Path)
+
+}
+
+func (AssociatedFile *File) ToHTML() string {
+
+	MimeType, Icon := AssociatedFile.getMimeTypeAndIcon()
+
+	HumanReadableType := Types.MimeTypeToReadableName[MimeType]
+	HumanReadableSize := FileUtil.NormalizeSize(AssociatedFile.Size)
+
+	return fmt.Sprintf(`
+	
+		<div class="InlineFile">
+
+			<div class="InlineFileIcon">
+
+				<ion-icon name="%s"></ion-icon>
+
+			</div>
+
+			<div class="InlineFileDetails">
+
+				<div class="InlineFileName">%s</div>
+
+				<div class="ul InlineFileStats"> 
+
+					<li class="InlineFileStat Size">%s</li>
+
+					<li class="InlineFileStat Type">%s</li>
+
+				</div>
+		
+		</div>
+		
+	`, Icon, AssociatedFile.Name, HumanReadableSize, HumanReadableType)
 
 }
