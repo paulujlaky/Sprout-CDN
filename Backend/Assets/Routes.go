@@ -59,7 +59,7 @@ func GetRoutes() map[string]RouteInfo {
 				TimeWindow:         60,
 			},
 
-			Authorized: false,
+			Authorized: true,
 		},
 
 		"/API/Files/:uid/Info": {

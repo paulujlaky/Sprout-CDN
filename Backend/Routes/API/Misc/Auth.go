@@ -47,6 +47,10 @@ func Authorize(GinContext *gin.Context) {
 
 	GinContext.SetCookie("Sprout-JWT", Token, 60*60*24*7, "/", "", false, true)
 
-	GinContext.JSON(200, Account)
+	GinContext.JSON(200, Types.Response{
+
+		Message: "Authorized",
+		JSON:    Account,
+	})
 
 }

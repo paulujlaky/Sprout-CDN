@@ -17,6 +17,8 @@ func NewFile(GinContext *gin.Context) {
 			Message: "Could not get your account",
 		})
 
+		return
+
 	}
 
 	User := Account.(Models.SproutAccount)
@@ -83,8 +85,11 @@ func NewFile(GinContext *gin.Context) {
 	}
 
 	GinContext.JSON(200, Types.Response{
+
 		Message: "File created",
-		Data:    NewFile,
+
+		JSON: NewFile,
+		HTML: NewFile.ToHTML(),
 	})
 
 }

@@ -6,11 +6,17 @@ import (
 )
 
 type SproutURLSchema struct {
+
+	// General
+
 	BaseAPIURL string
 
 	// Accounts
 
 	GetMyAccount string
+
+	// Other
+
 }
 
 var SproutAPIURLs = SproutURLSchema{

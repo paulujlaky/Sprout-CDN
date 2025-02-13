@@ -1,10 +1,11 @@
 package Models
 
 import (
+	"fmt"
+
 	"elucid503/SproutCDN/Functions"
 	"elucid503/SproutCDN/Types"
 	"encoding/json"
-	"fmt"
 	"path/filepath"
 	"strings"
 
@@ -186,7 +187,7 @@ func (AssociatedFile *File) ToHTML() string {
 	HumanReadableSize := FileUtil.NormalizeSize(AssociatedFile.Size)
 
 	return fmt.Sprintf(`
-	
+
 		<div class="InlineFile">
 
 			<div class="InlineFileIcon">
@@ -199,16 +200,16 @@ func (AssociatedFile *File) ToHTML() string {
 
 				<div class="InlineFileName">%s</div>
 
-				<div class="ul InlineFileStats"> 
+				<div class="ul InlineFileStats">
 
 					<li class="InlineFileStat Size">%s</li>
 
 					<li class="InlineFileStat Type">%s</li>
 
 				</div>
-		
+
 		</div>
-		
+
 	`, Icon, AssociatedFile.Name, HumanReadableSize, HumanReadableType)
 
 }

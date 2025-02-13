@@ -8,5 +8,6 @@ type Response struct {
 
 	Message string `json:"Message"`
 
-	Data interface{} `json:"Data"`
+	JSON interface{} `json:"JSON"`
+	HTML string      `json:"HTML"`
 }
