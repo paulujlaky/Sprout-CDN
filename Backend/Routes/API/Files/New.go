@@ -27,6 +27,11 @@ func NewFile(GinContext *gin.Context) {
 
 	FileHeader, FileHeaderError := GinContext.FormFile("File")
 	Path, PathExists := GinContext.GetPostForm("Path")
+	Private, PrivateExists := GinContext.GetPostForm("Private")
+
+	// Parse any data
+
+	var PrivateBool bool = PrivateExists && Private == "true"
 
 	if Path == "" || !PathExists || FileHeaderError != nil {
 
@@ -68,7 +73,7 @@ func NewFile(GinContext *gin.Context) {
 
 	// Create file struct and write
 
-	NewFile := Models.NewFile(FileHeader.Filename, FileHeader.Size, []string{User.UID}, Path)
+	NewFile := Models.NewFile(FileHeader.Filename, FileHeader.Size, PrivateBool, []string{User.UID}, Path)
 
 	// Write the file
 

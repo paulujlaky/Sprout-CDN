@@ -3,6 +3,7 @@ package Middleware
 import (
 	"elucid503/SproutCDN/Models"
 	"elucid503/SproutCDN/Types"
+	"errors"
 	"strings"
 	"time"
 
@@ -44,65 +45,68 @@ func Authorize() gin.HandlerFunc {
 
 	return func(GinContext *gin.Context) {
 
-		Token, Error := GinContext.Cookie("Sprout-JWT")
+		Account, AuthorizedError := AuthorizeFromRequest(GinContext)
 
-		if Error != nil || Token == "" {
-
-			// Try auth header
-
-			Token = GinContext.GetHeader("Authorization")
-
-			Token = strings.Split(Token, " ")[1] // Bearer token
-
-		}
-
-		if Token == "" {
+		if AuthorizedError != nil {
 
 			GinContext.JSON(401, Types.Response{
 
 				Message: "Unauthorized",
 			})
 
-			GinContext.Abort()
-			return
+			GinContext.Abort() // Stop the request from continuing
 
-		}
-
-		if _, Exists := CheckAccountFromCache(Token); Exists {
-
-			// Account is in cache
-
-			GinContext.Set("Account", AccountCache[Token])
-
-			GinContext.Next() // Early return
-			return
-
-		}
-
-		// Get account
-
-		Account, Err := Models.GetSproutAccountByToken(Token)
-
-		if Err != nil {
-
-			GinContext.JSON(401, Types.Response{
-
-				Message: "Unauthorized",
-			})
-
-			GinContext.Abort()
 			return
 
 		}
 
 		GinContext.Set("Account", Account)
-
-		// Was successful, so add to cache
-
-		AddAccountToCache(Token, Account)
-
 		GinContext.Next()
 
 	}
+
+}
+
+func AuthorizeFromRequest(GinContext *gin.Context) (*Models.SproutAccount, error) {
+
+	Token, Error := GinContext.Cookie("Sprout-JWT")
+
+	if Error != nil || Token == "" {
+
+		// Try auth header
+
+		Token = GinContext.GetHeader("Authorization")
+
+		Token = strings.Split(Token, " ")[1] // Bearer token
+
+	}
+
+	if Token == "" {
+
+		return nil, errors.New("No token provided")
+
+	}
+
+	if Account, Exists := CheckAccountFromCache(Token); Exists {
+
+		return &Account, nil
+
+	}
+
+	// Get account
+
+	Account, Err := Models.GetSproutAccountByToken(Token)
+
+	if Err != nil {
+
+		return nil, errors.New("Failed to get account")
+
+	}
+
+	// Was successful, so add to cache
+
+	AddAccountToCache(Token, Account)
+
+	return &Account, nil
 
 }

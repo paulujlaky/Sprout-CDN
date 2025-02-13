@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"math/rand"
 	"net/http"
+	"strings"
 )
 
 // HTTP Requests
@@ -75,5 +76,15 @@ func RandomString(Length int) string {
 	}
 
 	return RandomStr
+
+}
+
+// Strings
+
+func CleanEscapedString(InputStr string) string {
+
+	Replacer := strings.NewReplacer("\n", "", "\t", "")
+
+	return Replacer.Replace(InputStr)
 
 }

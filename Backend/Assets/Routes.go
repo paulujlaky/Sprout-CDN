@@ -5,6 +5,7 @@ import (
 
 	// Route Imports from ./Routes
 
+	GlobalRoutes "elucid503/SproutCDN/Routes"
 	APIRoutes "elucid503/SproutCDN/Routes/API"
 	FileRoutes "elucid503/SproutCDN/Routes/API/Files"
 	MiscRoutes "elucid503/SproutCDN/Routes/API/Misc"
@@ -25,6 +26,21 @@ type RouteInfo struct {
 func GetRoutes() map[string]RouteInfo {
 
 	return map[string]RouteInfo{
+
+		"/:File": {
+
+			Method:  "GET",
+			Handler: GlobalRoutes.GetFile,
+
+			RateLimitConfig: &Middleware.RouteRateLimitConfig{
+
+				MaxRequestsAllowed: 400,
+
+				TimeWindow: 60,
+			},
+
+			Authorized: false,
+		},
 
 		"/API/": {
 

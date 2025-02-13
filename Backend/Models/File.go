@@ -22,6 +22,8 @@ type File struct {
 
 	Size int64 `json:"Size"`
 
+	Private bool `json:"Private"`
+
 	Authorized []string `json:"Authorized"`
 
 	Path string `json:"Path"`
@@ -29,7 +31,7 @@ type File struct {
 
 // General
 
-func NewFile(Name string, Size int64, Authorized []string, Path string) *File {
+func NewFile(Name string, Size int64, Private bool, Authorized []string, Path string) *File {
 
 	return &File{
 
@@ -37,6 +39,8 @@ func NewFile(Name string, Size int64, Authorized []string, Path string) *File {
 		Name: Name,
 
 		Size: Size,
+
+		Private: Private,
 
 		Authorized: Authorized,
 
@@ -61,7 +65,7 @@ func getInfoPath(OriginalPath string) string {
 
 }
 
-func LoadFileFromDotInfo(Path string) error {
+func LoadFileFromDotInfo(Path string) (*File, error) {
 
 	// Load the file from the .info file
 
@@ -71,7 +75,7 @@ func LoadFileFromDotInfo(Path string) error {
 
 	if ReadError != nil {
 
-		return ReadError
+		return nil, ReadError
 
 	}
 
@@ -79,7 +83,9 @@ func LoadFileFromDotInfo(Path string) error {
 
 	FileData.Path = Path
 
-	return json.Unmarshal(InfoData, &FileData) // loads all the data from the .info file into the struct
+	UnmarshalError := json.Unmarshal(InfoData, &FileData)
+
+	return &FileData, UnmarshalError
 
 }
 
@@ -186,7 +192,7 @@ func (AssociatedFile *File) ToHTML() string {
 	HumanReadableType := Types.MimeTypeToReadableName[MimeType]
 	HumanReadableSize := FileUtil.NormalizeSize(AssociatedFile.Size)
 
-	return fmt.Sprintf(`
+	return Functions.CleanEscapedString(fmt.Sprintf(`
 
 		<div class="InlineFile">
 
@@ -210,6 +216,6 @@ func (AssociatedFile *File) ToHTML() string {
 
 		</div>
 
-	`, Icon, AssociatedFile.Name, HumanReadableSize, HumanReadableType)
+	`, Icon, AssociatedFile.Name, HumanReadableSize, HumanReadableType))
 
 }
