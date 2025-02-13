@@ -2,6 +2,7 @@ package Middleware
 
 import (
 	"elucid503/SproutCDN/Models"
+	"elucid503/SproutCDN/Types"
 	"strings"
 	"time"
 
@@ -55,6 +56,18 @@ func Authorize() gin.HandlerFunc {
 
 		}
 
+		if Token == "" {
+
+			GinContext.JSON(401, Types.Response{
+
+				Message: "Unauthorized",
+			})
+
+			GinContext.Abort()
+			return
+
+		}
+
 		if _, Exists := CheckAccountFromCache(Token); Exists {
 
 			// Account is in cache
@@ -66,32 +79,18 @@ func Authorize() gin.HandlerFunc {
 
 		}
 
-		if Token == "" {
-
-			GinContext.JSON(401, gin.H{
-
-				"Message": "Unauthorized",
-			})
-
-			GinContext.Abort()
-
-			return
-
-		}
-
 		// Get account
 
 		Account, Err := Models.GetSproutAccountByToken(Token)
 
 		if Err != nil {
 
-			GinContext.JSON(401, gin.H{
+			GinContext.JSON(401, Types.Response{
 
-				"Message": "Could not get your account",
+				Message: "Unauthorized",
 			})
 
 			GinContext.Abort()
-
 			return
 
 		}
