@@ -70,13 +70,13 @@ func DeleteDir(GinContext *gin.Context) {
 
 	}
 
-	DeleteError := DirToDelete.Delete(User.UID)
+	DeleteFileError, DeleteInfoError := DirToDelete.Delete(User.UID)
 
-	if DeleteError != nil {
+	if DeleteFileError != nil || DeleteInfoError != nil {
 
 		GinContext.JSON(500, Types.Response{
 
-			Message: DeleteError.Error(),
+			Message: DeleteFileError.Error() + "; " + DeleteInfoError.Error(),
 		})
 
 		return

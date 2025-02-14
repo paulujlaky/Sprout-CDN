@@ -56,13 +56,13 @@ func DeleteFile(GinContext *gin.Context) {
 
 	}
 
-	ErrDeletingFile := FileToDelete.Delete(User.UID) // user must have permission. will check and return precondition failed if not
+	DeleteFileError, DeleteInfoError := FileToDelete.Delete(User.UID) // user must have permission. will check and return precondition failed if not
 
-	if ErrDeletingFile != nil {
+	if DeleteFileError != nil || DeleteInfoError != nil {
 
 		GinContext.JSON(400, Types.Response{
 
-			Message: ErrDeletingFile.Error(),
+			Message: DeleteFileError.Error() + "; " + DeleteInfoError.Error(),
 		})
 
 	}

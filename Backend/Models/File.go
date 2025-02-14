@@ -50,22 +50,6 @@ func NewFile(Name string, Size int64, Private bool, Authorized []string, Path st
 
 }
 
-func getFileInfoPath(OriginalPath string) string {
-
-	// We must remove the existing extension and add .info to the end
-
-	LastPeriodIndex := strings.LastIndex(OriginalPath, ".")
-
-	// Get the path without the extension
-
-	ExtensionlessPath := OriginalPath[:LastPeriodIndex]
-
-	// Add .info to the end
-
-	return ExtensionlessPath + ".info"
-
-}
-
 func LoadFileFromDotInfo(Path string) (*File, error) {
 
 	Path = Functions.AdjustPathToStore(Path)
@@ -89,6 +73,22 @@ func LoadFileFromDotInfo(Path string) (*File, error) {
 	UnmarshalError := json.Unmarshal(InfoData, &FileData)
 
 	return &FileData, UnmarshalError
+
+}
+
+func getFileInfoPath(OriginalPath string) string {
+
+	// We must remove the existing extension and add .info to the end
+
+	LastPeriodIndex := strings.LastIndex(OriginalPath, ".")
+
+	// Get the path without the extension
+
+	ExtensionlessPath := OriginalPath[:LastPeriodIndex]
+
+	// Add .info to the end
+
+	return ExtensionlessPath + ".info"
 
 }
 
@@ -128,19 +128,13 @@ func (AssociatedFile *File) writeInfo() error {
 
 }
 
-// Public
+func (AssociatedFile *File) deleteInfo() error {
 
-func (AssociatedFile *File) DiskInfo(RequestingUser string) (os.FileInfo, error) {
-
-	if Exists, Authorized := AssociatedFile.checkPreconditions(RequestingUser); !Exists || !Authorized {
-
-		return nil, errors.New("Preconditions failed.")
-
-	}
-
-	return os.Stat(AssociatedFile.Path)
+	return os.Remove(getFileInfoPath(AssociatedFile.Path))
 
 }
+
+// Public
 
 func (AssociatedFile *File) Write(RequestingUser string, Data []byte) error {
 
@@ -176,15 +170,15 @@ func (AssociatedFile *File) Read(RequestingUser string) ([]byte, error) {
 
 }
 
-func (AssociatedFile *File) Delete(RequestingUser string) error {
+func (AssociatedFile *File) Delete(RequestingUser string) (error, error) {
 
 	if Exists, Authorized := AssociatedFile.checkPreconditions(RequestingUser); !Exists || !Authorized {
 
-		return errors.New("Preconditions failed.")
+		return errors.New("Preconditions failed."), nil
 
 	}
 
-	return os.Remove(AssociatedFile.Path)
+	return os.Remove(AssociatedFile.Path), AssociatedFile.deleteInfo()
 
 }
 

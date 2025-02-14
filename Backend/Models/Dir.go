@@ -129,6 +129,12 @@ func (AssociatedDir *Dir) writeInfo() error {
 
 }
 
+func (AssociatedDir *Dir) deleteInfo() error {
+
+	return os.Remove(GetDirInfoPath(AssociatedDir.Path))
+
+}
+
 // Public
 
 func (AssociatedDir *Dir) Create(RequestingUser string) error {
@@ -143,15 +149,15 @@ func (AssociatedDir *Dir) Create(RequestingUser string) error {
 
 }
 
-func (AssociatedDir *Dir) Delete(RequestingUser string) error {
+func (AssociatedDir *Dir) Delete(RequestingUser string) (error, error) {
 
 	if UserAuthed, Exists := AssociatedDir.checkPreconditions(RequestingUser, AssociatedDir.Path); UserAuthed && Exists {
 
-		return errors.New("Preconditions failed")
+		return errors.New("Preconditions failed"), nil
 
 	}
 
-	return os.RemoveAll(AssociatedDir.Path)
+	return os.RemoveAll(AssociatedDir.Path), AssociatedDir.deleteInfo()
 
 }
 

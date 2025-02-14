@@ -61,7 +61,7 @@ func CreateDir(GinContext *gin.Context) {
 
 	if AlreadyExists {
 
-		GinContext.JSON(401, Types.Response{
+		GinContext.JSON(400, Types.Response{
 
 			Message: "Directory already exists",
 		})
