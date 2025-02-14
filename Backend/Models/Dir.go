@@ -14,6 +14,8 @@ type Dir struct {
 	Path string `json:"Path"`
 	Name string `json:"Name"`
 
+	Private bool `json:"Private"`
+
 	Authorized []string `json:"Authorized"`
 
 	SubDirLength  int `json:"SubDirLength"`
@@ -22,44 +24,16 @@ type Dir struct {
 
 // General
 
-func NewDir(Path string, Authorized []string) (*Dir, error, error) {
-
-	// Get contents
-
-	Contents, _ := DirUtil.GetContents(Path)
-
-	// Count files and directories
-
-	SubDirLength := 0
-	SubFileLength := 0
-
-	for _, Content := range Contents {
-
-		ContentPath := filepath.Join(Path, Content)
-
-		Info, _ := FileUtil.GetInfo(ContentPath)
-
-		if Info.IsDir() {
-
-			SubDirLength++
-
-		} else {
-
-			SubFileLength++
-
-		}
-
-	}
+func NewDir(Path string, Authorized []string, Private bool) (*Dir, error, error) {
 
 	DirInstance := &Dir{
 
 		Path: Path,
 		Name: filepath.Base(Path),
 
-		Authorized: Authorized,
+		Private: Private,
 
-		SubDirLength:  SubDirLength,
-		SubFileLength: SubFileLength,
+		Authorized: Authorized,
 	}
 
 	// Write info
@@ -109,7 +83,7 @@ func (AssociatedDir *Dir) checkPreconditions(RequestingUser string, DirPath stri
 
 	// Preconditions for most actions (deletion, modification, etc...)
 
-	return slices.Contains(AssociatedDir.Authorized, RequestingUser), DirUtil.Exists(filepath.Dir(DirPath))
+	return (AssociatedDir.Private && slices.Contains(AssociatedDir.Authorized, RequestingUser)), DirUtil.Exists(filepath.Dir(DirPath))
 
 }
 
@@ -132,6 +106,39 @@ func (AssociatedDir *Dir) writeInfo() error {
 func (AssociatedDir *Dir) deleteInfo() error {
 
 	return os.Remove(GetDirInfoPath(AssociatedDir.Path))
+
+}
+
+func (AssociatedDir *Dir) getContentInfo() (int, int) {
+
+	// Get contents
+
+	Contents, _ := DirUtil.GetContents(AssociatedDir.Path)
+
+	// Count files and directories
+
+	SubDirLength := 0
+	SubFileLength := 0
+
+	for _, Content := range Contents {
+
+		ContentPath := filepath.Join(AssociatedDir.Path, Content.Name)
+
+		Info, _ := FileUtil.GetInfo(ContentPath)
+
+		if Info.IsDir() {
+
+			SubDirLength++
+
+		} else {
+
+			SubFileLength++
+
+		}
+
+	}
+
+	return SubDirLength, SubFileLength
 
 }
 
@@ -161,7 +168,7 @@ func (AssociatedDir *Dir) Delete(RequestingUser string) (error, error) {
 
 }
 
-func (AssociatedDir *Dir) GetContents(RequestingUser string) ([]string, error) {
+func (AssociatedDir *Dir) GetContents(RequestingUser string) ([]Functions.DirContentItem, error) {
 
 	if UserAuthed, Exists := AssociatedDir.checkPreconditions(RequestingUser, AssociatedDir.Path); UserAuthed && Exists {
 
@@ -174,6 +181,16 @@ func (AssociatedDir *Dir) GetContents(RequestingUser string) ([]string, error) {
 }
 
 func (AssociatedDir *Dir) ToHTML() string {
+
+	CurrentSubDirs, CurrentSubFiles := AssociatedDir.getContentInfo()
+
+	PrivateIndicatorVisibility := "none"
+
+	if AssociatedDir.Private {
+
+		PrivateIndicatorVisibility = "block"
+
+	}
 
 	return Functions.CleanEscapedString(fmt.Sprintf(`
 
@@ -195,10 +212,12 @@ func (AssociatedDir *Dir) ToHTML() string {
 
 					<li class="InlineFileStat SubDirs">%d %s</li>
 
+					<li class="InlineFileStat PrivateIndicator" style="display="%s"">Private</li>
+
 				</div>
 
 		</div>
 
-	`, "folder-outline", AssociatedDir.Name, AssociatedDir.SubFileLength, Functions.PluralizeString(AssociatedDir.SubFileLength, "File"), AssociatedDir.SubDirLength, Functions.PluralizeString(AssociatedDir.SubDirLength, "Folder")))
+	`, "folder-outline", AssociatedDir.Name, CurrentSubFiles, Functions.PluralizeString(AssociatedDir.SubFileLength, "File"), CurrentSubDirs, Functions.PluralizeString(AssociatedDir.SubDirLength, "Folder"), PrivateIndicatorVisibility))
 
 }

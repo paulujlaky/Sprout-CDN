@@ -37,6 +37,7 @@ func CreateDir(GinContext *gin.Context) {
 
 	Name, NameExists := Body["Name"].(string)
 	Path, PathExists := Body["Path"].(string)
+	Private, _ := Body["Private"].(bool)
 
 	if Name == "" || Path == "" || !NameExists || !PathExists {
 
@@ -72,7 +73,7 @@ func CreateDir(GinContext *gin.Context) {
 
 	// NewDir creates the directory and writes the .info file
 
-	ModelRepresentation, InfoWriteError, CreateError := Models.NewDir(NewDirPath, []string{User.UID})
+	ModelRepresentation, InfoWriteError, CreateError := Models.NewDir(NewDirPath, []string{User.UID}, Private)
 
 	if InfoWriteError != nil || CreateError != nil {
 

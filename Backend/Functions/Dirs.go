@@ -6,6 +6,11 @@ import (
 
 type DirUtil struct{}
 
+type DirContentItem struct {
+	Name  string
+	IsDir bool
+}
+
 func (d *DirUtil) Exists(Path string) bool {
 
 	Info, Err := os.Stat(Path)
@@ -26,7 +31,7 @@ func (d *DirUtil) Delete(Path string) error {
 
 }
 
-func (d *DirUtil) GetContents(Path string) ([]string, error) {
+func (d *DirUtil) GetContents(Path string) ([]DirContentItem, error) {
 
 	Info, Err := os.ReadDir(Path)
 
@@ -36,11 +41,16 @@ func (d *DirUtil) GetContents(Path string) ([]string, error) {
 
 	}
 
-	var Contents []string
+	var Contents []DirContentItem
 
 	for _, DirEntry := range Info {
 
-		Contents = append(Contents, DirEntry.Name())
+		Contents = append(Contents, DirContentItem{
+
+			Name:  DirEntry.Name(),
+			IsDir: DirEntry.IsDir(),
+
+		})
 
 	}
 

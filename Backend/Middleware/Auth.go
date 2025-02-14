@@ -4,7 +4,6 @@ import (
 	"elucid503/SproutCDN/Models"
 	"elucid503/SproutCDN/Types"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
 
@@ -45,8 +44,6 @@ func RemoveAccountFromCacheAfter(Token string, Timeout int) {
 func Authorize() gin.HandlerFunc {
 
 	return func(GinContext *gin.Context) {
-
-		fmt.Println("Authorizing")
 
 		Account, AuthorizedError := AuthorizeFromRequest(GinContext)
 

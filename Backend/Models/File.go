@@ -102,7 +102,7 @@ func (AssociatedFile *File) resolvePath() (string, error) {
 
 func (AssociatedFile *File) checkPreconditions(RequestingUser string) (bool, bool) {
 
-	return slices.Contains(AssociatedFile.Authorized, RequestingUser), DirUtil.Exists(filepath.Dir(AssociatedFile.Path))
+	return (AssociatedFile.Private && slices.Contains(AssociatedFile.Authorized, RequestingUser)), DirUtil.Exists(filepath.Dir(AssociatedFile.Path))
 
 }
 
