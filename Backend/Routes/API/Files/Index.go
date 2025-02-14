@@ -1,17 +1,21 @@
 package Routes
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 )
 
 func AllFiles(GinContext *gin.Context) {
 
-	// Dir, Exists := GinContext.Query("dir")
+	Dir, Exists := GinContext.Params.Get("Path")
 
-	// if !Exists {
+	if Dir == "" || !Exists {
 
-	// 	Dir = "/"
+		Dir = "/"
 
-	// }
+	}
+
+	GinContext.JSON(200, gin.H{"message": fmt.Sprintf("All files in %s", Dir)})
 
 }

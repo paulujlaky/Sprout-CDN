@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"math/rand"
 	"net/http"
+	"path/filepath"
 	"strings"
 )
 
@@ -86,5 +87,47 @@ func CleanEscapedString(InputStr string) string {
 	Replacer := strings.NewReplacer("\n", "", "\t", "")
 
 	return Replacer.Replace(InputStr)
+
+}
+
+func PluralizeString(Count int, Str string) string {
+
+	if Count == 1 {
+
+		return Str
+
+	} else {
+
+		return Str + "s"
+
+	}
+
+}
+
+// Paths
+
+func SanitizePath(Path string) string {
+
+	// Remove any attempts to go up a directory
+
+	Path = strings.ReplaceAll(Path, "..", "")
+
+	// Remove any trailing slashes
+
+	if strings.HasSuffix(Path, "/") {
+
+		Path = Path[:len(Path)-1]
+
+	}
+
+	return Path
+
+}
+
+func AdjustPathToStore(Path string) string {
+
+	// Make path work for CDN dir
+
+	return filepath.Join("../Store", Path)
 
 }

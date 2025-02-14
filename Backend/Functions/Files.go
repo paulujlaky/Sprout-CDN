@@ -17,11 +17,9 @@ func (f *FileUtil) FileExists(Path string) bool {
 
 }
 
-func (f *FileUtil) DirectoryExists(Path string) bool {
+func (f *FileUtil) GetInfo(Path string) (os.FileInfo, error) {
 
-	Info, Err := os.Stat(Path)
-
-	return !os.IsNotExist(Err) && Info.IsDir()
+	return os.Stat(Path)
 
 }
 

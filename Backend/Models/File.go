@@ -14,7 +14,8 @@ import (
 	"slices"
 )
 
-var FileUtil = Functions.FileUtil{} // init FileUtil for use in File methods
+var FileUtil = Functions.FileUtil{} // init FileUtil for use in File methods (package level)
+var DirUtil = Functions.DirUtil{}   // init DirUtil for use in File methods
 
 type File struct {
 	UID  string `json:"UID"`
@@ -44,12 +45,12 @@ func NewFile(Name string, Size int64, Private bool, Authorized []string, Path st
 
 		Authorized: Authorized,
 
-		Path: filepath.Join("../Store", Path, Name),
+		Path: filepath.Join(Functions.AdjustPathToStore(Path), Name),
 	}
 
 }
 
-func getInfoPath(OriginalPath string) string {
+func getFileInfoPath(OriginalPath string) string {
 
 	// We must remove the existing extension and add .info to the end
 
@@ -67,11 +68,11 @@ func getInfoPath(OriginalPath string) string {
 
 func LoadFileFromDotInfo(Path string) (*File, error) {
 
-	Path = filepath.Join("../Store", Path)
+	Path = Functions.AdjustPathToStore(Path)
 
 	// Load the file from the .info file
 
-	InfoPath := getInfoPath(Path)
+	InfoPath := getFileInfoPath(Path)
 
 	InfoData, ReadError := os.ReadFile(InfoPath)
 
@@ -101,7 +102,7 @@ func (AssociatedFile *File) resolvePath() (string, error) {
 
 func (AssociatedFile *File) checkPreconditions(RequestingUser string) (bool, bool) {
 
-	return slices.Contains(AssociatedFile.Authorized, RequestingUser), FileUtil.DirectoryExists(filepath.Dir(AssociatedFile.Path))
+	return slices.Contains(AssociatedFile.Authorized, RequestingUser), DirUtil.Exists(filepath.Dir(AssociatedFile.Path))
 
 }
 
@@ -123,7 +124,7 @@ func (AssociatedFile *File) writeInfo() error {
 
 	}
 
-	return os.WriteFile(getInfoPath(AssociatedFile.Path), DataToWrite, os.ModePerm)
+	return os.WriteFile(getFileInfoPath(AssociatedFile.Path), DataToWrite, os.ModePerm)
 
 }
 

@@ -7,6 +7,7 @@ import (
 
 	GlobalRoutes "elucid503/SproutCDN/Routes"
 	APIRoutes "elucid503/SproutCDN/Routes/API"
+	DirRoutes "elucid503/SproutCDN/Routes/API/Dirs"
 	FileRoutes "elucid503/SproutCDN/Routes/API/Files"
 	MiscRoutes "elucid503/SproutCDN/Routes/API/Misc"
 
@@ -50,7 +51,7 @@ func GetRoutes() map[string]RouteInfo {
 			RateLimitConfig: nil,
 		},
 
-		"/API/Files": {
+		"/API/Files/*Path": {
 
 			Method:  "GET",
 			Handler: FileRoutes.AllFiles,
@@ -78,20 +79,6 @@ func GetRoutes() map[string]RouteInfo {
 			Authorized: true,
 		},
 
-		"/API/Files/:uid/Info": {
-
-			Method:  "GET",
-			Handler: FileRoutes.FileInfo,
-
-			RateLimitConfig: &Middleware.RouteRateLimitConfig{
-
-				MaxRequestsAllowed: 240,
-				TimeWindow:         60,
-			},
-
-			Authorized: true,
-		},
-
 		"/API/Files/:uid/Delete": {
 
 			Method:  "DELETE",
@@ -100,6 +87,34 @@ func GetRoutes() map[string]RouteInfo {
 			RateLimitConfig: &Middleware.RouteRateLimitConfig{
 
 				MaxRequestsAllowed: 120,
+				TimeWindow:         60,
+			},
+
+			Authorized: true,
+		},
+
+		"/API/Dirs/New": {
+
+			Method:  "POST",
+			Handler: DirRoutes.CreateDir,
+
+			RateLimitConfig: &Middleware.RouteRateLimitConfig{
+
+				MaxRequestsAllowed: 60,
+				TimeWindow:         60,
+			},
+
+			Authorized: true,
+		},
+
+		"/API/Dirs/Delete": {
+
+			Method:  "DELETE",
+			Handler: DirRoutes.DeleteDir,
+
+			RateLimitConfig: &Middleware.RouteRateLimitConfig{
+
+				MaxRequestsAllowed: 60,
 				TimeWindow:         60,
 			},
 
