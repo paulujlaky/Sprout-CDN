@@ -88,21 +88,26 @@ func getFileInfoPath(OriginalPath string) string {
 
 	// Add .info to the end
 
-	return ExtensionlessPath + ".info"
+	return ExtensionlessPath + ".fileinfo"
 
 }
 
 // Private
 
-func (AssociatedFile *File) resolvePath() (string, error) {
-
-	return FileUtil.ResolvePath(AssociatedFile.Path)
-
-}
-
 func (AssociatedFile *File) checkPreconditions(RequestingUser string) (bool, bool) {
 
-	return (AssociatedFile.Private && slices.Contains(AssociatedFile.Authorized, RequestingUser)), DirUtil.Exists(filepath.Dir(AssociatedFile.Path))
+	PassesPrivateCheck := slices.Contains(AssociatedFile.Authorized, RequestingUser)
+	PassesExistCheck := DirUtil.Exists(filepath.Dir(AssociatedFile.Path))
+
+	if AssociatedFile.Private {
+
+		return PassesPrivateCheck, PassesExistCheck
+
+	} else {
+
+		return true, PassesExistCheck
+
+	}
 
 }
 

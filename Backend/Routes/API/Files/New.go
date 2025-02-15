@@ -1,6 +1,7 @@
 package Routes
 
 import (
+	"elucid503/SproutCDN/Functions"
 	"elucid503/SproutCDN/Models"
 	"elucid503/SproutCDN/Types"
 
@@ -42,6 +43,8 @@ func NewFile(GinContext *gin.Context) {
 		return
 
 	}
+
+	Path = Functions.SanitizePath(Path)
 
 	// Save file
 

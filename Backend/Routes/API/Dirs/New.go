@@ -82,6 +82,8 @@ func CreateDir(GinContext *gin.Context) {
 			Message: "Directory create error occurred",
 		})
 
+		return
+
 	}
 
 	GinContext.JSON(200, Types.Response{

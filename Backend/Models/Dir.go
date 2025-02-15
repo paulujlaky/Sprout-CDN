@@ -49,6 +49,8 @@ func LoadDirFromDotInfo(Path string) (*Dir, error) {
 
 	Path = Functions.AdjustPathToStore(Path)
 
+	fmt.Println(Path)
+
 	// Load the file from the .info file
 
 	InfoPath := GetDirInfoPath(Path)
@@ -73,7 +75,7 @@ func LoadDirFromDotInfo(Path string) (*Dir, error) {
 
 func GetDirInfoPath(DirPath string) string {
 
-	return filepath.Join(DirPath, fmt.Sprintf("%s.info", filepath.Dir(DirPath)))
+	return filepath.Join(filepath.Dir(DirPath), fmt.Sprintf("%s.dirinfo", filepath.Base(DirPath)))
 
 }
 
@@ -81,9 +83,18 @@ func GetDirInfoPath(DirPath string) string {
 
 func (AssociatedDir *Dir) checkPreconditions(RequestingUser string, DirPath string) (bool, bool) {
 
-	// Preconditions for most actions (deletion, modification, etc...)
+	PassesPrivateCheck := slices.Contains(AssociatedDir.Authorized, RequestingUser)
+	PassesExistCheck := DirUtil.Exists(filepath.Dir(DirPath))
 
-	return (AssociatedDir.Private && slices.Contains(AssociatedDir.Authorized, RequestingUser)), DirUtil.Exists(filepath.Dir(DirPath))
+	if AssociatedDir.Private {
+
+		return PassesPrivateCheck, PassesExistCheck
+
+	} else {
+
+		return true, PassesExistCheck
+
+	}
 
 }
 

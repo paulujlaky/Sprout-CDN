@@ -4,6 +4,7 @@ import (
 	"elucid503/SproutCDN/Models"
 	"elucid503/SproutCDN/Types"
 	"path/filepath"
+	"slices"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -77,6 +78,14 @@ func AllFiles(GinContext *gin.Context) {
 
 			if LoadedDir, ErrorLoadingDir := Models.LoadDirFromDotInfo(CurrentContentItemPath); ErrorLoadingDir == nil {
 
+				// Check permissions
+
+				if LoadedDir.Private && !slices.Contains(LoadedDir.Authorized, User.UID) {
+
+					continue
+
+				}
+
 				DirArr = append(DirArr, *LoadedDir)
 				DirHTMLArr = append(DirHTMLArr, LoadedDir.ToHTML())
 
@@ -85,6 +94,12 @@ func AllFiles(GinContext *gin.Context) {
 		} else {
 
 			if LoadedFile, ErrorLoadingFile := Models.LoadFileFromDotInfo(CurrentContentItemPath); ErrorLoadingFile == nil {
+
+				if LoadedFile.Private && !slices.Contains(LoadedFile.Authorized, User.UID) {
+
+					continue
+
+				}
 
 				FileArr = append(FileArr, *LoadedFile)
 				FileHTMLArr = append(FileHTMLArr, LoadedFile.ToHTML())
