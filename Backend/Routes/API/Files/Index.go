@@ -55,7 +55,7 @@ func AllFiles(GinContext *gin.Context) {
 
 		GinContext.JSON(400, Types.Response{
 
-			Message: "Could not load/find contents",
+			Message: ErrLoadingContents.Error(),
 		})
 
 		return
@@ -71,6 +71,14 @@ func AllFiles(GinContext *gin.Context) {
 	DirHTMLArr := []string{}
 
 	for _, ContentItem := range Contents {
+
+		// Skip info files
+
+		if strings.HasSuffix(ContentItem.Name, ".fileinfo") || strings.HasSuffix(ContentItem.Name, ".dirinfo") {
+
+			continue
+
+		}
 
 		CurrentContentItemPath := filepath.Join(DirToLoad.Path, ContentItem.Name)
 

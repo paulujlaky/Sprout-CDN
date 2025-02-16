@@ -19,6 +19,7 @@ var ExtensionsToMimeType map[string]string = map[string]string{
 	".bmp":  "image/bmp",
 	".webp": "image/webp",
 	".svg":  "image/svg+xml",
+	".ico":  "image/x-icon",
 
 	".pdf": "application/pdf",
 	".zip": "application/zip",
@@ -27,10 +28,11 @@ var ExtensionsToMimeType map[string]string = map[string]string{
 	".mp3": "audio/mpeg",
 	".wav": "audio/wav",
 
-	".mp4": "video/mp4",
-	".avi": "video/x-msvideo",
-	".mov": "video/quicktime",
-	".mkv": "video/x-matroska",
+	".mp4":  "video/mp4",
+	".avi":  "video/x-msvideo",
+	".mov":  "video/quicktime",
+	".mkv":  "video/x-matroska",
+	".webm": "video/webm",
 
 	".exe": "application/vnd.microsoft.portable-executable",
 	".dll": "application/vnd.microsoft.portable-executable",
@@ -77,6 +79,7 @@ var MimeTypeToIcon map[string]string = map[string]string{
 	"image/bmp":     "image-outline",
 	"image/webp":    "image-outline",
 	"image/svg+xml": "image-outline",
+	"image/x-icon":  "image-outline",
 
 	"application/pdf": "document-outline",
 
@@ -90,6 +93,7 @@ var MimeTypeToIcon map[string]string = map[string]string{
 	"video/x-msvideo":  "videocam-outline",
 	"video/quicktime":  "videocam-outline",
 	"video/x-matroska": "videocam-outline",
+	"video/webm":       "videocam-outline",
 
 	"application/vnd.microsoft.portable-executable": "terminal-outline",
 
@@ -128,6 +132,7 @@ var MimeTypeToReadableName map[string]string = map[string]string{
 	"image/bmp":     "BMP Image",
 	"image/webp":    "WebP Image",
 	"image/svg+xml": "SVG Image",
+	"image/x-icon":  "Icon Image",
 
 	"application/pdf": "PDF Document",
 
@@ -141,6 +146,7 @@ var MimeTypeToReadableName map[string]string = map[string]string{
 	"video/x-msvideo":  "AVI Video",
 	"video/quicktime":  "MOV Video",
 	"video/x-matroska": "MKV Video",
+	"video/webm":       "WebM Video",
 
 	"application/vnd.microsoft.portable-executable": "Executable File",
 

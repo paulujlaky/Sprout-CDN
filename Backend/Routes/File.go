@@ -33,7 +33,7 @@ func GetFile(GinContext *gin.Context) {
 
 	}
 
-	if FileRequested.Private == true {
+	if FileRequested.Private {
 
 		// Authorize request (only doing here to avoid higher loading overhead on all requests)
 
@@ -105,7 +105,7 @@ func GetFileNotFoundTemplate(Path string) string {
 
 				color: white;
 	
-				background-color:rgb(40, 40, 40);
+				background-color:rgb(10, 10, 10);
 		
 			}
 
@@ -125,20 +125,20 @@ func GetFileNotFoundTemplate(Path string) string {
 
 				max-width: 400px;
 
-				background-color:rgb(70, 70, 70);
+				background-color:rgb(20, 20, 20);
 
-				border-radius: 5px;
-				border: 1px solid rgb(100, 100, 100);
+				border-radius: 7.5px;
+				border: 1px solid rgb(50, 50, 50);
 	
 			}
 
 			.FileNotFoundPageCodeBlock {
 			
-				background-color:rgb(100, 100, 100);
+				background-color:rgb(50, 50, 50);
 
 				padding: 2.5px 5px;
 
-				border-radius: 3.5px;
+				border-radius: 5px;
 				
 			}
 	

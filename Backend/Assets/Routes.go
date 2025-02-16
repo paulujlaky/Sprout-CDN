@@ -28,7 +28,7 @@ func GetRoutes() map[string]RouteInfo {
 
 	return map[string]RouteInfo{
 
-		"/:File": {
+		"/Files/*File": {
 
 			Method:  "GET",
 			Handler: GlobalRoutes.GetFile,

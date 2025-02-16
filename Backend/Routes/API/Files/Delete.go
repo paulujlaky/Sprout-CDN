@@ -54,6 +54,8 @@ func DeleteFile(GinContext *gin.Context) {
 			Message: "Could not load/find file",
 		})
 
+		return
+
 	}
 
 	DeleteFileError, DeleteInfoError := FileToDelete.Delete(User.UID) // user must have permission. will check and return precondition failed if not
@@ -64,6 +66,8 @@ func DeleteFile(GinContext *gin.Context) {
 
 			Message: DeleteFileError.Error() + "; " + DeleteInfoError.Error(),
 		})
+
+		return
 
 	}
 
