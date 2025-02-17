@@ -48,13 +48,13 @@
 
     @include TransparentContainerMod();
 
+    margin-right: 2rem; // make a bit more "center"
+
     @include RespondTo("Mobile") {
 
         margin-right: 0;
         
     }
-
-    margin-right: 2rem; // make a bit more "center"
     
 }
 
