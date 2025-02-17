@@ -1,3 +1,55 @@
 // Variables 
 
-$BackgroundColor: #111111;
+$BackgroundColor: rgb(10, 10, 10);
+
+$ElementColorDark: rgb(20, 20, 20);
+$ElementColorMedium: rgb(35, 35, 35);
+$ElementColorLight: rgb(50, 50, 50);
+
+$Border: 1px solid $ElementColorLight;
+
+$BorderRadiusLarge: 7.5px;
+$BorderRadiusSmall: 5px;
+
+$SpacingLarge: clamp(1rem, 2vw, 2rem);
+$SpacingMedium: clamp(0.5rem, 1vw, 1rem);
+$SpacingSmall: clamp(0.25rem, 0.5vw, 0.5rem);
+
+// Other files 
+
+@import "Mixins.scss";
+
+// Components
+
+@import "Components/Global/Buttons.scss";
+@import "Components/Global/Header.scss";
+@import "Components/Global/Footer.scss";
+
+// Reusable Components 
+
+@import "Components/Reusable/InlineFile.scss";
+
+
+// Global 
+
+* {
+
+    box-sizing: border-box;
+
+}
+
+// Body 
+
+body {
+
+    font-family: "din-2014", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+
+    background-color: $BackgroundColor;
+    color: white; // white font color
+
+    margin: 0;
+    padding: 0;
+
+}

@@ -1,1 +1,1 @@
-var c=void 0;export{c as default};
+console.log("Welcome to the Sprout CDN Dashboard!");

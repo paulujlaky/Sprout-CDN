@@ -1,0 +1,8 @@
+.DashHeader {
+
+    @include Container($SpacingSmall, $BorderRadiusLarge);
+    @include FlexHorizontal(space-between);
+
+    @include GlassBackground();
+
+}

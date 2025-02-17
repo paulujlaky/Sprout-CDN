@@ -1,0 +1,43 @@
+@mixin Container($Padding: $SpacingMedium, $BorderRadius: $BorderRadiusLarge) {
+
+    padding: $Padding;
+
+    border-radius: $BorderRadius;
+    border: $Border;
+
+}
+
+@mixin FlexHorizontal($Justify: center, $Align: center) {
+
+    display: flex;
+    flex-direction: row;
+
+    justify-content: $Justify;
+    align-items: $Align;
+
+}
+
+@mixin FlexVertical($Justify: center, $Align: center) {
+
+    @include FlexHorizontal($Justify, $Align);
+
+    flex-direction: column; // must go after FlexHorizontal
+    
+}
+
+@mixin FlexCenter() {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+@mixin GlassBackground($Color: $ElementColorMedium) {
+
+    background-color: rgba($Color, 0.5);
+
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+
+}
