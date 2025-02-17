@@ -1,0 +1,11 @@
+.DashMain {
+
+    @include FullWidthAndHeight();
+
+}
+
+.DashMainFileList {
+
+    margin-top: calc(5rem + $SpacingMedium); // 5rem = height of header; 1 of $SpacingMedium = extra margin
+
+}

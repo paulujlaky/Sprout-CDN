@@ -1,8 +1,92 @@
-.DashHeader {
+// General Header
 
-    @include Container($SpacingSmall, $BorderRadiusLarge);
-    @include FlexHorizontal(space-between);
+.Container.DashHeader {
 
-    @include GlassBackground();
+    top: 0; 
 
+    @include OverlayedBar();
+
+    height: 5rem;
+
+    border-bottom: $Border;
+    
+}
+
+// Branding (Leftmost)
+
+.Container.DashHeaderBranding {
+
+    @include TransparentContainerMod();
+    
+    gap: $SpacingSmall;
+
+}
+
+.DashHeaderImage {
+
+    height: 46px;
+    width: auto;
+    
+}
+
+.DashHeaderTitle {
+
+    font-size: 1.5rem;
+    font-weight: 700;
+
+    @include RespondTo("Mobile") {
+
+        display: none;
+        
+    }
+
+}
+
+// Message (Center)
+
+.Container.DashHeaderMessage {
+
+    @include TransparentContainerMod();
+
+    @include RespondTo("Mobile") {
+
+        margin-right: 0;
+        
+    }
+
+    margin-right: 2rem; // make a bit more "center"
+    
+}
+
+.DashHeaderMessageTextLarge {
+
+    font-size: 1.25rem;
+    font-weight: 600;
+
+}
+
+.DashHeaderMessageTextMedium {
+
+    font-size: 1rem;
+    font-weight: 500;
+    
+}
+
+// Account 
+
+.Container.DashHeaderAccount {
+
+    @include TransparentContainerMod();
+    
+    gap: $SpacingSmall;
+
+}
+
+.DashHeaderAccountImage {
+
+    height: 42px;
+    width: auto;
+
+    border-radius: $BorderRadiusLarge;
+    
 }

@@ -11,9 +11,9 @@ $Border: 1px solid $ElementColorLight;
 $BorderRadiusLarge: 7.5px;
 $BorderRadiusSmall: 5px;
 
-$SpacingLarge: clamp(1rem, 2vw, 2rem);
-$SpacingMedium: clamp(0.5rem, 1vw, 1rem);
-$SpacingSmall: clamp(0.25rem, 0.5vw, 0.5rem);
+$SpacingLarge: 1.5rem;
+$SpacingMedium: 1rem;
+$SpacingSmall: 0.5rem;
 
 // Other files 
 
@@ -23,6 +23,7 @@ $SpacingSmall: clamp(0.25rem, 0.5vw, 0.5rem);
 
 @import "Components/Global/Buttons.scss";
 @import "Components/Global/Header.scss";
+@import "Components/Global/Main.scss";
 @import "Components/Global/Footer.scss";
 
 // Reusable Components 
@@ -47,9 +48,56 @@ body {
     font-style: normal;
 
     background-color: $BackgroundColor;
-    color: white; // white font color
+    color: rgb(240, 240, 240); // white font color
 
     margin: 0;
     padding: 0;
+
+}
+
+// Reusable Elements 
+
+.Container {
+
+    @include Container();
+
+}
+
+.Container.HorizontalFlex {
+    
+    @include FlexHorizontal();
+
+}
+
+.Container.VerticalFlex {
+
+    @include FlexVertical();
+
+}
+
+.Container.Center {
+
+    @include FlexCenter();
+
+}
+
+.Container.Glass {
+
+    @include GlassBackground();
+
+}
+
+.Container.Full {
+
+    @include FullWidthAndHeight();
+
+}
+
+.DashCodeInfill {
+
+    background-color: $ElementColorLight;
+
+    padding: 2px 4px;
+    border-radius: $BorderRadiusSmall;
 
 }

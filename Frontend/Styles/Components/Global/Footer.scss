@@ -1,0 +1,11 @@
+.Container.DashFooter {
+
+    bottom: 0; 
+
+    @include OverlayedBar();
+
+    border-top: $Border;
+
+    height: 4rem;
+
+}
