@@ -31,8 +31,8 @@
 
 .DashHeaderTitle {
 
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: $FontSizeLargest;
+    font-weight: $FontWeightBold;
 
     @include RespondTo("Mobile") {
 
@@ -60,15 +60,15 @@
 
 .DashHeaderMessageTextLarge {
 
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: $FontSizeLarge;
+    font-weight: $FontWeightSemiBold;
 
 }
 
 .DashHeaderMessageTextMedium {
 
-    font-size: 1rem;
-    font-weight: 500;
+    font-size: $FontSizeMedium;
+    font-weight: $FontWeightMedium;
     
 }
 
@@ -82,11 +82,8 @@
 
 }
 
-.DashHeaderAccountImage {
+.DashHeaderAccountIcon {
 
-    height: 42px;
-    width: auto;
-
-    border-radius: $BorderRadiusLarge;
-    
+    font-size: 42px;
+        
 }

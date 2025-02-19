@@ -9,3 +9,23 @@
     height: 4rem;
 
 }
+
+.DashFooterButtonSection {
+
+    gap: $SpacingMedium;
+
+}
+
+.DashFooterButton {
+
+    .DashFooterButtonText {
+
+        @include RespondTo("Mobile") {
+
+            display: none;
+
+        }
+
+    }
+
+}

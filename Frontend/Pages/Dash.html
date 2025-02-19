@@ -11,6 +11,8 @@
 
   <link rel="stylesheet" href="../Out/Styles/Main.min.css">
   <script src="../Out/Scripts/Main.js"></script> <!-- also minified -->
+
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   
   <link rel="stylesheet" href="https://use.typekit.net/pge8obf.css">
 
@@ -37,7 +39,7 @@
 
     <div class="Container HorizontalFlex DashHeaderAccount">
 
-      <img src="https://www.gravatar.com/avatar/9abe972b7076932a6207cce6ced282a4f256cd1e6df32b7f655d682b3d7e81f5?d=404" alt="Account" class="DashHeaderAccountImage" draggable="false">
+      <ion-icon name="person-circle" class="DashHeaderAccountIcon"></ion-icon>
       
     </div> 
 
@@ -55,7 +57,41 @@
 
   <footer class="Container Glass DashFooter">
 
+    <div class="Container Transparent HorizontalFlex DashFooterButtonSection">
 
+      <Button class="DashFooterButton">
+
+        <ion-icon name="chevron-back"></ion-icon>      
+
+      </Button>
+
+      <Button class="DashFooterButton">
+
+        <ion-icon name="chevron-forward"></ion-icon>
+
+      </Button>
+
+    </div>
+
+    <div class="Container Transparent HorizontalFlex DashFooterButtonSection">
+
+      <Button class="DashFooterButton">
+        
+        <ion-icon name="document"></ion-icon>
+
+        <span class="DashFooterButtonText">New File</span>
+      
+      </Button>
+
+      <Button class="DashFooterButton">
+
+        <ion-icon name="folder"></ion-icon>
+
+        <span class="DashFooterButtonText">New Folder</span>
+        
+      </Button>
+
+    </div>
 
   </footer>
 

@@ -5,8 +5,20 @@ $BackgroundColor: rgb(10, 10, 10);
 $ElementColorDark: rgb(20, 20, 20);
 $ElementColorMedium: rgb(35, 35, 35);
 $ElementColorLight: rgb(50, 50, 50);
+$ElementColorLightest: rgb(52, 52, 52);
+
+$FontSizeLargest: 1.5rem;
+$FontSizeLarge: 1.25rem;
+$FontSizeMedium: 1rem;
+$FontSizeSmall: 0.85rem;
+
+$FontWeightBold: 700;
+$FontWeightSemiBold: 600;
+$FontWeightMedium: 500;
 
 $Border: 1px solid $ElementColorLight;
+
+$FontColor: rgb(240, 240, 240);
 
 $BorderRadiusLarge: 7.5px;
 $BorderRadiusSmall: 5px;
@@ -14,6 +26,8 @@ $BorderRadiusSmall: 5px;
 $SpacingLarge: 1.5rem;
 $SpacingMedium: 1rem;
 $SpacingSmall: 0.5rem;
+
+$TransitionTime: 0.1s;
 
 // Other files 
 
@@ -48,7 +62,7 @@ body {
     font-style: normal;
 
     background-color: $BackgroundColor;
-    color: rgb(240, 240, 240); // white font color
+    color: $FontColor;
 
     margin: 0;
     padding: 0;
@@ -78,6 +92,12 @@ body {
 .Container.Center {
 
     @include FlexCenter();
+
+}
+
+.Container.Transparent {
+
+    @include TransparentContainerMod();
 
 }
 
