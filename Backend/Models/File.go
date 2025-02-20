@@ -143,7 +143,7 @@ func (AssociatedFile *File) deleteInfo() error {
 
 func (AssociatedFile *File) Write(RequestingUser string, Data []byte) error {
 
-	if Exists, Authorized := AssociatedFile.checkPreconditions(RequestingUser); !Exists || !Authorized {
+	if Authorized, Exists := AssociatedFile.checkPreconditions(RequestingUser); !Authorized || !Exists {
 
 		return errors.New("Preconditions failed.")
 
