@@ -26,8 +26,14 @@ Button:hover {
 
 }
 
-Button:active {
+Button:not([disabled]):active {
 
     transform: scale(0.95);
+
+}
+
+Button[disabled] {
+
+    cursor: not-allowed;
 
 }
