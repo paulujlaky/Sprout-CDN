@@ -1,32 +1,32 @@
 import { Directory } from "../Models.ts/Dir";
 
-export class Navigator {
+export class Browser {
 
     // This acts as a stack which serves to keep track of which folder a user is browsing
 
-    public Current: Directory | null;
+    public Top: Directory | null;
 
     constructor() {
 
-        this.Current = null;
+        this.Top = null;
 
     }
 
     public GoTo(Data: any): void {
 
-        this.Current = new Directory(Data, this.Current);
+        this.Top = new Directory(Data, this.Top);
         
     }
 
     public GoBack(): void {
 
-        this.Current = this.Current?.Previous || null;
+        this.Top = this.Top?.Previous || null;
 
     }
 
     public GetCurrent(): any {
 
-        return this.Current?.Data;
+        return this.Top?.Data;
 
     }
 

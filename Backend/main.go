@@ -99,6 +99,7 @@ func main() {
 
 	GinRouter.Static("/Out", "../Frontend/Out")
 	GinRouter.Static("/Assets", "../Frontend/Assets")
+	GinRouter.Static("/Styles", "../Frontend/Styles") // for maps back to SCSS
 
 	GinRouter.Run(fmt.Sprintf(":%d", Config.Server.Port))
 

@@ -1,4 +1,5 @@
 import Routes from "../../Routes.json";
+
 import { GlobalStorage } from "../Main";
 import type { SproutAccount } from "../Misc/Structs";
 

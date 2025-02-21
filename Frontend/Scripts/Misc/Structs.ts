@@ -1,9 +1,11 @@
+import type { Browser } from "../Systems/Nav";
+
 // Internal/Frontend
 
 export interface Storage {
 
     Account: SproutAccount | null;
-    Navigator: Navigator;
+    Navigator: Browser;
 
 }
 
