@@ -1,3 +1,12 @@
-import { CheckForAuth } from "./Systems/Auth";
+import type { Storage } from "./Misc/Structs";
 
-CheckForAuth();
+import { Authorize } from "./Systems/Auth";
+
+export const GlobalStorage: Storage = {
+
+    Account: null,
+    Navigator: new Navigator()
+
+};
+
+Authorize();

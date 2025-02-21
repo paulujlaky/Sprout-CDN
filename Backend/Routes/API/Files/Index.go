@@ -124,6 +124,8 @@ func AllFiles(GinContext *gin.Context) {
 
 		JSON: map[string]interface{}{
 
+			"Parent": DirToLoad,
+
 			"Files": FileArr,
 			"Dirs":  DirArr,
 		},

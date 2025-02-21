@@ -1,8 +1,10 @@
 import Routes from "../../Routes.json";
+import { GlobalStorage } from "../Main";
+import type { SproutAccount } from "../Misc/Structs";
 
-import { GetURLParameter, MakeRequest, RemoveURLParameter } from "../Misc";
+import { GetURLParameter, Log, MakeRequest, RemoveURLParameter } from "../Misc/Utils";
 
-export async function CheckForAuth(): Promise<void> {
+export async function Authorize(): Promise<void> {
 
     const Token = GetURLParameter("Auth"); // In the case user has just logged in
 
@@ -14,17 +16,29 @@ export async function CheckForAuth(): Promise<void> {
 
         // We are authorized
 
-        console.log(`Hello, ${Response.JSON.Username}`);
+        Log("Info", `Welcome${CheckFirstLogin() ? "" : " back"}, ${Response.JSON.Username}!`);
         
-        RemoveURLParameter("Auth"); // Remove token from URL
+        GlobalStorage.Account = Response.JSON as SproutAccount;
+        
+        RemoveURLParameter("Auth"); // Removes token from URL
 
         return;
 
     }
 
-    // We are not authorized
+    window.location.href = "https://sprout.software/Accounts/Login?Redirect=SproutCDNNew"; // Redirects to sprout login page
 
-    window.location.href = "https://sprout.software/Accounts/Login?Redirect=SproutCDNNew"; // Redirects to us
 
+}
+
+export function CheckFirstLogin(): boolean {
+
+    // This is written to persistent/local storage
+
+    const WasFirst = localStorage.getItem("OOBE") == null;
+
+    if (WasFirst) localStorage.setItem("OOBE", "true");
+    
+    return WasFirst;
 
 }

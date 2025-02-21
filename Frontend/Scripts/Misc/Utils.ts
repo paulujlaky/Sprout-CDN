@@ -61,3 +61,13 @@ export async function MakeRequest(Route: { URL: string, Method: string }, Body?:
     return ResponseJSON;
 
 }
+
+// Logging
+
+export function Log(Severity: "Info" | "Warning" | "Error", Message: string): void {
+
+    const LoggingFunction = (Severity == "Info" ? console.log : Severity == "Warning" ? console.warn : console.error);
+
+    LoggingFunction(`[${Severity.toUpperCase()}] ${Message}`);
+
+}
