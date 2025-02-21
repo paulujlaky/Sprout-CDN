@@ -1,1 +1,3 @@
-console.log("Welcome to the Sprout CDN Dashboard!");
+import { CheckForAuth } from "./Systems/Auth";
+
+CheckForAuth();

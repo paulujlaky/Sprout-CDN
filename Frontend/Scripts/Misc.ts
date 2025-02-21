@@ -7,6 +7,21 @@ export function GetURLParameter(Name: string): string | null {
 
 }
 
+export function RemoveURLParameter(Name: string): void {
+
+    const URLInstance = new URL(window.location.href);
+    URLInstance.searchParams.delete(Name);
+
+    WriteURL(URLInstance.toString());
+    
+}
+
+export function WriteURL(URL: string): void {
+
+    window.history.pushState({}, "", URL);
+
+}
+
 // Network
 
 interface BackendResponse {
@@ -18,24 +33,24 @@ interface BackendResponse {
 
 }
 
-export async function MakeRequest(Type: "GET" | "POST" | "DELETE" | "PATCH", URL: string, Content: { Body: any, IsFormData?: boolean }, Headers: { [key: string]: string }): Promise<BackendResponse | null> {
+export async function MakeRequest(Route: { URL: string, Method: string }, Body?: any, Headers: { [key: string]: string } = {}, IsFormData: boolean = false): Promise<BackendResponse | null> {
 
     const Options: RequestInit = {
 
-        method: Type,
+        method: Route.Method,
 
-        headers: Content.IsFormData ? Headers : {
+        headers: IsFormData ? Headers : {
 
             "Content-Type": "application/json",
             ...Headers
 
         },
 
-        body: Content.IsFormData ? (Content.IsFormData ? Content.Body : JSON.stringify(Content.Body)) : null // FormData is not stringifiable
+        body: IsFormData ? Body : JSON.stringify(Body)
 
     };
 
-    const Response = await fetch(URL, Options).catch(() => null);
+    const Response = await fetch(Route.URL, Options).catch(() => null);
 
     if (!Response?.ok) {  return null; }
 
@@ -43,13 +58,6 @@ export async function MakeRequest(Type: "GET" | "POST" | "DELETE" | "PATCH", URL
 
     if (!ResponseJSON) return null;
 
-    return {
-
-        Message: ResponseJSON.Message,
-        JSON: ResponseJSON,
-
-        HTML: ""
-
-    };
+    return ResponseJSON;
 
 }

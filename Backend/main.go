@@ -95,6 +95,11 @@ func main() {
 
 	fmt.Printf("Listening on port %d...\n", Config.Server.Port)
 
+	// Serve Static files
+
+	GinRouter.Static("/Out", "../Frontend/Out")
+	GinRouter.Static("/Assets", "../Frontend/Assets")
+
 	GinRouter.Run(fmt.Sprintf(":%d", Config.Server.Port))
 
 }

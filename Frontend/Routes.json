@@ -1,0 +1,123 @@
+{
+    "DashPage": {
+
+        "Method": "GET",
+        "URL": "/",
+
+        "RateLimitConfig": null
+
+    },
+    
+    "GetFile": {
+
+        "Method": "GET",
+        "URL": "/Files/*File",
+
+        "Authorized": false
+
+    },
+
+    "APIBase": {
+
+        "Method": "GET",
+        "URL": "/API/",
+
+        "RateLimitConfig": null
+
+    },
+
+    "GetFileList": {    
+
+        "Method": "GET",
+        "URL": "/API/Files/*Path",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 120,
+            "TimeWindow":         60
+
+        },
+
+        "Authorized": true
+
+    },
+
+    "NewFile": {
+
+        "Method": "POST",
+        "URL": "/API/Files/New",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 60,
+            "TimeWindow": 60
+
+        },
+
+        "Authorized": true
+
+    },
+
+    "DeleteFile": {
+
+        "Method": "DELETE",
+        "URL": "/API/Files/Delete",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 120,
+            "TimeWindow":         60
+
+        },
+
+        "Authorized": true
+
+    },
+
+    "NewDir": {
+
+        "Method": "POST",
+        "URL": "/API/Dirs/New",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 60,
+            "TimeWindow":         60
+
+        },
+
+        "Authorized": true
+
+    },
+
+    "DeleteDir": {
+
+        "Method": "DELETE",
+        "URL": "/API/Dirs/Delete",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 60,
+            "TimeWindow": 60
+
+        },
+
+        "Authorized": true
+
+    },
+
+    "Authorize": {
+        
+        "Method": "POST",
+        "URL": "/API/Misc/Auth",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 90,
+            "TimeWindow": 60
+
+        }
+
+    }
+
+}

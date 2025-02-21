@@ -1,6 +1,7 @@
 package Routes
 
 import (
+	"elucid503/SproutCDN/Middleware"
 	"elucid503/SproutCDN/Models"
 	"elucid503/SproutCDN/Types"
 
@@ -19,7 +20,15 @@ func Authorize(GinContext *gin.Context) {
 
 	Token, TokenExists := Body["Token"].(string)
 
-	if Token == "" || !TokenExists {
+	if !TokenExists {
+
+		// Try cookie
+
+		Token, _ = GinContext.Cookie("Sprout-JWT")
+
+	}
+
+	if Token == "" {
 
 		GinContext.JSON(401, Types.Response{
 
@@ -32,18 +41,26 @@ func Authorize(GinContext *gin.Context) {
 
 	// Get account
 
-	Account, Err := Models.GetSproutAccountByToken(Token)
+	Account, CachedExists := Middleware.CheckAccountFromCache(Token)
 
-	if Err != nil {
+	if !CachedExists {
 
-		GinContext.JSON(401, Types.Response{
+		var FetchErr error
 
-			Message: "Could not get your account",
-		})
+		Account, FetchErr = Models.GetSproutAccountByToken(Token)
 
-		return
+		if FetchErr != nil {
+
+			GinContext.JSON(401, Types.Response{
+
+				Message: "Unauthorized", // No other options
+			})
+
+		}
 
 	}
+
+	Middleware.AddAccountToCache(Token, Account)
 
 	GinContext.SetCookie("Sprout-JWT", Token, 60*60*24*7, "/", "", false, true)
 

@@ -28,6 +28,14 @@ func GetRoutes() map[string]RouteInfo {
 
 	return map[string]RouteInfo{
 
+		"/": {
+
+			Method:  "GET",
+			Handler: GlobalRoutes.Dash,
+
+			RateLimitConfig: nil,
+		},
+
 		"/Files/*File": {
 
 			Method:  "GET",
