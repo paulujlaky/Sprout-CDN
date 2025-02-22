@@ -36,6 +36,14 @@ func GetRoutes() map[string]RouteInfo {
 			RateLimitConfig: nil,
 		},
 
+		"/Dash/*Route": {
+
+			Method:  "GET",
+			Handler: GlobalRoutes.Dash,
+
+			RateLimitConfig: nil,
+		},
+
 		"/Files/*File": {
 
 			Method:  "GET",

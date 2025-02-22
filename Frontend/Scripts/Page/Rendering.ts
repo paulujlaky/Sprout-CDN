@@ -14,6 +14,6 @@ export function RenderDirectory(Dir: FullDirectory): void {
 
     RelevantElements.FileList.html(Dir.Contents.HTML);
 
-    WriteURL(Dir.Data.Path);
+    WriteURL(Dir.Data.Path.replace("Store", "Dash"));
 
 }

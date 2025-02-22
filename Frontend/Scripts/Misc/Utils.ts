@@ -48,7 +48,7 @@ export async function MakeRequest(Route: { URL: string, Method: string }, Body?:
 
         },
 
-        body: IsFormData ? Body : JSON.stringify(Body)
+        body: Body ? (IsFormData ? Body : JSON.stringify(Body)) : undefined
 
     };
 
@@ -58,7 +58,7 @@ export async function MakeRequest(Route: { URL: string, Method: string }, Body?:
 
     }
 
-    const Response = await fetch(Route.URL, Options).catch(() => null);
+    const Response = await fetch(Route.URL, Options).catch((Err) => Log("Error", `Request Error: ${Err}`));
 
     if (!Response?.ok) {  return null; }
 
@@ -82,8 +82,8 @@ export function Log(Severity: "Info" | "Warning" | "Error", Message: string): vo
 
 // Auth
 
-export function GetUserDirPath(): string {
+export function GetUserDir(): string {
 
-    return `/${GlobalStorage.User?.Username || "Home"}`;
+    return `${GlobalStorage.User?.Username || "Home"}`;
 
 }

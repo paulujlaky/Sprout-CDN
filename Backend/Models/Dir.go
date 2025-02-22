@@ -49,8 +49,6 @@ func LoadDirFromDotInfo(Path string) (*Dir, error) {
 
 	Path = Functions.AdjustPathToStore(Path)
 
-	fmt.Println(Path)
-
 	// Load the file from the .info file
 
 	InfoPath := GetDirInfoPath(Path)
@@ -157,7 +155,7 @@ func (AssociatedDir *Dir) getContentInfo() (int, int) {
 
 func (AssociatedDir *Dir) Create(RequestingUser string) error {
 
-	if UserAuthed, Exists := AssociatedDir.checkPreconditions(RequestingUser, AssociatedDir.Path); UserAuthed && Exists {
+	if UserAuthed, Exists := AssociatedDir.checkPreconditions(RequestingUser, AssociatedDir.Path); !UserAuthed || !Exists {
 
 		return errors.New("Preconditions failed")
 
@@ -169,7 +167,7 @@ func (AssociatedDir *Dir) Create(RequestingUser string) error {
 
 func (AssociatedDir *Dir) Delete(RequestingUser string) (error, error) {
 
-	if UserAuthed, Exists := AssociatedDir.checkPreconditions(RequestingUser, AssociatedDir.Path); UserAuthed && Exists {
+	if UserAuthed, Exists := AssociatedDir.checkPreconditions(RequestingUser, AssociatedDir.Path); !UserAuthed || !Exists {
 
 		return errors.New("Preconditions failed"), nil
 
@@ -181,7 +179,7 @@ func (AssociatedDir *Dir) Delete(RequestingUser string) (error, error) {
 
 func (AssociatedDir *Dir) GetContents(RequestingUser string) ([]Functions.DirContentItem, error) {
 
-	if UserAuthed, Exists := AssociatedDir.checkPreconditions(RequestingUser, AssociatedDir.Path); UserAuthed && Exists {
+	if UserAuthed, Exists := AssociatedDir.checkPreconditions(RequestingUser, AssociatedDir.Path); !UserAuthed || !Exists {
 
 		return nil, errors.New("Preconditions failed")
 

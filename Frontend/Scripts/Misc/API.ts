@@ -1,13 +1,14 @@
+import { GlobalStorage } from "../Main";
+
 import type { BackendDir, BackendFile, RenderedResource } from "./Structs";
 
 import { MakeRequest } from "./Utils";
 
 import Routes from "../../Routes.json";
-import { GlobalStorage } from "../Main";
 
 export async function GetDirContents(DirPath: string): Promise<RenderedResource<{ Parent: BackendDir | null, Files: BackendFile[], Dirs: BackendDir[] }>> {
 
-    const Response = await MakeRequest(Routes.GetFileList, {}, {}, {
+    const Response = await MakeRequest(Routes.GetFileList, null, {}, {
 
         "Path": DirPath
 
@@ -19,9 +20,7 @@ export async function GetDirContents(DirPath: string): Promise<RenderedResource<
     const Subdirs = Response.JSON.Dirs satisfies BackendDir[];
     const Parent = Response.JSON.Parent satisfies BackendDir;
 
-    const HTML = Response.JSON.HTML;
-
-    return { HTML, JSON: { Parent, Files: Subfiles, Dirs: Subdirs } };
+    return { HTML: Response.HTML, JSON: { Parent, Files: Subfiles, Dirs: Subdirs } };
 
 }
 

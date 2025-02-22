@@ -7,6 +7,15 @@
         "RateLimitConfig": null
 
     },
+
+    "NavigatedDashPage": {
+
+        "Method": "GET",
+        "URL": "/Dash/*Path",
+
+        "RateLimitConfig": null
+
+    },
     
     "GetFile": {
 

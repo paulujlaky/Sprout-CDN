@@ -1,10 +1,9 @@
-import { NewDirectory } from "./Misc/API";
 import type { Storage } from "./Misc/Structs";
-import { GetUserDirPath } from "./Misc/Utils";
-
-import { Authorize } from "./Systems/Auth";
 
 import { Browser } from "./Systems/Browser";
+import { Authorize } from "./Systems/Auth";
+
+import { Log } from "./Misc/Utils";
 
 export const GlobalStorage: Storage = {
 
@@ -17,10 +16,28 @@ await Authorize();
 
 // If page is still executing, we are authorized
 
-const UserHasDir = await GlobalStorage.Browser.GoTo(GetUserDirPath());
+// We must see if we have an implicit path to go to
 
-if (!UserHasDir) {
+if (window.location.pathname == "/") {
 
-    NewDirectory(GetUserDirPath(), "", true); // Will automatically render it
+    Log("Info", "Navigating to User Home...");
+
+    await GlobalStorage.Browser.Home();
+
+} else {
+
+    Log("Info", "Navigating to Implicit Path...");
+
+    const WasSuccessful = await GlobalStorage.Browser.GoTo(window.location.pathname.replace("/Dash/", ""));
+
+    if (!WasSuccessful) {
+
+        Log("Error", "Implicit path navigation failed, navigating to User Home...");
+
+        await GlobalStorage.Browser.Home();
+
+    }
 
 }
+
+Log("Info", "Initial navigation complete.");

@@ -1,5 +1,8 @@
 import { GlobalStorage } from "../Main";
 
+import { NewDirectory } from "../Misc/API";
+import { GetUserDir } from "../Misc/Utils";
+
 import { FullDirectory, PartialDirectory } from "../Models.ts/Dir";
 
 /**
@@ -46,11 +49,15 @@ export class Browser {
 
     public async Home(): Promise<boolean> {
 
-        // Try to get the user folder
-
-        const UserFolderPath = `/${GlobalStorage.User?.Username || "Home"}`;
-
-        return await this.GoTo(UserFolderPath);
+        let Success: boolean = await GlobalStorage.Browser.GoTo(GetUserDir());
+    
+        if (!Success) {
+        
+            Success = await NewDirectory(GetUserDir(), "", true); // Will automatically render it
+    
+        }
+    
+        return Success;
 
     }
 

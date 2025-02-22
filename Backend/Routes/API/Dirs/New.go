@@ -39,9 +39,9 @@ func CreateDir(GinContext *gin.Context) {
 	Path, PathExists := Body["Path"].(string)
 	Private, _ := Body["Private"].(bool)
 
-	if Name == "" || Path == "" || !NameExists || !PathExists {
+	if Name == "" || !NameExists || !PathExists {
 
-		GinContext.JSON(401, Types.Response{
+		GinContext.JSON(400, Types.Response{
 
 			Message: "Invalid request",
 		})

@@ -1,6 +1,6 @@
+import type { BackendDir, BackendFile, RenderedResource } from "../Misc/Structs";
 import { GetDirContents } from "../Misc/API";
 
-import type { BackendDir, BackendFile, RenderedResource } from "../Misc/Structs";
 import { RenderDirectory } from "../Page/Rendering";
 
 export class PartialDirectory {
@@ -17,11 +17,9 @@ export class PartialDirectory {
 
     public async GetFull(): Promise<FullDirectory | null> {
 
-        if (!this.Data.Path) return null;
+        if (this.Data.Path == undefined) return null;
 
         const Contents = await GetDirContents(this.Data.Path);
-
-        if (!Contents.JSON.Parent) return null; // Needed to move to a full directory
 
         return new FullDirectory(Contents, this.Previous);
 
