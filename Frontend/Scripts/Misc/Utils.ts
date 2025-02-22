@@ -1,5 +1,7 @@
 // Window / URL
 
+import { GlobalStorage } from "../Main";
+
 export function GetURLParameter(Name: string): string | null {
 
     const URLInstance = new URL(window.location.href);
@@ -33,7 +35,7 @@ interface BackendResponse {
 
 }
 
-export async function MakeRequest(Route: { URL: string, Method: string }, Body?: any, Headers: { [key: string]: string } = {}, IsFormData: boolean = false): Promise<BackendResponse | null> {
+export async function MakeRequest(Route: { URL: string, Method: string }, Body?: any, Headers: { [key: string]: string } = {}, Params: { [key: string]: string } = {}, IsFormData: boolean = false): Promise<BackendResponse | null> {
 
     const Options: RequestInit = {
 
@@ -49,6 +51,12 @@ export async function MakeRequest(Route: { URL: string, Method: string }, Body?:
         body: IsFormData ? Body : JSON.stringify(Body)
 
     };
+
+    for (const Param in Params) {
+
+        Route.URL = Route.URL.replace(`:${Param}`, Params[Param]).replace(`*${Param}`, encodeURIComponent(Params[Param]));
+
+    }
 
     const Response = await fetch(Route.URL, Options).catch(() => null);
 
@@ -69,5 +77,13 @@ export function Log(Severity: "Info" | "Warning" | "Error", Message: string): vo
     const LoggingFunction = (Severity == "Info" ? console.log : Severity == "Warning" ? console.warn : console.error);
 
     LoggingFunction(`[${Severity.toUpperCase()}] ${Message}`);
+
+}
+
+// Auth
+
+export function GetUserDirPath(): string {
+
+    return `/${GlobalStorage.User?.Username || "Home"}`;
 
 }

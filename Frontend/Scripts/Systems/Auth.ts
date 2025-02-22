@@ -19,7 +19,7 @@ export async function Authorize(): Promise<void> {
 
         Log("Info", `Welcome${CheckFirstLogin() ? "" : " back"}, ${Response.JSON.Username}!`);
         
-        GlobalStorage.Account = Response.JSON as SproutAccount;
+        GlobalStorage.User = Response.JSON as SproutAccount;
         
         RemoveURLParameter("Auth"); // Removes token from URL
 

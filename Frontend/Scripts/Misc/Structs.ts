@@ -1,11 +1,15 @@
-import type { Browser } from "../Systems/Nav";
+import type { Browser } from "../Systems/Browser";
+
+// Type Util
+
+export type RenderedResource<T> = { HTML: string, JSON: T };
 
 // Internal/Frontend
 
 export interface Storage {
 
-    Account: SproutAccount | null;
-    Navigator: Browser;
+    User: SproutAccount | null;
+    Browser: Browser;
 
 }
 
@@ -37,4 +41,19 @@ export interface BackendDir {
     SubDirLength: number;
     SubFileLength: number;
 
+}
+
+export interface BackendFile {
+
+    UID: string;
+    Name: string;
+
+    Size: number;
+
+    Private: boolean;
+
+    Authorized: string[];
+
+    Path: string;
+    
 }
