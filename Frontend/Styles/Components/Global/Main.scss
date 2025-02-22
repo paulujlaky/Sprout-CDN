@@ -1,11 +1,57 @@
 .DashMain {
 
+    padding: 0 $SpacingLarge;
+
     @include FullWidthAndHeight();
+
+    margin-top: calc(5rem + $SpacingLarge); // 5rem = height of header; 1 of $SpacingMedium = extra margin
+
+}
+
+.DashMainHeader {
+
+    padding: 0 $SpacingSmall;
+    padding-bottom: 0.25rem;
+
+    margin-bottom: $SpacingLarge;
+
+    background-color: $ElementColorDark;
+    
+    align-items: center;
+
+    justify-content: space-between!important;
+    
+}
+
+.Container.DashMainHeaderIcon {
+
+    font-size: 64px;
+
+}
+
+.Container.DashMainHeaderContent {
+
+    align-items: start!important;
+    
+}
+
+.DashMainHeaderName {
+
+    font-size: 2rem;
+    
+    font-weight: $FontWeightSemiBold;
+
+    margin-bottom: $SpacingSmall;
 
 }
 
 .DashMainFileList {
 
-    margin-top: calc(5rem + $SpacingMedium); // 5rem = height of header; 1 of $SpacingMedium = extra margin
+    // "Grid" layout 
+
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: $SpacingMedium;
 
 }

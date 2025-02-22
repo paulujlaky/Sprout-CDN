@@ -87,3 +87,11 @@ export function GetUserDir(): string {
     return `${GlobalStorage.User?.Username || "Home"}`;
 
 }
+
+// Paths
+
+export function GetDisplayablePath(Path: string): string {
+
+    return Path.replace("/Store", "");
+
+}

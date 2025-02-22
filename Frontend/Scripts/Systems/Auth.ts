@@ -5,6 +5,8 @@ import type { SproutAccount } from "../Misc/Structs";
 
 import { GetURLParameter, Log, MakeRequest, RemoveURLParameter } from "../Misc/Utils";
 
+import { UpdateAuthElements } from "../Page/Rendering";
+
 export async function Authorize(): Promise<void> {
 
     const Token = GetURLParameter("Auth"); // In the case user has just logged in
@@ -22,6 +24,8 @@ export async function Authorize(): Promise<void> {
         GlobalStorage.User = Response.JSON as SproutAccount;
         
         RemoveURLParameter("Auth"); // Removes token from URL
+
+        UpdateAuthElements(GlobalStorage.User, CheckFirstLogin());
 
         return;
 

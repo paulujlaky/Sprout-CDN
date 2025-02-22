@@ -203,7 +203,7 @@ func (AssociatedDir *Dir) ToHTML() string {
 
 	return Functions.CleanEscapedString(fmt.Sprintf(`
 
-		<div class="InlineFile Dir">
+		<div class="Container HorizontalFlex InlineFile Dir">
 
 			<div class="InlineFileIcon">
 
@@ -211,11 +211,11 @@ func (AssociatedDir *Dir) ToHTML() string {
 
 			</div>
 
-			<div class="InlineFileDetails">
+			<div class="Container Transparent VerticalFlex InlineFileDetails">
 
 				<div class="InlineFileName">%s</div>
 
-				<div class="ul InlineFileStats">
+				<ul class="InlineFileStats">
 
 					<li class="InlineFileStat SubFiles">%d %s</li>
 
@@ -223,7 +223,9 @@ func (AssociatedDir *Dir) ToHTML() string {
 
 					<li class="InlineFileStat PrivateIndicator" style="display="%s"">Private</li>
 
-				</div>
+				</ul>
+			
+			</div>
 
 		</div>
 

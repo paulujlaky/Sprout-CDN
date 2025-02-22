@@ -4,6 +4,7 @@ import { Browser } from "./Systems/Browser";
 import { Authorize } from "./Systems/Auth";
 
 import { Log } from "./Misc/Utils";
+import { HideLoadingView } from "./Page/Rendering";
 
 export const GlobalStorage: Storage = {
 
@@ -20,19 +21,19 @@ await Authorize();
 
 if (window.location.pathname == "/") {
 
-    Log("Info", "Navigating to User Home...");
+    Log("Info", "Navigating to user home...");
 
     await GlobalStorage.Browser.Home();
 
 } else {
 
-    Log("Info", "Navigating to Implicit Path...");
+    Log("Info", "Navigating to implicit path...");
 
     const WasSuccessful = await GlobalStorage.Browser.GoTo(window.location.pathname.replace("/Dash/", ""));
 
     if (!WasSuccessful) {
 
-        Log("Error", "Implicit path navigation failed, navigating to User Home...");
+        Log("Error", "Implicit path navigation failed, navigating to user home...");
 
         await GlobalStorage.Browser.Home();
 
@@ -41,3 +42,5 @@ if (window.location.pathname == "/") {
 }
 
 Log("Info", "Initial navigation complete.");
+
+HideLoadingView();

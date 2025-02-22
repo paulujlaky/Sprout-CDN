@@ -1,0 +1,63 @@
+.Container.InlineFile, .Container.InlineDir {
+
+    width: fit-content;
+
+    background-color: $ElementColorDark;
+
+    padding: $SpacingSmall;
+
+    cursor: pointer;
+
+    transition: background-color $TransitionTime;
+
+}
+
+.Container.InlineFile:hover, .Container.InlineDir:hover {
+
+    background-color: $ElementColorMedium;
+
+}
+
+.Container.InlineFileDetails {
+
+    align-items: start;
+    
+}
+
+.InlineFileIcon {
+
+    @include FlexCenter();
+    font-size: 36px;
+
+    padding-left: calc($SpacingSmall * 1.5);
+
+}
+
+.InlineFileName {
+
+    font-size: 1.1rem;
+    font-weight: $FontWeightSemiBold;
+
+}
+
+// is a ul but horizontal and with bullet between items
+
+.InlineFileStats, .DirStats {
+
+    display: flex;
+
+    list-style-type: none;
+
+    padding: 0;
+
+    margin: 0;
+
+}
+
+.InlineFileStats li:not(:last-child)::after, .DirStats li:not(:last-child)::after {
+
+    content: "•";
+
+    margin: 0 calc($SpacingSmall / 2);
+
+}

@@ -6,6 +6,14 @@ export type RenderedResource<T> = { HTML: string, JSON: T };
 
 // Internal/Frontend
 
+export enum AnimationTimes {
+
+    Short = 150,
+    Medium = 300,
+    Long = 450
+
+}
+
 export interface Storage {
 
     User: SproutAccount | null;

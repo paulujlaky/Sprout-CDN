@@ -196,7 +196,7 @@ func (AssociatedFile *File) ToHTML() string {
 
 	return Functions.CleanEscapedString(fmt.Sprintf(`
 
-		<div class="InlineFile">
+		<div class="Container HorizontalFlex InlineFile">
 
 			<div class="InlineFileIcon">
 
@@ -204,17 +204,19 @@ func (AssociatedFile *File) ToHTML() string {
 
 			</div>
 
-			<div class="InlineFileDetails">
+			<div class="Container Transparent VerticalFlex InlineFileDetails">
 
 				<div class="InlineFileName">%s</div>
 
-				<div class="ul InlineFileStats">
+				<ul class="InlineFileStats">
 
 					<li class="InlineFileStat Size">%s</li>
 
 					<li class="InlineFileStat Type">%s</li>
 
-				</div>
+				</ul>
+			
+			</div>
 
 		</div>
 

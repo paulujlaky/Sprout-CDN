@@ -1,8 +1,10 @@
 package Routes
 
 import (
+	"elucid503/SproutCDN/Functions"
 	"elucid503/SproutCDN/Models"
 	"elucid503/SproutCDN/Types"
+	"fmt"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -118,6 +120,54 @@ func AllFiles(GinContext *gin.Context) {
 
 	}
 
+	PrivateIndicatorDisplay := "none"
+
+	if DirToLoad.Private {
+
+		PrivateIndicatorDisplay = "block"
+
+	}
+
+	var FileListHTMLHeader string = fmt.Sprintf(`
+
+		<div class="Container Transparent VerticalFlex DashMainHeaderContent"> 
+					
+			<div class="DashMainHeaderName DashCodeInfill">/%s</div>
+
+				<ul class="DirStats">
+
+					<li class="DashMainHeaderDetailItem SubFiles">%s</li>
+					<li class="DashMainHeaderDetailItem SubDirs">%s</li>
+					<li class="InlineFileStat PrivateIndicator" style="display="%s"">Private</li>
+				
+				</ul>
+
+		</div>
+
+		<div class="Container Transparent Center DashMainHeaderIcon">
+
+			<ion-icon name="folder-open-outline"></ion-icon>
+
+		</div>
+	
+	`, strings.Replace(DirToLoad.Name, "/Store", "", 1), fmt.Sprintf("%d %s", len(FileArr), Functions.PluralizeString(len(FileArr), "File")), fmt.Sprintf("%d %s", len(DirArr), Functions.PluralizeString(len(DirArr), "Folder")), PrivateIndicatorDisplay)
+
+	var FinalHTML string = fmt.Sprintf(`
+	
+		<div class="Container HorizontalFlex DashMainHeader">
+
+			%s
+
+		</div>
+
+		<div class="DashMainFileList">
+
+			%s
+
+		</div>
+	
+	`, FileListHTMLHeader, strings.Join(append(DirHTMLArr, FileHTMLArr...), "\n"))
+
 	GinContext.JSON(200, Types.Response{
 
 		Message: "Loaded all files",
@@ -130,7 +180,7 @@ func AllFiles(GinContext *gin.Context) {
 			"Dirs":  DirArr,
 		},
 
-		HTML: strings.Join(append(DirHTMLArr, FileHTMLArr...), "\n"), // All elements. first dirs, then files
+		HTML: FinalHTML,
 	})
 
 }

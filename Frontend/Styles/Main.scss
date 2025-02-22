@@ -29,21 +29,22 @@ $SpacingSmall: 0.5rem;
 
 $TransitionTime: 0.1s;
 
-// Other files 
-
 @import "Mixins.scss";
 
-// Components
+// Reusable Components 
+
+@import "Components/Reusable/Containers.scss";
+
+// Main Components
+
+@import "Components/Reusable/InlineItem.scss";
+
+// Other UIs / Components
 
 @import "Components/Global/Buttons.scss";
 @import "Components/Global/Header.scss";
 @import "Components/Global/Main.scss";
 @import "Components/Global/Footer.scss";
-
-// Reusable Components 
-
-@import "Components/Reusable/InlineFile.scss";
-
 
 // Global 
 
@@ -69,55 +70,41 @@ body {
 
 }
 
-// Reusable Elements 
+// Loading View
 
-.Container {
+.Container.DashLoading {
 
-    @include Container();
-
-}
-
-.Container.HorizontalFlex {
-    
-    @include FlexHorizontal();
-
-}
-
-.Container.VerticalFlex {
-
-    @include FlexVertical();
-
-}
-
-.Container.Center {
+    position: absolute;
+    top: 0; left: 0;
 
     @include FlexCenter();
 
+    z-index: 2;
+
+    background-color: $BackgroundColor!important;
+    
 }
 
-.Container.Transparent {
-
-    @include TransparentContainerMod();
-
-}
-
-.Container.Glass {
-
-    @include GlassBackground();
-
-}
-
-.Container.Full {
-
-    @include FullWidthAndHeight();
+.Container.DashHeaderBranding.DashLoadingVariant {
+    
+    animation: ExpandAndFadeIn 0.5s ease-in-out forwards;
 
 }
 
-.DashCodeInfill {
+@keyframes ExpandAndFadeIn {
 
-    background-color: $ElementColorLight;
+    0% {
 
-    padding: 2px 4px;
-    border-radius: $BorderRadiusSmall;
+        transform: scale(1);
+        opacity: 0;
+
+    }
+
+    100% {
+
+        transform: scale(2);
+        opacity: 1;
+
+    }
 
 }
