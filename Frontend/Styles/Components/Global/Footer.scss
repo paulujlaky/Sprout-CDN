@@ -4,6 +4,8 @@
 
     @include OverlayedBar();
 
+    z-index: 5;
+
     border-top: $Border;
 
     height: 4rem;

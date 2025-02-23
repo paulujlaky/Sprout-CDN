@@ -47,11 +47,11 @@
 
 .DashMainFileList {
 
-    // "Grid" layout 
+    // Grid Layout 
 
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
 
-    gap: $SpacingMedium;
-
+    grid-template-columns: repeat(auto-fit, minmax(335px, 1fr));
+    grid-gap: $SpacingMedium;
+    
 }

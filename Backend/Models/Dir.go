@@ -205,26 +205,36 @@ func (AssociatedDir *Dir) ToHTML() string {
 
 		<div class="Container HorizontalFlex InlineFile Dir">
 
-			<div class="InlineFileIcon">
+			<div class="InlineFileContent Left"> 
 
-				<ion-icon name="%s"></ion-icon>
+				<div class="InlineFileIcon">
+
+					<ion-icon name="%s"></ion-icon>
+
+				</div>
+
+				<div class="Container Transparent VerticalFlex InlineFileDetails">
+
+					<div class="InlineFileName">%s</div>
+
+					<ul class="InlineFileStats">
+
+						<li class="InlineFileStat SubFiles">%d %s</li>
+
+						<li class="InlineFileStat SubDirs">%d %s</li>
+
+						<li class="InlineFileStat PrivateIndicator" style="display="%s"">Private</li>
+
+					</ul>
+				
+				</div>
 
 			</div>
 
-			<div class="Container Transparent VerticalFlex InlineFileDetails">
+			<div class="InlineFileActions Right">
 
-				<div class="InlineFileName">%s</div>
+				<ion-icon name="ellipsis-horizontal"></ion-icon>
 
-				<ul class="InlineFileStats">
-
-					<li class="InlineFileStat SubFiles">%d %s</li>
-
-					<li class="InlineFileStat SubDirs">%d %s</li>
-
-					<li class="InlineFileStat PrivateIndicator" style="display="%s"">Private</li>
-
-				</ul>
-			
 			</div>
 
 		</div>

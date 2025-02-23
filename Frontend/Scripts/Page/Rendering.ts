@@ -2,7 +2,7 @@ import $ from "jquery";
 
 import type { FullDirectory } from "../Models.ts/Dir";
 
-import { GetDisplayablePath, WriteURL } from "../Misc/Utils";
+import { WriteURL } from "../Misc/Utils";
 
 import { AnimationTimes, type SproutAccount } from "../Misc/Structs";
 

@@ -1,6 +1,6 @@
 .Container.InlineFile, .Container.InlineDir {
 
-    width: fit-content;
+    width: 100%;
 
     background-color: $ElementColorDark;
 
@@ -9,6 +9,14 @@
     cursor: pointer;
 
     transition: background-color $TransitionTime;
+
+    justify-content: space-between;
+
+}
+
+.InlineFileContent {
+
+    display: flex;
 
 }
 
@@ -27,7 +35,7 @@
 .InlineFileIcon {
 
     @include FlexCenter();
-    font-size: 36px;
+    font-size: 42px;
 
     padding-left: calc($SpacingSmall * 1.5);
 
@@ -37,6 +45,8 @@
 
     font-size: 1.1rem;
     font-weight: $FontWeightSemiBold;
+
+    margin-bottom: 0.25rem;
 
 }
 
@@ -59,5 +69,28 @@
     content: "•";
 
     margin: 0 calc($SpacingSmall / 2);
+
+}
+
+// Options 
+
+.InlineFileActions {
+
+    @include FlexCenter();
+
+    padding: $SpacingSmall;
+    margin-right: $SpacingSmall;
+
+    font-size: 1.15rem;
+
+    transition: background-color $TransitionTime;
+
+    border-radius: $BorderRadiusSmall;
+
+}
+
+.InlineFileActions:hover {
+
+    background-color: $ElementColorLight;
 
 }

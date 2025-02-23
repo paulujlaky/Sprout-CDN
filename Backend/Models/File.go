@@ -195,27 +195,37 @@ func (AssociatedFile *File) ToHTML() string {
 	HumanReadableSize := FileUtil.NormalizeSize(AssociatedFile.Size)
 
 	return Functions.CleanEscapedString(fmt.Sprintf(`
-
+	
 		<div class="Container HorizontalFlex InlineFile">
 
-			<div class="InlineFileIcon">
+			<div class="InlineFileContent Left"> 
 
-				<ion-icon name="%s"></ion-icon>
+				<div class="InlineFileIcon">
+
+					<ion-icon name="%s"></ion-icon>
+
+				</div>
+
+				<div class="Container Transparent VerticalFlex InlineFileDetails">
+
+					<div class="InlineFileName">%s</div>
+
+					<ul class="InlineFileStats">
+
+						<li class="InlineFileStat Size">%s</li>
+
+						<li class="InlineFileStat Type">%s</li>
+
+					</ul>
+				
+				</div>
 
 			</div>
 
-			<div class="Container Transparent VerticalFlex InlineFileDetails">
+			<div class="InlineFileActions Right">
 
-				<div class="InlineFileName">%s</div>
+				<ion-icon name="ellipsis-horizontal"></ion-icon>
 
-				<ul class="InlineFileStats">
-
-					<li class="InlineFileStat Size">%s</li>
-
-					<li class="InlineFileStat Type">%s</li>
-
-				</ul>
-			
 			</div>
 
 		</div>
