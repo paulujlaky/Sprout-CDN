@@ -80,9 +80,21 @@
 
     </div>
 
+    <div class="Container Transparent HorizontalFlex DashFooterMessageSection">
+
+        <div class="Container Transparent Center DashFooterMessageLoadingIndicator">
+
+          <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" type="rotate" dur="0.75s" values="0 12 12;360 12 12" repeatCount="indefinite"/></path></svg>
+        
+        </div>
+
+        <div class="DashFooterMessageText">Loading...</div>
+
+    </div>
+
     <div class="Container Transparent HorizontalFlex DashFooterButtonSection">
 
-      <Button class="DashFooterButton">
+      <Button class="DashFooterButton NewFile">
         
         <ion-icon name="document"></ion-icon>
 
@@ -90,7 +102,7 @@
       
       </Button>
 
-      <Button class="DashFooterButton">
+      <Button class="DashFooterButton NewFolder">
 
         <ion-icon name="folder"></ion-icon>
 
@@ -102,6 +114,45 @@
 
   </footer>
 
+  <!-- Create Directory Dialog -->
+
+  <dialog class="Container Transparent Full Center DashDialog DashCreateDirDialog" style="display: none;">
+
+      <div class="Container HorizontalFlex DashDialogHeader">
+
+        <div class="DashDialogTitle">Create New Directory</div>
+
+        <ion-icon name="close" class="DashDialogClose"></ion-icon>
+
+      </div>
+
+      <div class="Container VerticalFlex DashDialogBody">
+
+        <div class="DashDialogInputContainer">
+
+          <label for="DirName" class="DashDialogInputLabel">Directory Name</label>
+          <input type="text" id="DirName" class="DashDialogInput" placeholder="Enter Directory Name">
+
+        </div>
+
+        <div class="DashDialogToggleContainer">
+
+          <label for="DirVisibility" class="DashDialogInputLabel">Private</label>
+          <input type="checkbox" id="DirVisibility" class="DashDialogToggle">
+
+        </div>
+
+      </div>
+
+      <div class="Container HorizontalFlex DashDialogFooter">
+
+        <Button class="DashDialogButton DashDialogButtonCancel">Cancel</Button>
+        <Button class="DashDialogButton DashDialogButtonCreate">Create</Button>
+
+      </div>
+
+  </dialog>
+  
 </body>
 
 </html>

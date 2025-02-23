@@ -56,6 +56,8 @@ export interface BackendFile {
     UID: string;
     Name: string;
 
+    URL: string;
+
     Size: number;
 
     Private: boolean;

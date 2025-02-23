@@ -11,17 +11,19 @@ import { FullDirectory, PartialDirectory } from "../Models.ts/Dir";
 */
 export class Browser {
 
-    public Top: PartialDirectory | null;
+    public Top: FullDirectory | null;
+    private InternalTop: PartialDirectory | null;
 
     constructor() {
 
         this.Top = null;
+        this.InternalTop = null;
 
     }
 
     // Accessors
 
-    public get Current(): PartialDirectory | null {
+    public get Current(): FullDirectory | null {
 
         return this.Top;
         
@@ -31,7 +33,7 @@ export class Browser {
 
     public async GoTo(Path: string): Promise<boolean> {
 
-        this.Top = new PartialDirectory(Path);
+        this.InternalTop = new PartialDirectory(Path);
 
         return await this.Hydrate();
         
@@ -39,7 +41,13 @@ export class Browser {
 
     public async GoBack(): Promise<boolean> {
 
-        this.Top = this.Top?.Previous || null;
+        this.InternalTop = this.Top?.Previous || null;
+
+        return await this.Hydrate();
+
+    }
+
+    public async Refresh(): Promise<boolean> {
 
         return await this.Hydrate();
 
@@ -65,9 +73,9 @@ export class Browser {
     
     private async Delegate(): Promise<boolean> {
 
-        if (!this.Top) return false;
+        if (!this.InternalTop) return false;
 
-        const FetchedTop = await this.Top.GetFull();
+        const FetchedTop = await this.InternalTop.GetFull();
 
         this.Top = FetchedTop;
 
@@ -81,7 +89,7 @@ export class Browser {
 
         if (!InitResp) return false;
 
-        (this.Top as FullDirectory).Display();
+        this.Top?.Display();
 
         return true;
 

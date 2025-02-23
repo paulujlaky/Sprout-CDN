@@ -2,6 +2,7 @@ package Functions
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"net/http"
 	"path/filepath"
@@ -108,9 +109,13 @@ func PluralizeString(Count int, Str string) string {
 
 func SanitizePath(Path string) string {
 
-	// Remove any attempts to go up a directory
+	// Check base path
 
-	Path = strings.ReplaceAll(Path, "..", "")
+	if !strings.Contains(filepath.Dir(Path), "Store") {
+
+		Path = strings.ReplaceAll(Path, "..", "")
+
+	}
 
 	// Remove any trailing slashes
 
@@ -129,5 +134,15 @@ func AdjustPathToStore(Path string) string {
 	// Make path work for CDN dir
 
 	return filepath.Join("../Store", Path)
+
+}
+
+func RemoveStoreFromPath(Path string) string {
+
+	PathWithSlash := filepath.ToSlash(Path)
+
+	fmt.Println(PathWithSlash)
+
+	return strings.ReplaceAll(PathWithSlash, "../Store/", "")
 
 }

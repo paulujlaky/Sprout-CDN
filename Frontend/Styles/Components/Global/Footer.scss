@@ -31,3 +31,26 @@
     }
 
 }
+
+.Container.DashFooterMessageSection {
+
+    display: none; // Default
+
+}
+
+.Container.DashFooterMessageLoadingIndicator svg {
+
+    height: 20px;
+    width: 20px;
+
+}
+
+.DashFooterMessageText {
+
+    @include RespondTo("Mobile") {
+
+        display: none;
+
+    }
+
+}

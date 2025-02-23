@@ -21,6 +21,8 @@ type File struct {
 	UID  string `json:"UID"`
 	Name string `json:"Name"`
 
+	URL string `json:"URL"`
+
 	Size int64 `json:"Size"`
 
 	Private bool `json:"Private"`
@@ -40,6 +42,8 @@ func NewFile(Name string, Size int64, Private bool, Authorized []string, Path st
 		Name: Name,
 
 		Size: Size,
+
+		URL: "http://localhost:50300/Files/" + filepath.Join(Functions.RemoveStoreFromPath(Path), Name),
 
 		Private: Private,
 
@@ -196,7 +200,7 @@ func (AssociatedFile *File) ToHTML() string {
 
 	return Functions.CleanEscapedString(fmt.Sprintf(`
 	
-		<div class="Container HorizontalFlex InlineFile">
+		<div class="Container HorizontalFlex InlineFile" URL="%s">
 
 			<div class="InlineFileContent Left"> 
 
@@ -230,6 +234,6 @@ func (AssociatedFile *File) ToHTML() string {
 
 		</div>
 
-	`, Icon, AssociatedFile.Name, HumanReadableSize, HumanReadableType))
+	`, AssociatedFile.URL, Icon, AssociatedFile.Name, HumanReadableSize, HumanReadableType))
 
 }

@@ -5,6 +5,9 @@ import type { BackendDir, BackendFile, RenderedResource } from "./Structs";
 import { MakeRequest } from "./Utils";
 
 import Routes from "../../Routes.json";
+import type { FullDirectory, PartialDirectory } from "../Models.ts/Dir";
+
+// Misc
 
 export async function GetDirContents(DirPath: string): Promise<RenderedResource<{ Parent: BackendDir | null, Files: BackendFile[], Dirs: BackendDir[] }>> {
 
@@ -24,6 +27,8 @@ export async function GetDirContents(DirPath: string): Promise<RenderedResource<
 
 }
 
+// Creation Ops
+
 export async function NewDirectory(Name: string, Path: string, Private: boolean, Authorized: string[] = []): Promise<boolean> {
 
     const Response = await MakeRequest(Routes.NewDir, { Name, Path, Private });
@@ -32,4 +37,18 @@ export async function NewDirectory(Name: string, Path: string, Private: boolean,
 
     return Response?.JSON?.Success ?? false;
 
+}
+
+export async function NewFile(Path: string, Uploaded: File, Private: boolean = false): Promise<boolean> {
+
+    const DataToSend = new FormData();
+
+    DataToSend.append("File", Uploaded);
+    DataToSend.append("Path", Path);
+    DataToSend.append("Private", Private.toString());
+
+    const Response = await MakeRequest(Routes.NewFile, DataToSend, {}, {}, true); // IsFormData must be set to true
+
+    return Response?.JSON?.UID ?? false; // Existence of uploaded file UID means success
+    
 }

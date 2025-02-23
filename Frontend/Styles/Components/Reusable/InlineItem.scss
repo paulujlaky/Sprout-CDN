@@ -85,7 +85,7 @@
 
     transition: background-color $TransitionTime;
 
-    border-radius: $BorderRadiusSmall;
+    border-radius: calc($BorderRadiusLarge / 1.25);
 
 }
 

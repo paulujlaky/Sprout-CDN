@@ -26,11 +26,28 @@ export function RenderDirectory(Dir: FullDirectory): void {
 
 }
 
-// Loading View
+// Loading
 
 export function HideLoadingView(): void {
 
     $(".Container.DashLoading").fadeOut(AnimationTimes.Short);
+
+}
+
+export function ShowFooterLoadingMessage(Message: string, Loader: boolean = true, HideTimeout: number = -1): void {
+
+    $(".Container.DashFooterMessageSection .DashFooterMessageText").text(Message);
+    $(".Container.DashFooterMessageSection").css("display", "flex");
+
+    ($(".Container.DashFooterMessageSection .DashFooterMessageLoadingIndicator"))[Loader ? "show" : "hide"]();
+
+    if (HideTimeout != -1) setTimeout(HideFooterLoadingMessage, HideTimeout);
+
+}
+
+export function HideFooterLoadingMessage(): void {
+
+    $(".Container.DashFooterMessageSection").hide();
 
 }
 

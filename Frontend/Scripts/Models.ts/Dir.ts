@@ -1,7 +1,8 @@
 import type { BackendDir, BackendFile, RenderedResource } from "../Misc/Structs";
-import { GetDirContents } from "../Misc/API";
+import { GetDirContents, NewFile } from "../Misc/API";
 
-import { RenderDirectory } from "../Page/Rendering";
+import { HideFooterLoadingMessage, RenderDirectory, ShowFooterLoadingMessage } from "../Page/Rendering";
+import { GlobalStorage } from "../Main";
 
 export class PartialDirectory {
 
@@ -31,6 +32,8 @@ export class FullDirectory extends PartialDirectory {
 
     // This also acts as a node within the Navigation stack
 
+    public Full: boolean = true;
+
     public Data: BackendDir;
     public Contents: RenderedResource<{ Files: BackendFile[], Dirs: BackendDir[] }> = { HTML: "", JSON: { Files: [], Dirs: [] } };
 
@@ -51,4 +54,33 @@ export class FullDirectory extends PartialDirectory {
 
     }
 
+    public async Upload(Uploaded: File): Promise<boolean> {
+
+        // Show Loader
+
+        ShowFooterLoadingMessage(`Uploading ${Uploaded.name}`);
+
+        const Success = await NewFile(this.Data.Path, Uploaded);
+        
+        if (Success) {
+
+            // Update the directory contents
+
+            HideFooterLoadingMessage();
+            
+            GlobalStorage.Browser.Refresh();
+
+            ShowFooterLoadingMessage(`Uploaded ${Uploaded.name}`, false, 5_000); // Hides after 5s
+            
+        } else {
+
+            // Show error message
+
+            ShowFooterLoadingMessage(`Failed to upload ${Uploaded.name}`, false, 5_000); // Hides after 5s
+
+        }
+
+        return Success;
+
+    }
 }

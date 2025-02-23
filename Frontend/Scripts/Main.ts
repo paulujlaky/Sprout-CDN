@@ -5,6 +5,7 @@ import { Authorize } from "./Systems/Auth";
 
 import { Log } from "./Misc/Utils";
 import { HideLoadingView } from "./Page/Rendering";
+import { WatchPageInteractions } from "./Page/Interactions";
 
 export const GlobalStorage: Storage = {
 
@@ -44,3 +45,5 @@ if (window.location.pathname == "/") {
 Log("Info", "Initial navigation complete.");
 
 HideLoadingView();
+
+WatchPageInteractions();
