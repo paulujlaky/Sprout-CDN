@@ -17,6 +17,8 @@ Button {
     cursor: pointer;
 
     transition: background-color $TransitionTime;
+
+    border-radius: calc($BorderRadiusLarge / 1.5);
     
 }
 

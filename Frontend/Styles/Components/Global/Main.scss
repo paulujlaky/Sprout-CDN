@@ -52,6 +52,6 @@
     display: grid;
 
     grid-template-columns: repeat(auto-fit, minmax(335px, 1fr));
-    grid-gap: $SpacingMedium;
+    gap: $SpacingMedium;
     
 }
