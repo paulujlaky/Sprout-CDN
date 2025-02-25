@@ -1,7 +1,7 @@
 import { GlobalStorage } from "../Main";
 
 import { NewDirectory } from "../Misc/API";
-import type { BackendDir } from "../Misc/Structs";
+
 import { GetUserDirPath } from "../Misc/Utils";
 
 import { FullDirectory, PartialDirectory } from "../Models.ts/Dir";

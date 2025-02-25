@@ -11,6 +11,9 @@ Input[type="text"], Input[type="password"], Input[type="email"] {
 
     padding: calc($SpacingSmall * 1.5) $SpacingMedium;
 
+    font-size: $FontSizeSmall;
+    letter-spacing: 0.5px;
+
 }
 
 Input:focus {

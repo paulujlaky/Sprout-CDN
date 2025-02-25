@@ -108,6 +108,8 @@ export function WatchPageInteractions(): void {
 
             // File
 
+            console.log("File", RelevantFileOrDir);
+
         } else {
 
             // Directory

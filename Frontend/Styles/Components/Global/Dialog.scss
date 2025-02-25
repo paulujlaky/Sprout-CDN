@@ -58,12 +58,19 @@ Dialog {
 .DashDialogInputContainer {
 
     color: $FontColorMuted;
-    font-size: calc($FontSizeMedium * 0.85);
 
     @include FlexHorizontal;
+
+    justify-content: space-between!important;
 
     gap: $SpacingMedium;
 
     width: 100%;
+
+}
+
+.DashDialogInputContainer.Smaller {
+
+    padding: 0 $SpacingSmall;
 
 }
