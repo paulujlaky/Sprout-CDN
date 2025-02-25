@@ -148,3 +148,9 @@ func ReplacePathWithForwardSlashes(Path string) string {
 	return strings.ReplaceAll(Path, string(filepath.Separator), "/")
 
 }
+
+func NormalizePath(Path string) string {
+
+	return RemovePathDoubleSlashes(ReplacePathWithForwardSlashes(Path))
+
+}

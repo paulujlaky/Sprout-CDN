@@ -31,14 +31,12 @@ type Dir struct {
 
 func NewDir(Path string, OriginalPath string, Authorized []string, Private bool) (*Dir, error, error) {
 
-	NormalizedPath := strings.TrimPrefix(OriginalPath, string(filepath.Separator))
-
 	DirInstance := &Dir{
 
 		UID: Functions.RandomString(16),
 
 		Path:           Path,
-		NormalizedPath: NormalizedPath,
+		NormalizedPath: Functions.NormalizePath(OriginalPath),
 
 		Name: filepath.Base(Path),
 

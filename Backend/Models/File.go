@@ -39,9 +39,7 @@ func NewFile(Name string, Size int64, Private bool, Authorized []string, Path st
 
 	// Use filepath.Join to combine the elements and then trim a leading separator if it exists
 
-	NormalizedPath := filepath.Join(Path, Name)
-	NormalizedPath = strings.ReplaceAll(NormalizedPath, string(filepath.Separator), "/")
-	NormalizedPath = Functions.RemovePathDoubleSlashes(Functions.RemovePathDoubleSlashes(NormalizedPath))
+	NormalizedPath := Functions.NormalizePath(filepath.Join(Path, Name))
 
 	return &File{
 
@@ -123,7 +121,7 @@ func (AssociatedFile *File) checkPreconditions(RequestingUser string) (bool, boo
 
 func (AssociatedFile *File) getMimeTypeAndIcon() (string, string) {
 
-	return FileUtil.GetMimeTypeAndIcon(filepath.Ext(AssociatedFile.Path))
+	return FileUtil.GetMimeTypeAndIcon(strings.ToLower(filepath.Ext(AssociatedFile.Path)))
 
 }
 
