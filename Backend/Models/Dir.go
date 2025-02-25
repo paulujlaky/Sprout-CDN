@@ -220,7 +220,7 @@ func (AssociatedDir *Dir) ToHTML() string {
 
 				<div class="InlineFileIcon">
 
-					<ion-icon name="%s"></ion-icon>
+					<ion-icon name="folder-outline"></ion-icon>
 
 				</div>
 
@@ -234,7 +234,7 @@ func (AssociatedDir *Dir) ToHTML() string {
 
 						<li class="InlineFileStat SubDirs">%d %s</li>
 
-						<li class="InlineFileStat PrivateIndicator" style="display="%s"">Private</li>
+						<li class="InlineFileStat PrivateIndicator" style="display:%s">Private</li>
 
 					</ul>
 				
@@ -250,6 +250,6 @@ func (AssociatedDir *Dir) ToHTML() string {
 
 		</div>
 
-	`, "folder-outline", AssociatedDir.UID, AssociatedDir.Name, CurrentSubFiles, Functions.PluralizeString(AssociatedDir.SubFileLength, "File"), CurrentSubDirs, Functions.PluralizeString(AssociatedDir.SubDirLength, "Folder"), PrivateIndicatorVisibility))
+	`, AssociatedDir.UID, AssociatedDir.Name, CurrentSubFiles, Functions.PluralizeString(AssociatedDir.SubFileLength, "File"), CurrentSubDirs, Functions.PluralizeString(AssociatedDir.SubDirLength, "Folder"), PrivateIndicatorVisibility))
 
 }

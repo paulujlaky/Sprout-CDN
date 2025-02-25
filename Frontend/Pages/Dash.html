@@ -9,8 +9,8 @@
   <title>Sprout CDN</title>
   <link rel="icon" href="../Assets/Logos/SproutCDNLogo.ico" type="image/x-icon">
 
-  <link rel="stylesheet" href="../Out/Styles/Main.min.css">
-  <script type="module" src="../Out/Scripts/Main.js"></script> <!-- also minified -->
+  <link rel="stylesheet" href="/Out/Styles/Main.min.css">
+  <script type="module" src="/Out/Scripts/Main.js"></script> <!-- also minified -->
 
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   
@@ -24,7 +24,7 @@
 
     <div class="Container HorizontalFlex DashHeaderBranding DashLoadingVariant">
 
-      <img src="../Assets/Logos/Sprout.svg" alt="Sprout" class="DashHeaderImage" draggable="false">
+      <img src="/Assets/Logos/Sprout.svg" alt="Sprout" class="DashHeaderImage" draggable="false">
 
       <div class="DashHeaderTitle">CDN</div>
 
@@ -36,7 +36,7 @@
 
     <div class="Container HorizontalFlex DashHeaderBranding">
 
-      <img src="../Assets/Logos/Sprout.svg" alt="Sprout" class="DashHeaderImage" draggable="false">
+      <img src="/Assets/Logos/Sprout.svg" alt="Sprout" class="DashHeaderImage" draggable="false">
 
       <div class="DashHeaderTitle">CDN</div>
 
@@ -66,13 +66,13 @@
 
     <div class="Container Transparent HorizontalFlex DashFooterButtonSection">
 
-      <Button disabled class="DashFooterButton">
+      <Button disabled class="DashFooterButton NavigationBackward">
 
         <ion-icon name="chevron-back"></ion-icon>      
 
       </Button>
 
-      <Button disabled class="DashFooterButton">
+      <Button disabled class="DashFooterButton NavigationForward">
 
         <ion-icon name="chevron-forward"></ion-icon>
 
@@ -120,11 +120,11 @@
 
   <!-- Dialogs -->
 
-  <div class="DashDialogOverlay"></div>
+  <div class="DashDialogOverlay" style="display: none;"></div>
 
   <!-- Create Directory Dialog -->
 
-  <dialog class="Container VerticalFlex DashDialog DashCreateDirDialog">
+  <dialog class="Container VerticalFlex DashDialog DashCreateDirDialog" style="display: none;">
 
       <div class="Container Transparent HorizontalFlex DashDialogHeader">
 
@@ -155,7 +155,7 @@
       <div class="Container Transparent HorizontalFlex DashDialogFooter">
 
         <Button class="DashDialogButton DashDialogButtonCancel">Cancel</Button>
-        <Button class="DashDialogButton DashDialogButtonCreate">Create</Button>
+        <Button class="DashDialogButton DashDialogButtonSubmit">Create</Button>
 
       </div>
 

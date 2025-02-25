@@ -28,6 +28,12 @@ export async function GetDirContents(DirPath: string): Promise<RenderedResource<
 
     }
 
+    for (const Dir of Subdirs) {
+
+        AddItemToCache("Dirs", Dir.UID, Dir);
+
+    }
+
     return { HTML: Response.HTML, JSON: { Parent, Files: Subfiles, Dirs: Subdirs } };
 
 }
@@ -40,7 +46,7 @@ export async function NewDirectory(Name: string, Path: string, Private: boolean,
 
     GlobalStorage.Browser.GoTo(Path);
 
-    return Response?.JSON?.Success ?? false;
+    return Response?.JSON?.UID ?? false;
 
 }
 

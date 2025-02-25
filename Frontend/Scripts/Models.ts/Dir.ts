@@ -5,7 +5,7 @@ import { AddItemToCache } from "../Misc/Utils";
 import type { BackendDir, BackendFile, RenderedResource } from "../Misc/Structs";
 import { GetDirContents, NewFile } from "../Misc/API";
 
-import { HideFooterLoadingMessage, RenderDirectory, ShowFooterLoadingMessage } from "../Page/Rendering";
+import { HideFooterLoadingMessage, RenderDirectory, ShowFooterMessage } from "../Page/Rendering";
 
 export class PartialDirectory {
 
@@ -67,7 +67,7 @@ export class FullDirectory extends PartialDirectory {
 
         // Show Loader
 
-        ShowFooterLoadingMessage("Loading", `Uploading ${IncomingFile.name}`);
+        ShowFooterMessage("Loading", `Uploading ${IncomingFile.name}`);
 
         const Success = await NewFile(this.Data.NormalizedPath, IncomingFile);
         
@@ -79,13 +79,13 @@ export class FullDirectory extends PartialDirectory {
             
             GlobalStorage.Browser.Refresh();
 
-            ShowFooterLoadingMessage("Success", `Uploaded ${IncomingFile.name}`, 5_000); // Hides after 5s
+            ShowFooterMessage("Success", `Uploaded ${IncomingFile.name}`, 5_000); // Hides after 5s
             
         } else {
 
             // Show error message
 
-            ShowFooterLoadingMessage("Error", `Failed to upload ${IncomingFile.name}`, 5_000); // Hides after 5s
+            ShowFooterMessage("Error", `Failed to upload ${IncomingFile.name}`, 5_000); // Hides after 5s
 
         }
 

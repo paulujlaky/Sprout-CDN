@@ -64,7 +64,7 @@
 
 }
 
-.InlineFileStats li:not(:last-child)::after, .DirStats li:not(:last-child)::after {
+.InlineFileStats li:not(:first-child)::before, .DirStats li:not(:first-child)::before {
 
     content: "•";
 

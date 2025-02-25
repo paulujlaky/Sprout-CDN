@@ -1,9 +1,11 @@
 import { GlobalStorage } from "../Main";
 
 import { NewDirectory } from "../Misc/API";
+import type { BackendDir } from "../Misc/Structs";
 import { GetUserDirPath } from "../Misc/Utils";
 
 import { FullDirectory, PartialDirectory } from "../Models.ts/Dir";
+import { UpdateNavigationStates } from "../Page/Rendering";
 
 /**
  * This acts as a stack which serves to keep track of which folder a user is browsing.
@@ -13,6 +15,8 @@ export class Browser {
 
     public Top: FullDirectory | null;
     private InternalTop: PartialDirectory | null;
+
+    private History: FullDirectory[] = [];
 
     constructor() {
 
@@ -29,11 +33,23 @@ export class Browser {
         
     }
 
+    public get CanGoBack(): boolean {
+
+        return !!this.Top?.Previous;
+
+    }
+
+    public get CanGoForward(): boolean {
+
+        return this.History.length > 0;
+
+    }
+
     // Methods
 
     public async GoTo(Path: string): Promise<boolean> {
 
-        this.InternalTop = new PartialDirectory(Path);
+        this.InternalTop = new PartialDirectory(Path, this.Top);
 
         return await this.Hydrate();
         
@@ -41,8 +57,22 @@ export class Browser {
 
     public async GoBack(): Promise<boolean> {
 
+        // Add to history so user can go back into it
+
+        if (this.Top) this.History.push(this.Top);
+
         this.InternalTop = this.Top?.Previous || null;
 
+        return await this.Hydrate();
+
+    }
+
+    public async GoForward(): Promise<boolean> {
+
+        if (this.History.length == 0) return false;
+
+        this.InternalTop = this.History.pop() || null;
+        
         return await this.Hydrate();
 
     }
@@ -89,7 +119,11 @@ export class Browser {
 
         if (!InitResp) return false;
 
+        // Now, actually do the stuff we're here for
+
         this.Top?.Display();
+
+        UpdateNavigationStates();
 
         return true;
 

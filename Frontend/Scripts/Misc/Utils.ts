@@ -21,8 +21,10 @@ export function RemoveURLParameter(Name: string): void {
 
 export function WriteURL(URL: string): void {
 
-    window.history.pushState({}, "", URL);
+    // Overwrites everything after domain
 
+    window.history.pushState({}, "", URL);
+    
 }
 
 // Network
@@ -37,6 +39,8 @@ interface BackendResponse {
 }
 
 export async function MakeRequest(Route: { URL: string, Method: string }, Body?: any, Headers: { [key: string]: string } = {}, Params: { [key: string]: string } = {}, IsFormData: boolean = false): Promise<BackendResponse | null> {
+
+    let RouteURL = Route.URL;
 
     const Options: RequestInit = {
 
@@ -55,11 +59,11 @@ export async function MakeRequest(Route: { URL: string, Method: string }, Body?:
 
     for (const Param in Params) {
 
-        Route.URL = Route.URL.replace(`:${Param}`, Params[Param]).replace(`*${Param}`, encodeURIComponent(Params[Param]));
+        RouteURL = Route.URL.replace(`:${Param}`, Params[Param]).replace(`*${Param}`, encodeURIComponent(Params[Param]));
 
     }
 
-    const Response = await fetch(Route.URL, Options).catch((Err) => Log("Error", `Request Error: ${Err}`));
+    const Response = await fetch(RouteURL, Options).catch((Err) => Log("Error", `Request Error: ${Err}`));
 
     if (!Response?.ok) {  return null; }
 
