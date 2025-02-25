@@ -2,7 +2,7 @@ import { GlobalStorage } from "../Main";
 
 import { NewDirectory } from "../Misc/API";
 
-import { GetUserDirPath } from "../Misc/Utils";
+import { GetUserDirPath, ReducePath } from "../Misc/Utils";
 
 import { FullDirectory, PartialDirectory } from "../Models.ts/Dir";
 import { UpdateNavigationStates } from "../Page/Rendering";
@@ -35,7 +35,7 @@ export class Browser {
 
     public get CanGoBack(): boolean {
 
-        return !!this.Top?.Previous;
+        return !!this.Top?.Previous || this.Top?.Data.NormalizedPath != GetUserDirPath();
 
     }
 
@@ -61,7 +61,17 @@ export class Browser {
 
         if (this.Top) this.History.push(this.Top);
 
-        this.InternalTop = this.Top?.Previous || null;
+        if (!this.CanGoBack) return false;
+
+        if (!this.Top?.Previous) {
+
+            this.InternalTop = new PartialDirectory(ReducePath(this.Top?.Data.NormalizedPath || ""));
+
+        } else {
+
+            this.InternalTop = this.Top?.Previous || null;
+            
+        }
 
         return await this.Hydrate();
 

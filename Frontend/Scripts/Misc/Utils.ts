@@ -85,7 +85,7 @@ export function Log(Severity: "Info" | "Warning" | "Error", Message: string): vo
 
 }
 
-// Auth
+// Paths
 
 export function GetUserDirPath(): string {
 
@@ -93,11 +93,19 @@ export function GetUserDirPath(): string {
 
 }
 
-// Paths
-
 export function GetDisplayablePath(Path: string): string {
 
     return Path.replace("/Store", "");
+
+}
+
+export function ReducePath(Path: string): string {
+    
+    // removes last part of path
+    // so \a\b\c becomes \a\b
+
+    return Path.split("/").slice(0, -1).join("/");
+
 
 }
 

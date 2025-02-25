@@ -44,7 +44,7 @@ export async function NewDirectory(Name: string, Path: string, Private: boolean,
 
     const Response = await MakeRequest(Routes.NewDir, { Name, Path, Private });
 
-    GlobalStorage.Browser.GoTo(Path);
+    GlobalStorage.Browser.GoTo(`${Path}/${Name}`);
 
     return Response?.JSON?.UID ?? false;
 

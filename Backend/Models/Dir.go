@@ -142,6 +142,14 @@ func (AssociatedDir *Dir) getContentInfo() (int, int) {
 
 	for _, Content := range Contents {
 
+		// skip .fileinfo and .dirinfo files
+
+		if strings.HasSuffix(Content.Name, ".fileinfo") || strings.HasSuffix(Content.Name, ".dirinfo") {
+
+			continue
+
+		}
+
 		ContentPath := filepath.Join(AssociatedDir.Path, Content.Name)
 
 		Info, _ := FileUtil.GetInfo(ContentPath)
@@ -250,6 +258,6 @@ func (AssociatedDir *Dir) ToHTML() string {
 
 		</div>
 
-	`, AssociatedDir.UID, AssociatedDir.Name, CurrentSubFiles, Functions.PluralizeString(AssociatedDir.SubFileLength, "File"), CurrentSubDirs, Functions.PluralizeString(AssociatedDir.SubDirLength, "Folder"), PrivateIndicatorVisibility))
+	`, AssociatedDir.UID, AssociatedDir.Name, CurrentSubFiles, Functions.PluralizeString(CurrentSubFiles, "File"), CurrentSubDirs, Functions.PluralizeString(CurrentSubDirs, "Folder"), PrivateIndicatorVisibility))
 
 }
