@@ -171,6 +171,57 @@ func (AssociatedFile *File) Write(RequestingUser string, Data []byte) error {
 
 }
 
+func (AssociatedFile *File) Move(RequestingUser string, NewPath string) error {
+
+	if Authorized, Exists := AssociatedFile.checkPreconditions(RequestingUser); !Authorized || !Exists {
+
+		return errors.New("Preconditions failed.")
+
+	}
+
+	// Get the new path
+
+	UnmodifiedNewPath := filepath.Join(NewPath, AssociatedFile.Name)
+
+	NewPath = Functions.AdjustPathToStore(filepath.Join(NewPath, AssociatedFile.Name))
+
+	// Move the file
+
+	MoveError := os.Rename(AssociatedFile.Path, NewPath)
+
+	if MoveError != nil {
+
+		return errors.New("Failed to move file.")
+
+	}
+
+	// Delete the old info
+
+	AssociatedFile.deleteInfo()
+
+	// Update the path in the struct
+
+	AssociatedFile.Path = NewPath
+	AssociatedFile.NormalizedPath = Functions.NormalizePath(UnmodifiedNewPath)
+
+	// Update the URL
+
+	AssociatedFile.URL = "http://localhost:50300/Files/" + AssociatedFile.NormalizedPath
+
+	// Write the new info
+
+	WriteInfoError := AssociatedFile.writeInfo()
+
+	if WriteInfoError != nil {
+
+		return errors.New("Failed to write new info.")
+
+	}
+
+	return nil
+
+}
+
 func (AssociatedFile *File) Read(RequestingUser string) ([]byte, error) {
 
 	if Exists, Authorized := AssociatedFile.checkPreconditions(RequestingUser); !Exists || !Authorized {
@@ -204,7 +255,7 @@ func (AssociatedFile *File) ToHTML() string {
 
 	return Functions.CleanEscapedString(fmt.Sprintf(`
 	
-		<div class="Container HorizontalFlex InlineFile" UID="%s">
+		<div class="Container HorizontalFlex InlineFile" UID="%s" draggable="true">
 
 			<div class="InlineFileContent Left"> 
 

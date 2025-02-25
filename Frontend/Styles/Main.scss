@@ -75,14 +75,14 @@ body {
 
 // Loading View
 
-.Container.DashLoading {
+.Container.DashLoading, .Container.DashUploadDropIndicator {
 
     position: absolute;
     top: 0; left: 0;
 
     @include FlexCenter();
 
-    z-index: 2;
+    z-index: 10;
 
     background-color: $BackgroundColor!important;
     
@@ -93,6 +93,43 @@ body {
     animation: ExpandAndFadeIn 0.5s ease-in-out forwards;
 
 }
+
+// Upload View Specific Styles 
+
+.Container.DashUploadDropIndicator {
+
+    display: none;
+
+}
+
+.UploadDropIndicatorContent {
+
+    @include FlexCenter();
+
+    flex-direction: column;
+
+    gap: $SpacingMedium;
+
+}
+
+.UploadDropIndicatorContent ion-icon {
+
+    font-size: 64px;
+
+}
+
+.UploadDropIndicatorTitle {
+
+    font-size: $FontSizeLarge;
+
+}
+
+.UploadDropIndicatorSubtitle {
+
+    font-size: $FontSizeMedium;
+
+}
+
 
 @keyframes ExpandAndFadeIn {
 

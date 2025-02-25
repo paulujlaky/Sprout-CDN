@@ -154,7 +154,7 @@ func AllFiles(GinContext *gin.Context) {
 
 	var FinalHTML string = fmt.Sprintf(`
 	
-		<div class="Container HorizontalFlex DashMainHeader">
+		<div class="Container HorizontalFlex DashMainHeader AlternateDirTarget">
 
 			%s
 

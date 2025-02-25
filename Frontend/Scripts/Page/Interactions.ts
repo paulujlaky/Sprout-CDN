@@ -1,8 +1,12 @@
 import $ from 'jquery';
+
 import { GlobalStorage } from '../Main';
-import { FetchDir, FetchFile } from '../Misc/Utils';
-import { HideDialog, ShowDialog, ShowFooterMessage, WaitForDialogResponse } from './Rendering';
-import { NewDirectory } from '../Misc/API';
+
+import { FetchDir, FetchFile, ReducePath } from '../Misc/Utils';
+
+import { HideDialog, ShowDialog, ShowFooterMessage, ToggleDragAndDropUploadIndicator, WaitForDialogResponse } from './Rendering';
+
+import { MoveFile, NewDirectory } from '../Misc/API';
 
 const RelevantElements = {
 
@@ -84,7 +88,7 @@ export function WatchPageInteractions(): void {
 
         const Success = await NewDirectory(FolderName, GlobalStorage.Browser.Current.Data.NormalizedPath, ShouldBePrivate);
 
-        Success ? ShowFooterMessage("Success", `Created new folder ${FolderName}`, 5_000) : ShowFooterMessage("Error", `Failed to create folder ${FolderName}`, 5_000);
+        Success ? ShowFooterMessage("Success", `Created new folder`, 5_000) : ShowFooterMessage("Error", `Failed to create folder`, 5_000);
         
     });
 
@@ -108,8 +112,8 @@ export function WatchPageInteractions(): void {
 
             // File
 
-            console.log("File", RelevantFileOrDir);
-
+            window.open(RelevantFileOrDir.URL, "_blank");
+            
         } else {
 
             // Directory
@@ -123,6 +127,72 @@ export function WatchPageInteractions(): void {
     };
     
     RelevantElements.Document.on("click", InlineFileOrDirInteractionRouter);
+    
+    // Watch for dragged in files
+
+    RelevantElements.Document.on("dragleave", (Event) => {
+
+        if (Event.originalEvent?.dataTransfer?.types.includes("uid")) { return; } // File move drag
+
+        ToggleDragAndDropUploadIndicator("Hide");
+
+    });
+
+    RelevantElements.Document.on("drop", (Event) => {
+
+        if (Event.originalEvent?.dataTransfer?.types.includes("uid")) { return; } // File move drag
+
+
+    });
+
+    // Watch for file move drags
+
+    RelevantElements.Document.on("dragstart", (Event) => {
+
+        const Target = $(Event.target);
+
+        if (Target.hasClass("InlineFile")) {
+
+            if (!Event.originalEvent?.dataTransfer) { return; }
+
+            Event.originalEvent.dataTransfer.dropEffect = "move";
+        
+            Event.originalEvent.dataTransfer?.setData("UID", Target.attr("UID") || "");
+
+        }
+
+    });
+
+    RelevantElements.Document.on("dragover", (Event) => {
+
+        if (Event.originalEvent?.dataTransfer?.types.includes("uid")) {
+
+            WatchForFileMoveDrags(Event);
+
+        } else {
+
+            ToggleDragAndDropUploadIndicator("Show");
+
+        }
+
+        Event.preventDefault();
+
+
+    });
+
+    RelevantElements.Document.on("drop", (Event) => {
+
+        if (Event.originalEvent?.dataTransfer?.types.includes("uid")) {
+        
+            HandleFileMoveDrop(Event);
+
+        } else {
+
+            HandleFileUploadDrop(Event);
+
+        }
+
+    });
 
     RelevantElements.Inputs.Toggles.on("click", (Event) => {
 
@@ -156,4 +226,137 @@ export function WatchPageInteractions(): void {
 
     });
 
+    // Arrow Keys
+
+    RelevantElements.Document.on("keydown", (Event) => {
+
+        if (Event.key === "ArrowLeft") {
+
+            GlobalStorage.Browser.GoBack();
+
+        } else if (Event.key === "ArrowRight") {
+
+            GlobalStorage.Browser.GoForward();
+
+        }
+
+    });
+
+}
+
+// Misc / Util
+
+export function RemoveDialogOnEscape(Dialog: JQuery<HTMLDialogElement>): void {
+
+    RelevantElements.Document.one("keydown", (Event) => {
+
+        if (Event.key === "Escape") {
+
+            HideDialog(Dialog);
+
+        }
+
+    });
+
+}
+
+export function SubmitDialogOnEnter(Dialog: JQuery<HTMLDialogElement>, EnterButton: JQuery<HTMLButtonElement>): void {
+
+    const Listener = (Event: JQuery.KeyDownEvent) => {
+
+        if (Event.key === "Enter") {
+
+            EnterButton.trigger("click");
+
+        }
+
+    };
+
+    RelevantElements.Document.on("keydown", Listener);
+
+    Dialog.on("Close", () => {
+
+        RelevantElements.Document.off("keydown", Listener);
+
+    });
+    
+}
+
+function WatchForFileMoveDrags(DragEvent: JQuery.DragEventBase): void {
+
+    // Check if file is one of our own
+
+    if (!DragEvent.originalEvent?.dataTransfer?.types.includes("uid")) { return; }
+
+    DragEvent.preventDefault();
+
+    // Now see if we're above a valid drop target
+
+    const Target = $(DragEvent.target); 
+
+    $(".Dir, .AlternateDirTarget").removeClass("DropTarget"); // Reset any previous drop targets
+
+    if (Target.closest(".Dir").length > 0 || Target.closest(".AlternateDirTarget").length > 0) {
+
+        Target.closest(".Dir, .AlternateDirTarget").addClass("DropTarget");
+        
+    }
+    
+}
+
+async function HandleFileMoveDrop(DropEvent: JQuery.DropEvent): Promise<void> {
+
+    $(".Dir, .AlternateDirTarget").removeClass("DropTarget");
+
+    const Target = $(DropEvent.target).closest(".Dir, .AlternateDirTarget");
+
+    if (Target.closest(".Dir").length === 0 && Target.closest(".AlternateDirTarget").length === 0) { return; }
+
+    // Move the file
+
+    const OriginalFileUID = DropEvent.originalEvent?.dataTransfer?.getData("uid");
+    const NewDirUID = Target.attr("UID");
+
+    if (!OriginalFileUID) { return; }
+
+    let TargetPath = FetchDir(NewDirUID || "0")?.NormalizedPath || ReducePath(GlobalStorage.Browser.Current?.Data.NormalizedPath || "");
+
+    const FileToMove = FetchFile(OriginalFileUID);
+
+    if (!FileToMove || !TargetPath) { return; }
+
+    const Resp = await MoveFile(FileToMove.NormalizedPath, TargetPath);
+
+    GlobalStorage.Browser.Refresh();
+
+    if (Resp) {
+
+        ShowFooterMessage("Success", `Moved file to <span class="DashCodeInfill">${TargetPath}</span>`, 5_000);
+
+    } else {
+
+        ShowFooterMessage("Error", "Failed to move file", 5_000);
+
+    }
+    
+}
+
+async function HandleFileUploadDrop(DropEvent: JQuery.DropEvent): Promise<void> {
+
+    DropEvent.preventDefault();
+
+    ToggleDragAndDropUploadIndicator("Hide");
+
+    const Files = DropEvent.originalEvent?.dataTransfer?.files;
+
+    if (!Files) { return; }
+
+    for (let i = 0; i < Files.length; i++) {
+
+        const File = Files[i];
+
+        await GlobalStorage.Browser.Current?.Upload(File);
+
+    }
+        
 }

@@ -6,6 +6,7 @@ import { WriteURL } from "../Misc/Utils";
 
 import { AnimationTimes, type SproutAccount } from "../Misc/Structs";
 import { GlobalStorage } from "../Main";
+import { RemoveDialogOnEscape, SubmitDialogOnEnter } from "./Interactions";
 
 // File List 
 
@@ -24,7 +25,7 @@ const RelevantElements = {
 
 }
 
-export function RenderDirectory(Dir: FullDirectory): void {
+export function RenderDirectory(Dir: FullDirectory, ParentUID?: string): void {
 
     RelevantElements.Main.html(Dir.Contents.HTML);
 
@@ -44,7 +45,7 @@ export function HideLoadingView(): void {
 
 export function ShowFooterMessage(Mode: "Loading" | "Success" | "Info" | "Error", Message: string, HideTimeout: number = -1): void {
 
-    $(".Container.DashFooterMessageSection .DashFooterMessageText").text(Message);
+    $(".Container.DashFooterMessageSection .DashFooterMessageText").html(Message);
     $(".Container.DashFooterMessageSection").css("display", "flex");
 
     ($(".Container.DashFooterMessageSection .DashFooterMessageLoadingIndicator"))[Mode == "Loading" ? "show" : "hide"]();
@@ -113,6 +114,7 @@ export function ShowDialog(Dialog: JQuery<HTMLDialogElement>): void {
     Dialog.find("Toggle").removeClass("Active");
 
     const CloseBtn = Dialog.find(".DashDialogButtonCancel");
+    const EnterBtn = Dialog.find(".DashDialogButtonSubmit") as JQuery<HTMLButtonElement>;
 
     CloseBtn.one("click", () => {
 
@@ -120,12 +122,19 @@ export function ShowDialog(Dialog: JQuery<HTMLDialogElement>): void {
 
     });
 
+    RemoveDialogOnEscape(Dialog);
+    SubmitDialogOnEnter(Dialog, EnterBtn);
+    
 }
 
 export function HideDialog(Dialog: JQuery<HTMLDialogElement>): void {
 
+    Dialog.focus();
+    
     $(".DashDialogOverlay").hide();
     Dialog.hide();
+
+    Dialog.trigger("Close");
     
 }
 
@@ -162,4 +171,14 @@ export function UpdateNavigationStates(): void {
     RelevantElements.Navigation.Backward.attr("Disabled", CanGoBack ? null : "");
     RelevantElements.Navigation.Forward.attr("Disabled", CanGoForward ? null : "");
 
+}
+
+// Misc
+
+export function ToggleDragAndDropUploadIndicator(Mode: "Show" | "Hide"): void {
+
+    if (Mode == "Show") $(".DashUploadDropIndicator").css("display", "flex");
+
+    else $(".DashUploadDropIndicator").hide();
+    
 }

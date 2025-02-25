@@ -20,9 +20,15 @@
 
 }
 
-.Container.InlineFile:hover, .Container.InlineDir:hover {
+.Container.InlineFile:hover, .Container.InlineDir:hover, .Container.InlineFile.DropTarget, .DashMainHeader.DropTarget {
 
     background-color: $ElementColorMedium;
+
+}
+
+.Container.InlineFile.DropTarget, .DashMainHeader.DropTarget {
+
+    border: 1px solid rgb(100, 100, 100);
 
 }
 

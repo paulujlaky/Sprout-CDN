@@ -2,7 +2,7 @@ import { GlobalStorage } from "../Main";
 
 import type { BackendDir, BackendFile, RenderedResource } from "./Structs";
 
-import { AddItemToCache, MakeRequest } from "./Utils";
+import { AddItemToCache, FetchDir, FetchFile, MakeRequest } from "./Utils";
 
 import Routes from "../../Routes.json";
 
@@ -62,4 +62,12 @@ export async function NewFile(Path: string, Uploaded: File, Private: boolean = f
 
     return Response?.JSON?.UID ?? false; // Existence of uploaded file UID means success
     
+}
+
+export async function MoveFile(OldFilePath: string, PathOfNewDir: string): Promise<boolean> {
+
+    const Response = await MakeRequest(Routes.MoveFile, { OldPath: OldFilePath, NewPath: PathOfNewDir });
+
+    return Response?.JSON?.UID ?? false;
+
 }

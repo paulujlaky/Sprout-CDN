@@ -95,6 +95,21 @@ func GetRoutes() map[string]RouteInfo {
 			Authorized: true,
 		},
 
+		
+		"/API/Files/Move": {
+
+			Method:  "PATCH",
+			Handler: FileRoutes.MoveFile,
+
+			RateLimitConfig: &Middleware.RouteRateLimitConfig{
+
+				MaxRequestsAllowed: 120,
+				TimeWindow:         60,
+			},
+
+			Authorized: true,
+		},
+
 		"/API/Files/Delete": {
 
 			Method:  "DELETE",

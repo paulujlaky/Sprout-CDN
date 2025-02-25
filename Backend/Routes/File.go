@@ -4,6 +4,7 @@ import (
 	"elucid503/SproutCDN/Middleware"
 	"elucid503/SproutCDN/Models"
 	"fmt"
+	"path/filepath"
 	"slices"
 
 	"github.com/gin-gonic/gin"
@@ -33,7 +34,19 @@ func GetFile(GinContext *gin.Context) {
 
 	}
 
-	if FileRequested.Private {
+	// Get dir above
+
+	DirAbove, ErrorLoadingDirAbove := Models.LoadDirFromDotInfo(filepath.Dir(Path))
+
+	if ErrorLoadingDirAbove != nil {
+
+		ReturnArbitraryNonExistsError(GinContext, Path)
+
+	}
+
+	// Check if the dir
+
+	if FileRequested.Private || DirAbove.Private {
 
 		// Authorize request (only doing here to avoid higher loading overhead on all requests)
 

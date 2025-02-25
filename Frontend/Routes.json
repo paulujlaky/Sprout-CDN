@@ -67,6 +67,22 @@
 
     },
 
+    "MoveFile": {
+
+        "Method": "PATCH",
+        "URL": "/API/Files/Move",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 120,
+            "TimeWindow":         60
+
+        },
+
+        "Authorized": true
+
+    },
+
     "DeleteFile": {
 
         "Method": "DELETE",
