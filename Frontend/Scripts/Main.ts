@@ -10,7 +10,14 @@ import { WatchPageInteractions } from "./Page/Interactions";
 export const GlobalStorage: Storage = {
 
     User: null,
-    Browser: new Browser()
+    Browser: new Browser(),
+
+    Cache: {
+
+        Files: {},
+        Dirs: {}
+
+    }
 
 };
 

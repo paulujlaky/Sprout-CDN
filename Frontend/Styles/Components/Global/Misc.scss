@@ -1,0 +1,76 @@
+Input[type="text"], Input[type="password"], Input[type="email"] {
+    
+    @include Container;
+    @include GlassBackground;
+
+    text-align: center;
+
+    color: $FontColor;
+    
+    border-radius: calc($BorderRadiusLarge / 1.25);
+
+    padding: calc($SpacingSmall * 1.5) $SpacingMedium;
+
+}
+
+Input:focus {
+
+    outline: none;
+    
+    border: 1px solid rgb(72, 72, 72);
+
+}
+
+Input::placeholder {
+
+    color: $FontColorMuted;
+
+}
+
+Toggle {
+
+    @include Container;
+    @include GlassBackground;
+    @include FlexCenter;
+
+    aspect-ratio: 1/1;
+
+    padding: 5px;
+
+    height: fit-content;
+    width: fit-content;
+        
+    transition: background-color $TransitionTime;
+
+    border-radius: calc($BorderRadiusSmall * 1.5);
+
+    font-size: 16px;
+    color: $FontColor;
+
+    cursor: pointer;
+
+    &:hover {
+
+        background-color: rgba(255, 255, 255, 0.1);
+
+    }
+
+    ion-icon {
+
+        opacity: 0;
+
+    }
+
+}
+
+Toggle[active="true"] {
+
+    background-color: rgba(255, 255, 255, 0.1);
+
+    ion-icon {
+
+        opacity: 1;
+
+    }
+
+}

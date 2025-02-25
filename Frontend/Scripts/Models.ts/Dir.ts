@@ -1,8 +1,11 @@
+import { GlobalStorage } from "../Main";
+
+import { AddItemToCache } from "../Misc/Utils";
+
 import type { BackendDir, BackendFile, RenderedResource } from "../Misc/Structs";
 import { GetDirContents, NewFile } from "../Misc/API";
 
 import { HideFooterLoadingMessage, RenderDirectory, ShowFooterLoadingMessage } from "../Page/Rendering";
-import { GlobalStorage } from "../Main";
 
 export class PartialDirectory {
 
@@ -21,6 +24,8 @@ export class PartialDirectory {
         if (this.Data.Path == undefined) return null;
 
         const Contents = await GetDirContents(this.Data.Path);
+
+        if (Contents.JSON.Parent == null) return null;
 
         return new FullDirectory(Contents, this.Previous);
 
@@ -45,6 +50,10 @@ export class FullDirectory extends PartialDirectory {
         
         this.Data = Contents.JSON.Parent;
         this.Contents = Contents;
+
+        // Add to cache
+
+        AddItemToCache("Dirs", this.Data.UID, this.Data);
     
     }
     
@@ -54,13 +63,13 @@ export class FullDirectory extends PartialDirectory {
 
     }
 
-    public async Upload(Uploaded: File): Promise<boolean> {
+    public async Upload(IncomingFile: File): Promise<boolean> {
 
         // Show Loader
 
-        ShowFooterLoadingMessage(`Uploading ${Uploaded.name}`);
+        ShowFooterLoadingMessage("Loading", `Uploading ${IncomingFile.name}`);
 
-        const Success = await NewFile(this.Data.Path, Uploaded);
+        const Success = await NewFile(this.Data.NormalizedPath, IncomingFile);
         
         if (Success) {
 
@@ -70,13 +79,13 @@ export class FullDirectory extends PartialDirectory {
             
             GlobalStorage.Browser.Refresh();
 
-            ShowFooterLoadingMessage(`Uploaded ${Uploaded.name}`, false, 5_000); // Hides after 5s
+            ShowFooterLoadingMessage("Success", `Uploaded ${IncomingFile.name}`, 5_000); // Hides after 5s
             
         } else {
 
             // Show error message
 
-            ShowFooterLoadingMessage(`Failed to upload ${Uploaded.name}`, false, 5_000); // Hides after 5s
+            ShowFooterLoadingMessage("Error", `Failed to upload ${IncomingFile.name}`, 5_000); // Hides after 5s
 
         }
 

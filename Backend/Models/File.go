@@ -29,27 +29,33 @@ type File struct {
 
 	Authorized []string `json:"Authorized"`
 
-	Path string `json:"Path"`
+	Path           string `json:"Path"`
+	NormalizedPath string `json:"NormalizedPath"` // Path without the store prefix
 }
 
 // General
 
 func NewFile(Name string, Size int64, Private bool, Authorized []string, Path string) *File {
 
+	// Use filepath.Join to combine the elements and then trim a leading separator if it exists
+
+	NormalizedPath := filepath.Join(Path, Name)
+	NormalizedPath = strings.ReplaceAll(NormalizedPath, string(filepath.Separator), "/")
+	NormalizedPath = Functions.RemovePathDoubleSlashes(Functions.RemovePathDoubleSlashes(NormalizedPath))
+
 	return &File{
 
-		UID:  Functions.RandomString(16),
+		UID: Functions.RandomString(16),
+
 		Name: Name,
-
 		Size: Size,
+		URL:  "http://localhost:50300/Files/" + NormalizedPath,
 
-		URL: "http://localhost:50300/Files/" + filepath.Join(Functions.RemoveStoreFromPath(Path), Name),
-
-		Private: Private,
-
+		Private:    Private,
 		Authorized: Authorized,
 
-		Path: filepath.Join(Functions.AdjustPathToStore(Path), Name),
+		Path:           filepath.Join(Functions.AdjustPathToStore(Path), Name),
+		NormalizedPath: NormalizedPath,
 	}
 
 }
@@ -200,7 +206,7 @@ func (AssociatedFile *File) ToHTML() string {
 
 	return Functions.CleanEscapedString(fmt.Sprintf(`
 	
-		<div class="Container HorizontalFlex InlineFile" URL="%s">
+		<div class="Container HorizontalFlex InlineFile" UID="%s">
 
 			<div class="InlineFileContent Left"> 
 
@@ -234,6 +240,6 @@ func (AssociatedFile *File) ToHTML() string {
 
 		</div>
 
-	`, AssociatedFile.URL, Icon, AssociatedFile.Name, HumanReadableSize, HumanReadableType))
+	`, AssociatedFile.UID, Icon, AssociatedFile.Name, HumanReadableSize, HumanReadableType))
 
 }

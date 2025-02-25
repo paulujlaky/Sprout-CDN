@@ -88,6 +88,10 @@
         
         </div>
 
+        <div class="Container Transparent Center DashFooterMessageIcon">
+          
+        </div>
+
         <div class="DashFooterMessageText">Loading...</div>
 
     </div>
@@ -114,37 +118,41 @@
 
   </footer>
 
+  <!-- Dialogs -->
+
+  <div class="DashDialogOverlay"></div>
+
   <!-- Create Directory Dialog -->
 
-  <dialog class="Container Transparent Full Center DashDialog DashCreateDirDialog" style="display: none;">
+  <dialog class="Container VerticalFlex DashDialog DashCreateDirDialog">
 
-      <div class="Container HorizontalFlex DashDialogHeader">
+      <div class="Container Transparent HorizontalFlex DashDialogHeader">
 
         <div class="DashDialogTitle">Create New Directory</div>
 
-        <ion-icon name="close" class="DashDialogClose"></ion-icon>
-
       </div>
 
-      <div class="Container VerticalFlex DashDialogBody">
+      <div class="Container Transparent VerticalFlex DashDialogBody">
 
         <div class="DashDialogInputContainer">
 
-          <label for="DirName" class="DashDialogInputLabel">Directory Name</label>
           <input type="text" id="DirName" class="DashDialogInput" placeholder="Enter Directory Name">
 
         </div>
 
-        <div class="DashDialogToggleContainer">
+        <div class="DashDialogInputContainer">
 
           <label for="DirVisibility" class="DashDialogInputLabel">Private</label>
-          <input type="checkbox" id="DirVisibility" class="DashDialogToggle">
 
+          <Toggle id="DirPrivate">
+            <ion-icon name="checkmark-outline"></ion-icon>
+          </Toggle>
+          
         </div>
 
       </div>
 
-      <div class="Container HorizontalFlex DashDialogFooter">
+      <div class="Container Transparent HorizontalFlex DashDialogFooter">
 
         <Button class="DashDialogButton DashDialogButtonCancel">Cancel</Button>
         <Button class="DashDialogButton DashDialogButtonCreate">Create</Button>

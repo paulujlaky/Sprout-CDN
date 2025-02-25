@@ -45,6 +45,14 @@
 
 }
 
+.Container.DashFooterMessageIcon {
+
+    display: none;
+
+    font-size: 20px;
+
+}
+
 .DashFooterMessageText {
 
     @include RespondTo("Mobile") {

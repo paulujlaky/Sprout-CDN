@@ -1,7 +1,10 @@
 import $ from 'jquery';
 import { GlobalStorage } from '../Main';
+import { FetchFile } from '../Misc/Utils';
 
 const RelevantElements = {
+
+    Document: $(document),
 
     Buttons: {
 
@@ -41,26 +44,27 @@ export function WatchPageInteractions(): void {
 
     RelevantElements.Buttons.NewFolder.on("click", () => {
 
-        alert("New Folder Button Clicked");
-
-    });
-
-    // Only inlineFiles and InlineDirs
-
-    $(document).on("click", ".InlineFile, .InlineDir", (Event) => {
-
-        const Target = $(Event.target);
-
-        if (Target.attr("URL")) {
-
-            window.open(Target.attr("URL") || "", "_blank");
-
-        }
         
-
         
 
     });
+
+    const InlineFileInteractionRouter = (Event: JQuery.MouseEventBase | JQuery.TouchEventBase): void => {
+
+        const Target = $(Event.target).closest(".InlineFile");
+
+        if ($(Event.target).closest(".InlineFileActions ").length > 0) { return; }
+
+        const UID = Target.attr("UID");
+
+        if (!UID) { return; }
+
+        const RelevantFile = FetchFile(UID);
+
+        console.log(RelevantFile);
+
+    };
     
-
+    RelevantElements.Document.on("click", InlineFileInteractionRouter);
+        
 }

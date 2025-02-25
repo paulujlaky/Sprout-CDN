@@ -14,10 +14,26 @@ export enum AnimationTimes {
 
 }
 
+export type CacheItem<T> = {
+
+    Data: T;
+    Expiry: number;
+
+}
+
+export interface GlobalCache {
+
+    Files: { [key: string]: CacheItem<BackendFile> };
+    Dirs: { [key: string]: CacheItem<BackendDir> };
+
+}
+
 export interface Storage {
 
     User: SproutAccount | null;
     Browser: Browser;
+
+    Cache: GlobalCache;
 
 }
 
@@ -39,7 +55,11 @@ export interface SproutAccount {
 
 export interface BackendDir {
 
+    UID: string;
+
     Name: string;
+
+    NormalizedPath: string;
     Path: string;
 
     Private: boolean;
@@ -65,5 +85,6 @@ export interface BackendFile {
     Authorized: string[];
 
     Path: string;
+    NormalizedPath: string;
     
 }

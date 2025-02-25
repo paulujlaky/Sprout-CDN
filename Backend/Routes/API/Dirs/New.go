@@ -50,6 +50,7 @@ func CreateDir(GinContext *gin.Context) {
 
 	}
 
+	OriginalPath := Path
 	Path = Functions.AdjustPathToStore(Functions.SanitizePath(Path)) // Prevent user from being able to go up and set CDN root
 
 	DirUtil := Functions.DirUtil{}
@@ -73,7 +74,7 @@ func CreateDir(GinContext *gin.Context) {
 
 	// NewDir creates the directory and writes the .info file
 
-	ModelRepresentation, InfoWriteError, CreateError := Models.NewDir(NewDirPath, []string{User.UID}, Private)
+	ModelRepresentation, InfoWriteError, CreateError := Models.NewDir(NewDirPath, filepath.Join(OriginalPath, Name), []string{User.UID}, Private)
 
 	if InfoWriteError != nil || CreateError != nil {
 

@@ -19,6 +19,7 @@ $FontWeightMedium: 500;
 $Border: 1px solid $ElementColorLight;
 
 $FontColor: rgb(240, 240, 240);
+$FontColorMuted: rgb(204, 204, 204);
 
 $BorderRadiusLarge: 12px;
 $BorderRadiusSmall: 5px;
@@ -45,6 +46,8 @@ $TransitionTime: 0.1s;
 @import "Components/Global/Header.scss";
 @import "Components/Global/Main.scss";
 @import "Components/Global/Footer.scss";
+@import "Components/Global/Dialog.scss";
+@import "Components/Global/Misc.scss";
 
 // Global 
 

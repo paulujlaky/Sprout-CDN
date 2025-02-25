@@ -137,12 +137,14 @@ func AdjustPathToStore(Path string) string {
 
 }
 
-func RemoveStoreFromPath(Path string) string {
+func RemovePathDoubleSlashes(Path string) string {
 
-	PathWithSlash := filepath.ToSlash(Path)
+	return strings.ReplaceAll(Path, fmt.Sprintf("%c%c", filepath.Separator, filepath.Separator), string(filepath.Separator))
 
-	fmt.Println(PathWithSlash)
+}
 
-	return strings.ReplaceAll(PathWithSlash, "../Store/", "")
+func ReplacePathWithForwardSlashes(Path string) string {
+
+	return strings.ReplaceAll(Path, string(filepath.Separator), "/")
 
 }

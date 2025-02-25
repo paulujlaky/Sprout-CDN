@@ -1,6 +1,7 @@
 // Window / URL
 
 import { GlobalStorage } from "../Main";
+import type { BackendDir, BackendFile } from "./Structs";
 
 export function GetURLParameter(Name: string): string | null {
 
@@ -82,7 +83,7 @@ export function Log(Severity: "Info" | "Warning" | "Error", Message: string): vo
 
 // Auth
 
-export function GetUserDir(): string {
+export function GetUserDirPath(): string {
 
     return `${GlobalStorage.User?.Username || "Home"}`;
 
@@ -93,5 +94,56 @@ export function GetUserDir(): string {
 export function GetDisplayablePath(Path: string): string {
 
     return Path.replace("/Store", "");
+
+}
+
+// Cache
+
+export function AddItemToCache(CacheType: keyof typeof GlobalStorage.Cache, Key: string, Item: any, Expiry: number = -1): void { // -1 means never expire as default
+
+    GlobalStorage.Cache[CacheType][Key] = { Data: Item, Expiry };
+
+}
+
+export function WatchCache(): void {
+
+    setInterval(() => {
+
+        Log("Info", "Cache: Running clear operation...");
+
+        for (const CacheType in GlobalStorage.Cache) {
+
+            const Cache = GlobalStorage.Cache[CacheType as keyof typeof GlobalStorage.Cache];
+
+            for (const Key in Cache) {
+
+                const CacheItem = Cache[Key];
+
+                if (CacheItem.Expiry < Date.now() && CacheItem.Expiry != -1) {
+
+                    Log("Info", `Cache: Removing ${Key} from ${CacheType}...`);
+                    delete Cache[Key];
+
+                }
+
+            }
+            
+        }
+
+    }, 60_000);
+
+}
+
+// Internal Fetchers (Uses Cache)
+
+export function FetchDir(UID: string): BackendDir | null {
+
+    return GlobalStorage.Cache.Dirs[UID]?.Data || null;
+
+}
+
+export function FetchFile(UID: string): BackendFile | null {
+
+    return GlobalStorage.Cache.Files[UID]?.Data || null;
 
 }

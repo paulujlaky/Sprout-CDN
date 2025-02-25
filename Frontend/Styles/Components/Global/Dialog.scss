@@ -1,0 +1,73 @@
+Dialog {
+
+    // display: none;
+
+    position: absolute;
+
+    top: 0; left: 0; right: 0; bottom: 50px;
+    
+    @include GlassBackground;
+
+    color: $FontColor;
+
+    z-index: 10;
+
+}
+
+.DashDialogOverlay {
+
+    // display: none;
+
+    position: absolute;
+    top: 0; left: 0;
+
+    @include FullWidthAndHeight;
+    
+    z-index: 9;
+    
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+}
+
+.DashDialogFooter {
+
+    width: 100%;
+
+    justify-content: space-between!important;
+
+    gap: $SpacingMedium;
+
+    Button {
+
+        width: 100%;
+
+    }
+
+}
+
+.DashDialogHeader {
+    
+    text-align: center;
+    font-size: $FontSizeLarge;
+
+}
+
+.DashDialogBody {
+
+    gap: $SpacingMedium;
+
+}
+
+.DashDialogInputContainer {
+
+    color: $FontColorMuted;
+    font-size: calc($FontSizeMedium * 0.85);
+
+    @include FlexHorizontal;
+
+    gap: $SpacingMedium;
+
+    width: 100%;
+
+}

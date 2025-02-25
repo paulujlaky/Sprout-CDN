@@ -8,10 +8,15 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 )
 
 type Dir struct {
-	Path string `json:"Path"`
+	UID string `json:"UID"`
+
+	Path           string `json:"Path"`
+	NormalizedPath string `json:"NormalizedPath"` // Path without the store prefix
+
 	Name string `json:"Name"`
 
 	Private bool `json:"Private"`
@@ -24,11 +29,17 @@ type Dir struct {
 
 // General
 
-func NewDir(Path string, Authorized []string, Private bool) (*Dir, error, error) {
+func NewDir(Path string, OriginalPath string, Authorized []string, Private bool) (*Dir, error, error) {
+
+	NormalizedPath := strings.TrimPrefix(OriginalPath, string(filepath.Separator))
 
 	DirInstance := &Dir{
 
-		Path: Path,
+		UID: Functions.RandomString(16),
+
+		Path:           Path,
+		NormalizedPath: NormalizedPath,
+
 		Name: filepath.Base(Path),
 
 		Private: Private,
@@ -203,7 +214,7 @@ func (AssociatedDir *Dir) ToHTML() string {
 
 	return Functions.CleanEscapedString(fmt.Sprintf(`
 
-		<div class="Container HorizontalFlex InlineFile Dir">
+		<div class="Container HorizontalFlex InlineFile Dir" UID="%s">
 
 			<div class="InlineFileContent Left"> 
 
@@ -239,6 +250,6 @@ func (AssociatedDir *Dir) ToHTML() string {
 
 		</div>
 
-	`, "folder-outline", AssociatedDir.Name, CurrentSubFiles, Functions.PluralizeString(AssociatedDir.SubFileLength, "File"), CurrentSubDirs, Functions.PluralizeString(AssociatedDir.SubDirLength, "Folder"), PrivateIndicatorVisibility))
+	`, "folder-outline", AssociatedDir.UID, AssociatedDir.Name, CurrentSubFiles, Functions.PluralizeString(AssociatedDir.SubFileLength, "File"), CurrentSubDirs, Functions.PluralizeString(AssociatedDir.SubDirLength, "Folder"), PrivateIndicatorVisibility))
 
 }

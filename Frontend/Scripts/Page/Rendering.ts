@@ -34,13 +34,32 @@ export function HideLoadingView(): void {
 
 }
 
-export function ShowFooterLoadingMessage(Message: string, Loader: boolean = true, HideTimeout: number = -1): void {
+export function ShowFooterLoadingMessage(Mode: "Loading" | "Success" | "Info" | "Error", Message: string, HideTimeout: number = -1): void {
 
     $(".Container.DashFooterMessageSection .DashFooterMessageText").text(Message);
     $(".Container.DashFooterMessageSection").css("display", "flex");
 
-    ($(".Container.DashFooterMessageSection .DashFooterMessageLoadingIndicator"))[Loader ? "show" : "hide"]();
+    ($(".Container.DashFooterMessageSection .DashFooterMessageLoadingIndicator"))[Mode == "Loading" ? "show" : "hide"]();
 
+    const Icons = {
+
+        Success: `<ion-icon name="checkmark-circle-outline"></ion-icon>`,
+        Info: `<ion-icon name="information-circle-outline"></ion-icon>`,
+        Error: `<ion-icon name="warning-outline"></ion-icon>`
+
+    }
+
+    if (Mode != "Loading") {
+
+        $(".Container.DashFooterMessageSection .DashFooterMessageIcon").html(Icons[Mode]);
+        $(".Container.DashFooterMessageSection .DashFooterMessageIcon").css("display", "flex");
+        
+    } else {
+
+        $(".Container.DashFooterMessageSection .DashFooterMessageIcon").hide();
+
+    }
+    
     if (HideTimeout != -1) setTimeout(HideFooterLoadingMessage, HideTimeout);
 
 }

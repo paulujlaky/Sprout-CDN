@@ -2,10 +2,9 @@ import { GlobalStorage } from "../Main";
 
 import type { BackendDir, BackendFile, RenderedResource } from "./Structs";
 
-import { MakeRequest } from "./Utils";
+import { AddItemToCache, MakeRequest } from "./Utils";
 
 import Routes from "../../Routes.json";
-import type { FullDirectory, PartialDirectory } from "../Models.ts/Dir";
 
 // Misc
 
@@ -22,6 +21,12 @@ export async function GetDirContents(DirPath: string): Promise<RenderedResource<
     const Subfiles = Response.JSON.Files satisfies BackendFile[];
     const Subdirs = Response.JSON.Dirs satisfies BackendDir[];
     const Parent = Response.JSON.Parent satisfies BackendDir;
+
+    for (const File of Subfiles) {
+
+        AddItemToCache("Files", File.UID, File);
+
+    }
 
     return { HTML: Response.HTML, JSON: { Parent, Files: Subfiles, Dirs: Subdirs } };
 
