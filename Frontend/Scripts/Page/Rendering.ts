@@ -1,18 +1,16 @@
 import $ from "jquery";
 
+import { GlobalStorage } from "../Main";
+
 import type { FullDirectory } from "../Models.ts/Dir";
+import { AnimationTimes, type SproutAccount } from "../Misc/Structs";
 
 import { WriteURL } from "../Misc/Utils";
-
-import { AnimationTimes, type SproutAccount } from "../Misc/Structs";
-import { GlobalStorage } from "../Main";
 import { RemoveDialogOnEscape, SubmitDialogOnEnter } from "./Interactions";
-
-// File List 
 
 const RelevantElements = {
 
-    Main: $(".DashMain"),
+    MainArea: $(".DashMain"),
 
     CurrentDirIndicator: $(".DashHeaderCurrentDir"),
 
@@ -25,9 +23,11 @@ const RelevantElements = {
 
 }
 
+// File List 
+
 export function RenderDirectory(Dir: FullDirectory, ParentUID?: string): void {
 
-    RelevantElements.Main.html(Dir.Contents.HTML);
+    RelevantElements.MainArea.html(Dir.Contents.HTML);
 
     WriteURL(Dir.Data.Path.replace("Store", "Dash").replace("..", ""));
 
@@ -45,8 +45,12 @@ export function HideLoadingView(): void {
 
 export function ShowFooterMessage(Mode: "Loading" | "Success" | "Info" | "Error", Message: string, HideTimeout: number = -1): void {
 
+    // assign an ID lock
+
+    const LockID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
     $(".Container.DashFooterMessageSection .DashFooterMessageText").html(Message);
-    $(".Container.DashFooterMessageSection").css("display", "flex");
+    $(".Container.DashFooterMessageSection").css("display", "flex").attr("NotificationLockID", LockID);
 
     ($(".Container.DashFooterMessageSection .DashFooterMessageLoadingIndicator"))[Mode == "Loading" ? "show" : "hide"]();
 
@@ -69,13 +73,23 @@ export function ShowFooterMessage(Mode: "Loading" | "Success" | "Info" | "Error"
 
     }
     
-    if (HideTimeout != -1) setTimeout(HideFooterLoadingMessage, HideTimeout);
+    if (HideTimeout != -1) {
+
+        setTimeout(() => {
+
+            HideFooterLoadingMessage(LockID);
+
+        }, HideTimeout)
+        
+    };
 
 }
 
-export function HideFooterLoadingMessage(): void {
+export function HideFooterLoadingMessage(ExpectedID: string): void {
 
-    $(".Container.DashFooterMessageSection").hide();
+    // An ID is used to lock the notification, so that it doesn't hide the wrong one
+
+    $(".Container.DashFooterMessageSection").attr("NotificationLockID") == ExpectedID ? $(".Container.DashFooterMessageSection").hide() : null;
 
 }
 
