@@ -25,7 +25,7 @@ const RelevantElements = {
 
 // File List 
 
-export function RenderDirectory(Dir: FullDirectory, ParentUID?: string): void {
+export function RenderDirectory(Dir: FullDirectory): void {
 
     RelevantElements.MainArea.html(Dir.Contents.HTML);
 
@@ -80,7 +80,7 @@ export function ShowFooterMessage(Mode: "Loading" | "Success" | "Info" | "Error"
             HideFooterLoadingMessage(LockID);
 
         }, HideTimeout)
-        
+
     };
 
 }

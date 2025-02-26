@@ -1,9 +1,10 @@
 import type { Storage } from "./Misc/Structs";
 
+import { Log } from "./Misc/Utils";
+
 import { Browser } from "./Systems/Browser";
 import { Authorize } from "./Systems/Auth";
 
-import { Log } from "./Misc/Utils";
 import { HideLoadingView } from "./Page/Rendering";
 import { WatchPageInteractions } from "./Page/Interactions";
 
