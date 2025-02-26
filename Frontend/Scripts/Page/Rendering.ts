@@ -85,11 +85,11 @@ export function ShowFooterMessage(Mode: "Loading" | "Success" | "Info" | "Error"
 
 }
 
-export function HideFooterLoadingMessage(ExpectedID: string): void {
+export function HideFooterLoadingMessage(ExpectedID?: string): void {
 
     // An ID is used to lock the notification, so that it doesn't hide the wrong one
 
-    $(".Container.DashFooterMessageSection").attr("NotificationLockID") == ExpectedID ? $(".Container.DashFooterMessageSection").hide() : null;
+    !ExpectedID || ($(".Container.DashFooterMessageSection").attr("NotificationLockID") == ExpectedID) ? $(".Container.DashFooterMessageSection").hide() : null;
 
 }
 

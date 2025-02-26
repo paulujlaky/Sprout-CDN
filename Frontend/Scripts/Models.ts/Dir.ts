@@ -1,6 +1,6 @@
 import { GlobalStorage } from "../Main";
 
-import { AddItemToCache } from "../Misc/Utils";
+import { AddItemToCache, CopyToClipboard } from "../Misc/Utils";
 
 import type { BackendDir, BackendFile, RenderedResource } from "../Misc/Structs";
 import { GetDirContents, NewFile } from "../Misc/API";
@@ -69,15 +69,17 @@ export class FullDirectory extends PartialDirectory {
 
         ShowFooterMessage("Loading", `Uploading ${IncomingFile.name}`);
 
-        const Success = await NewFile(this.Data.NormalizedPath, IncomingFile);
+        const File = await NewFile(this.Data.NormalizedPath, IncomingFile);
         
-        if (Success) {
+        if (File) {
 
             // Update the directory contents
 
             HideFooterLoadingMessage();
             
             GlobalStorage.Browser.Refresh();
+
+            CopyToClipboard(File.URL); // Copy to clipboard the link 
 
             ShowFooterMessage("Success", `Uploaded ${IncomingFile.name}`, 5_000); // Hides after 5s
             
@@ -89,7 +91,7 @@ export class FullDirectory extends PartialDirectory {
 
         }
 
-        return Success;
+        return !!File;
 
     }
 }

@@ -86,17 +86,7 @@ func LoadFileFromDotInfo(Path string) (*File, error) {
 
 func getFileInfoPath(OriginalPath string) string {
 
-	// We must remove the existing extension and add .info to the end
-
-	LastPeriodIndex := strings.LastIndex(OriginalPath, ".")
-
-	// Get the path without the extension
-
-	ExtensionlessPath := OriginalPath[:LastPeriodIndex]
-
-	// Add .info to the end
-
-	return ExtensionlessPath + ".fileinfo"
+	return OriginalPath + ".fileinfo"
 
 }
 

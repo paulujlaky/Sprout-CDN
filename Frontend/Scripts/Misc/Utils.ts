@@ -146,6 +146,14 @@ export function WatchCache(): void {
 
 }
 
+// Clipboard
+
+export function CopyToClipboard(Text: string): void {
+
+    navigator.clipboard.writeText(Text).catch((Err) => Log("Error", `Clipboard: Copy failed" ${Err}`));
+
+}
+
 // Internal Fetchers (Uses Cache)
 
 export function FetchDir(UID: string): BackendDir | null {

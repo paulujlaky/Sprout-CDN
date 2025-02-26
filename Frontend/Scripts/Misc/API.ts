@@ -50,7 +50,7 @@ export async function NewDirectory(Name: string, Path: string, Private: boolean,
 
 }
 
-export async function NewFile(Path: string, Uploaded: File, Private: boolean = false): Promise<boolean> {
+export async function NewFile(Path: string, Uploaded: File, Private: boolean = false): Promise<BackendFile | null> {
 
     const DataToSend = new FormData();
 
@@ -60,7 +60,7 @@ export async function NewFile(Path: string, Uploaded: File, Private: boolean = f
 
     const Response = await MakeRequest(Routes.NewFile, DataToSend, {}, {}, true); // IsFormData must be set to true
 
-    return Response?.JSON?.UID ?? false; // Existence of uploaded file UID means success
+    return Response?.JSON ? Response.JSON satisfies BackendFile : null;
     
 }
 
