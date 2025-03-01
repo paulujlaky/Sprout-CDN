@@ -137,6 +137,12 @@ func AdjustPathToStore(Path string) string {
 
 }
 
+func RemovePathFromStore(Path string) string {
+
+	return strings.ReplaceAll(Path, "../Store", "")
+
+}
+
 func RemovePathDoubleSlashes(Path string) string {
 
 	return strings.ReplaceAll(Path, fmt.Sprintf("%c%c", filepath.Separator, filepath.Separator), string(filepath.Separator))
@@ -149,8 +155,14 @@ func ReplacePathWithForwardSlashes(Path string) string {
 
 }
 
+func RemoveStoreFromPath(Path string) string {
+
+	return strings.ReplaceAll(strings.ReplaceAll(Path, "../Store/", ""), "../Store", "")
+
+}
+
 func NormalizePath(Path string) string {
 
-	return RemovePathDoubleSlashes(ReplacePathWithForwardSlashes(Path))
+	return RemoveStoreFromPath(RemovePathDoubleSlashes(ReplacePathWithForwardSlashes(Path)))
 
 }

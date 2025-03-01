@@ -2,7 +2,7 @@ import { GlobalStorage } from "../Main";
 
 import type { BackendDir, BackendFile, RenderedResource } from "./Structs";
 
-import { AddItemToCache, FetchDir, FetchFile, MakeRequest } from "./Utils";
+import { AddItemToCache, MakeRequest } from "./Utils";
 
 import Routes from "../../Routes.json";
 
@@ -44,7 +44,7 @@ export async function NewDirectory(Name: string, Path: string, Private: boolean,
 
     const Response = await MakeRequest(Routes.NewDir, { Name, Path, Private });
 
-    GlobalStorage.Browser.GoTo(`${Path}/${Name}`);
+    GlobalStorage.Browser.Refresh();
 
     return Response?.JSON?.UID ?? false;
 
@@ -67,6 +67,14 @@ export async function NewFile(Path: string, Uploaded: File, Private: boolean = f
 export async function MoveFile(OldFilePath: string, PathOfNewDir: string): Promise<boolean> {
 
     const Response = await MakeRequest(Routes.MoveFile, { OldPath: OldFilePath, NewPath: PathOfNewDir });
+
+    return Response?.JSON?.UID ?? false;
+
+}
+
+export async function MoveDir(OldDirPath: string, PathOfNewDir: string): Promise<boolean> {
+
+    const Response = await MakeRequest(Routes.MoveDir, { OldPath: OldDirPath, NewPath: PathOfNewDir });
 
     return Response?.JSON?.UID ?? false;
 

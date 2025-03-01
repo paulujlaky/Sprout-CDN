@@ -18,7 +18,7 @@ func AllFiles(GinContext *gin.Context) {
 
 	if !Exists {
 
-		GinContext.JSON(400, Types.Response{
+		GinContext.JSON(401, Types.Response{
 			Message: "Could not get your account",
 		})
 
@@ -38,11 +38,11 @@ func AllFiles(GinContext *gin.Context) {
 
 	// Get all contents
 
-	DirToLoad, ErrorLoadingDir := Models.LoadDirFromDotInfo(PathToDir)
+	Directory, ErrorLoadingDir := Models.LoadDirFromDotInfo(PathToDir)
 
 	if ErrorLoadingDir != nil {
 
-		GinContext.JSON(400, Types.Response{
+		GinContext.JSON(500, Types.Response{
 
 			Message: "Could not load/find directory",
 		})
@@ -51,11 +51,11 @@ func AllFiles(GinContext *gin.Context) {
 
 	}
 
-	Contents, ErrLoadingContents := DirToLoad.GetContents(User.UID)
+	Contents, ErrLoadingContents := Directory.GetContents(User.UID)
 
 	if ErrLoadingContents != nil {
 
-		GinContext.JSON(400, Types.Response{
+		GinContext.JSON(500, Types.Response{
 
 			Message: ErrLoadingContents.Error(),
 		})
@@ -82,7 +82,7 @@ func AllFiles(GinContext *gin.Context) {
 
 		}
 
-		CurrentContentItemPath := filepath.Join(DirToLoad.Path, ContentItem.Name)
+		CurrentContentItemPath := filepath.Join(Directory.Path, ContentItem.Name)
 
 		if ContentItem.IsDir {
 
@@ -122,7 +122,7 @@ func AllFiles(GinContext *gin.Context) {
 
 	PrivateIndicatorDisplay := "none"
 
-	if DirToLoad.Private {
+	if Directory.Private {
 
 		PrivateIndicatorDisplay = "block"
 
@@ -150,7 +150,7 @@ func AllFiles(GinContext *gin.Context) {
 
 		</div>
 	
-	`, strings.Replace(DirToLoad.Name, "/Store", "", 1), fmt.Sprintf("%d %s", len(FileArr), Functions.PluralizeString(len(FileArr), "File")), fmt.Sprintf("%d %s", len(DirArr), Functions.PluralizeString(len(DirArr), "Folder")), PrivateIndicatorDisplay)
+	`, strings.Replace(Functions.RemovePathFromStore(Directory.NormalizedPath), "/Store", "", 1), fmt.Sprintf("%d %s", len(FileArr), Functions.PluralizeString(len(FileArr), "File")), fmt.Sprintf("%d %s", len(DirArr), Functions.PluralizeString(len(DirArr), "Folder")), PrivateIndicatorDisplay)
 
 	var FinalHTML string = fmt.Sprintf(`
 	
@@ -174,7 +174,7 @@ func AllFiles(GinContext *gin.Context) {
 
 		JSON: map[string]interface{}{
 
-			"Parent": DirToLoad,
+			"Parent": Directory,
 
 			"Files": FileArr,
 			"Dirs":  DirArr,

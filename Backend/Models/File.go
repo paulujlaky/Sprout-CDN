@@ -131,6 +131,16 @@ func (AssociatedFile *File) writeInfo() error {
 
 }
 
+func (AssociatedFile *File) updateDirectory(NewPath string, NewNormalizedPath string) error {
+
+	AssociatedFile.Path = filepath.Join(NewPath, AssociatedFile.Name)
+	AssociatedFile.NormalizedPath = filepath.Join(NewNormalizedPath, AssociatedFile.Name)
+	AssociatedFile.URL = "http://localhost:50300/Files/" + AssociatedFile.NormalizedPath
+
+	return AssociatedFile.writeInfo()
+
+}
+
 func (AssociatedFile *File) deleteInfo() error {
 
 	return os.Remove(getFileInfoPath(AssociatedFile.Path))
@@ -189,14 +199,9 @@ func (AssociatedFile *File) Move(RequestingUser string, NewPath string) error {
 
 	AssociatedFile.deleteInfo()
 
-	// Update the path in the struct
+	// Update the directory
 
-	AssociatedFile.Path = NewPath
-	AssociatedFile.NormalizedPath = Functions.NormalizePath(UnmodifiedNewPath)
-
-	// Update the URL
-
-	AssociatedFile.URL = "http://localhost:50300/Files/" + AssociatedFile.NormalizedPath
+	AssociatedFile.updateDirectory(NewPath, Functions.NormalizePath(UnmodifiedNewPath))
 
 	// Write the new info
 

@@ -124,7 +124,7 @@ export function ShowDialog(Dialog: JQuery<HTMLDialogElement>): void {
 
     // Clear inputs
 
-    Dialog.find("input").val("");
+    Dialog.find("input").val("").trigger("focus");
     Dialog.find("Toggle").removeClass("Active");
 
     const CloseBtn = Dialog.find(".DashDialogButtonCancel");

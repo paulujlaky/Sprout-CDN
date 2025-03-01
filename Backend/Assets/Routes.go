@@ -95,7 +95,6 @@ func GetRoutes() map[string]RouteInfo {
 			Authorized: true,
 		},
 
-		
 		"/API/Files/Move": {
 
 			Method:  "PATCH",
@@ -132,6 +131,20 @@ func GetRoutes() map[string]RouteInfo {
 			RateLimitConfig: &Middleware.RouteRateLimitConfig{
 
 				MaxRequestsAllowed: 60,
+				TimeWindow:         60,
+			},
+
+			Authorized: true,
+		},
+
+		"/API/Dirs/Move": {
+
+			Method:  "PATCH",
+			Handler: DirRoutes.MoveDir,
+
+			RateLimitConfig: &Middleware.RouteRateLimitConfig{
+
+				MaxRequestsAllowed: 120,
 				TimeWindow:         60,
 			},
 

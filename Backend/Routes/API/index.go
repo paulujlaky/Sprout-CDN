@@ -10,7 +10,7 @@ func Index(GinContext *gin.Context) {
 
 	GinContext.JSON(200, Types.Response{
 
-		Message: "Hello, World!",
+		Message: "Welcome to the Sprout CDN API!",
 	})
 
 }

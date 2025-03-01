@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import { GlobalStorage } from '../Main';
 
-import { MoveFile, NewDirectory } from '../Misc/API';
+import { MoveDir, MoveFile, NewDirectory } from '../Misc/API';
 import { FetchDir, FetchFile, ReducePath } from '../Misc/Utils';
 
 import { HideDialog, ShowDialog, ShowFooterMessage, ToggleDragAndDropUploadIndicator, WaitForDialogResponse } from './Rendering';
@@ -108,6 +108,7 @@ const HandleFileUploadButton = async (): Promise<void> => {
 
     FileInput.type = "file";
     FileInput.accept = "*/*";
+    FileInput.multiple = true;
     
     FileInput.click();
 
@@ -190,11 +191,13 @@ function HandleCreationButtonsAndFileInteractions(): void {
 
 // Drag/Drop
 
-const IsFileDrag = (Event: JQuery.DragEventBase): boolean => { return Event.originalEvent?.dataTransfer?.types.includes("uid") ?? false; }
-const GetFileDragTarget = (Event: JQuery.DragEventBase): JQuery<HTMLElement> => { return $(Event.target).closest(".Dir, .AlternateDirTarget"); }
-const RemoveAllFileDropTargets = (): void => { $(".Dir, .AlternateDirTarget").removeClass("DropTarget"); }
+const IsItemDrag = (Event: JQuery.DragEventBase): boolean => { return Event.originalEvent?.dataTransfer?.types.includes("uid") ?? false; }
 
-const HandleFileDragStart = (Event: JQuery.DragEventBase): void => {
+const GetItemDragTarget = (Event: JQuery.DragEventBase): JQuery<HTMLElement> => { return $(Event.target).closest(".Dir, .AlternateDirTarget"); }
+const RemoveAllItemDropTargets = (): void => { $(".Dir, .AlternateDirTarget").removeClass("DropTarget"); }
+const IsTargetItem = (Event: JQuery.DragEventBase): boolean => { return GetItemDragTarget(Event).attr("UID") == Event.originalEvent?.dataTransfer?.getData("uid"); }
+
+const HandleDragStart = (Event: JQuery.DragEventBase): void => {
 
     const Target = $(Event.target);
 
@@ -205,21 +208,23 @@ const HandleFileDragStart = (Event: JQuery.DragEventBase): void => {
         Event.originalEvent.dataTransfer.dropEffect = "move";
         Event.originalEvent.dataTransfer?.setData("UID", Target.attr("UID") || "");
 
+        Target.hasClass("Dir") ? Event.originalEvent.dataTransfer?.setData("Type", "Dir") : Event.originalEvent.dataTransfer?.setData("Type", "File");
+        
     }
 
 }
 
-const HandleFileDragOver = (Event: JQuery.DragEventBase): void => {
+const HandleDragOver = (Event: JQuery.DragEventBase): void => {
 
     Event.preventDefault();
 
-    if (IsFileDrag(Event)) {
+    if (IsItemDrag(Event)) {
 
-        RemoveAllFileDropTargets();
+        RemoveAllItemDropTargets();
         
-        if (GetFileDragTarget(Event).length > 0) {
+        if (GetItemDragTarget(Event).length > 0 && !IsTargetItem(Event)) {
     
-            GetFileDragTarget(Event).addClass("DropTarget");
+            GetItemDragTarget(Event).addClass("DropTarget");
             
         }
     
@@ -231,13 +236,13 @@ const HandleFileDragOver = (Event: JQuery.DragEventBase): void => {
 
 }
 
-const HandleFileDrops = (Event: JQuery.DropEvent): void => {
+const HandleDrops = (Event: JQuery.DropEvent): void => {
 
     Event.preventDefault();
 
-    if (IsFileDrag(Event)) {
+    if (IsItemDrag(Event)) {
         
-        HandleMoveFileDropRequest(Event);
+        HandleMoveItemDropRequest(Event);
 
     } else {
 
@@ -248,9 +253,9 @@ const HandleFileDrops = (Event: JQuery.DropEvent): void => {
 }
     
 
-const HandleFileDragLeave = (Event: JQuery.DragEventBase): void => {
+const HandleDragLeave = (Event: JQuery.DragEventBase): void => {
 
-    if (IsFileDrag(Event)) { return; }
+    if (IsItemDrag(Event)) { return; }
     
     ToggleDragAndDropUploadIndicator("Hide");
 
@@ -258,37 +263,56 @@ const HandleFileDragLeave = (Event: JQuery.DragEventBase): void => {
 
 // Drag/Drop Heavy Lifters 
 
-async function HandleMoveFileDropRequest(DropEvent: JQuery.DropEvent): Promise<void> {
+async function HandleMoveItemDropRequest(DropEvent: JQuery.DropEvent): Promise<void> {
 
-    RemoveAllFileDropTargets();
+    RemoveAllItemDropTargets();
     
-    const Target = GetFileDragTarget(DropEvent);
+    const Target = GetItemDragTarget(DropEvent);
 
     if (Target.length === 0) { return; }
 
     // Move the file
 
-    const OriginalFileUID = DropEvent.originalEvent?.dataTransfer?.getData("uid");
+    const ItemUID = DropEvent.originalEvent?.dataTransfer?.getData("uid");
+    const Type = DropEvent.originalEvent?.dataTransfer?.getData("type") as "File" | "Dir";
+
     const NewDirUID = Target.attr("UID");
 
-    if (!OriginalFileUID) { return; }
+    if (!ItemUID || ItemUID === NewDirUID) { return; } // can't move a directory into itself
 
     let TargetPath = FetchDir(NewDirUID || "0")?.NormalizedPath || ReducePath(GlobalStorage.Browser.Current?.Data.NormalizedPath || "");
-    const FileToMove = FetchFile(OriginalFileUID);
+    
+    // If the target is a file, move to the parent directory. Else, move directory to other directory
 
-    if (!FileToMove || !TargetPath) { return; }
+    let Resp: boolean;
 
-    const Resp = await MoveFile(FileToMove.NormalizedPath, TargetPath);
+    if (Type === "File") {
+
+        const FileToMove = FetchFile(ItemUID);
+
+        if (!FileToMove) { return; }
+
+        Resp = await MoveFile(FileToMove.NormalizedPath, TargetPath);
+
+    } else { // should be "Dir"
+
+        const DirToMove = FetchDir(ItemUID);
+
+        if (!DirToMove) { return; }
+
+        Resp = await MoveDir(DirToMove.NormalizedPath, TargetPath);
+
+    }
 
     GlobalStorage.Browser.Refresh();
 
     if (Resp) {
 
-        ShowFooterMessage("Success", `Moved file to <span class="DashCodeInfill">${TargetPath}</span>`, 5_000);
+        ShowFooterMessage("Success", `Moved item to <span class="DashCodeInfill">${TargetPath}</span>`, 5_000);
 
     } else {
 
-        ShowFooterMessage("Error", "Failed to move file", 5_000);
+        ShowFooterMessage("Error", "Failed to move item", 5_000);
 
     }
     
@@ -316,11 +340,11 @@ async function HandleFileUploadDropRequest(DropEvent: JQuery.DropEvent): Promise
 
 function HandleDragAndDrops(): void {
 
-    RelevantElements.Document.on("dragstart", HandleFileDragStart);
-    RelevantElements.Document.on("dragleave", HandleFileDragLeave);
+    RelevantElements.Document.on("dragstart", HandleDragStart);
+    RelevantElements.Document.on("dragleave", HandleDragLeave);
 
-    RelevantElements.Document.on("dragover", HandleFileDragOver);
-    RelevantElements.Document.on("drop", HandleFileDrops);
+    RelevantElements.Document.on("dragover", HandleDragOver);
+    RelevantElements.Document.on("drop", HandleDrops);
 
 }
 

@@ -8,13 +8,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func MoveFile(GinContext *gin.Context) {
+func MoveDir(GinContext *gin.Context) {
 
 	Account, Exists := GinContext.Get("Account")
 
 	if !Exists {
 
-		GinContext.JSON(401, Types.Response{
+		GinContext.JSON(400, Types.Response{
 			Message: "Could not get your account",
 		})
 
@@ -44,22 +44,22 @@ func MoveFile(GinContext *gin.Context) {
 
 	}
 
-	// Attempt to move file
+	// Attempt to move dir
 
-	FileToMove, ErrLoadingFile := Models.LoadFileFromDotInfo(Functions.AdjustPathToStore(OldPath))
+	DirToMove, ErrorLoadingDir := Models.LoadDirFromDotInfo(Functions.AdjustPathToStore(OldPath))
 
-	if ErrLoadingFile != nil {
+	if ErrorLoadingDir != nil {
 
 		GinContext.JSON(500, Types.Response{
 
-			Message: "Could not load/find file",
+			Message: "Could not load/find dir",
 		})
 
 	}
 
 	// Move the file
 
-	if Err := FileToMove.Move(User.Username, NewPath); Err != nil {
+	if Err := DirToMove.Move(User.Username, NewPath); Err != nil {
 
 		GinContext.JSON(500, Types.Response{
 
@@ -72,11 +72,11 @@ func MoveFile(GinContext *gin.Context) {
 
 	GinContext.JSON(200, Types.Response{
 
-		Message: "File moved",
+		Message: "Directory moved",
 
 		JSON: map[string]any{
 
-			"UID": FileToMove.UID,
+			"UID": DirToMove.UID,
 		},
 	})
 

@@ -115,6 +115,22 @@
 
     },
 
+    "MoveDir": {
+
+        "Method": "PATCH",
+        "URL": "/API/Dirs/Move",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 120,
+            "TimeWindow": 60
+
+        },
+
+        "Authorized": true
+
+    },
+
     "DeleteDir": {
 
         "Method": "DELETE",

@@ -3,8 +3,6 @@ Input[type="text"], Input[type="password"], Input[type="email"] {
     @include Container;
     @include GlassBackground;
 
-    text-align: center;
-
     color: $FontColor;
     
     border-radius: calc($BorderRadiusLarge / 1.25);

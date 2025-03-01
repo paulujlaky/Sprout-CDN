@@ -13,7 +13,7 @@ func DeleteFile(GinContext *gin.Context) {
 
 	if !Exists {
 
-		GinContext.JSON(400, Types.Response{
+		GinContext.JSON(401, Types.Response{
 			Message: "Could not get your account",
 		})
 
@@ -49,7 +49,7 @@ func DeleteFile(GinContext *gin.Context) {
 
 	if ErrLoadingFile != nil {
 
-		GinContext.JSON(400, Types.Response{
+		GinContext.JSON(500, Types.Response{
 
 			Message: "Could not load/find file",
 		})
@@ -62,7 +62,7 @@ func DeleteFile(GinContext *gin.Context) {
 
 	if DeleteFileError != nil || DeleteInfoError != nil {
 
-		GinContext.JSON(400, Types.Response{
+		GinContext.JSON(500, Types.Response{
 
 			Message: DeleteFileError.Error() + "; " + DeleteInfoError.Error(),
 		})

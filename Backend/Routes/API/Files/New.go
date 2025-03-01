@@ -14,7 +14,7 @@ func NewFile(GinContext *gin.Context) {
 
 	if !Exists {
 
-		GinContext.JSON(400, Types.Response{
+		GinContext.JSON(401, Types.Response{
 			Message: "Could not get your account",
 		})
 
@@ -54,7 +54,7 @@ func NewFile(GinContext *gin.Context) {
 
 	if FileError != nil {
 
-		GinContext.JSON(400, Types.Response{
+		GinContext.JSON(500, Types.Response{
 			Message: "Could not open file",
 		})
 
@@ -66,7 +66,7 @@ func NewFile(GinContext *gin.Context) {
 
 	if ReadError != nil {
 
-		GinContext.JSON(400, Types.Response{
+		GinContext.JSON(500, Types.Response{
 			Message: "Could not read file",
 		})
 
@@ -84,7 +84,7 @@ func NewFile(GinContext *gin.Context) {
 
 	if WriteError != nil {
 
-		GinContext.JSON(400, Types.Response{
+		GinContext.JSON(500, Types.Response{
 			Message: WriteError.Error(),
 		})
 
