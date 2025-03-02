@@ -95,3 +95,18 @@ export async function DeleteDir(DirPath: string, DirName: string): Promise<boole
     return Response?.JSON?.Success ?? false;
 
 }
+
+export async function GetFileQRCode(FilePath: string): Promise<Blob | null> {
+
+    const Response = await fetch(Routes.GetFileQR.URL, {
+
+        method: Routes.GetFileQR.Method,
+        body: JSON.stringify({ Path: FilePath })
+
+    }).catch((err) => console.error(err)); // Will return null if fetch fails
+
+    // Will return image
+
+    return Response?.ok ? await Response?.blob() : null;
+    
+}

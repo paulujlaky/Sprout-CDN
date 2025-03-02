@@ -219,9 +219,9 @@ export function ShowContextMenu(Event: JQuery.MouseEventBase | JQuery.TouchEvent
 
     // Listen for next click (or scroll) to hide
 
-    $(document).one("click", () => {
+    $(document).one("click", (E) => {
 
-        Menu.hide();
+        if (!$(E.target).closest(".InlineFileActions").length) Menu.hide();
 
     });
 

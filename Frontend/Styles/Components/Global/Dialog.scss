@@ -88,6 +88,8 @@ Dialog {
 
 // Extra Styles for certain other dialogs 
 
+// Account View Dialog
+
 .DashDialogAccountIcon {
 
     font-size: 42px;
@@ -111,5 +113,20 @@ Dialog {
 
     font-size: $FontSizeSmall;
     color: $FontColorMuted;
+
+}
+
+// QR Code Dialog 
+
+.DashQRDialog {
+
+    img {
+
+        border-radius: $BorderRadiusLarge;
+
+        width: 256px;
+        height: 256px;
+
+    }
 
 }

@@ -70,8 +70,8 @@
         
     "GetFileQR": {
 
-        "Method": "GET",
-        "URL": "/API/Files/QR/*File",
+        "Method": "POST",
+        "URL": "/API/Files/QR/",
 
         "RateLimitConfig": {
 

@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import { GlobalStorage } from '../Main';
 
-import { DeleteDir, DeleteFile, MoveDir, MoveFile, NewDirectory } from '../Misc/API';
+import { DeleteDir, DeleteFile, GetFileQRCode, MoveDir, MoveFile, NewDirectory } from '../Misc/API';
 import { FetchDir, FetchFile, PluralizeString, ReducePath } from '../Misc/Utils';
 
 import { HideDialog, ShowContextMenu, ShowDialog, ShowFooterMessage, ToggleDragAndDropUploadIndicator, WaitForDialogResponse, type ContextMenuOption } from './Rendering';
@@ -151,7 +151,7 @@ const HandleFileUploadButton = async (): Promise<void> => {
 
             if (File) {
 
-                const Success = await GlobalStorage.Browser.Current?.Upload(File, false);
+                const Success = await GlobalStorage.Browser.Current?.Upload(File, FileInput.files.length == 1);
 
                 if (Success) { ItemsLeft++; }
 
@@ -187,7 +187,7 @@ const WatchForPastingFiles = async (Event: any): Promise<void> => {
 
             if (File) {
                 
-                const Success = await GlobalStorage.Browser.Current?.Upload(File);
+                const Success = await GlobalStorage.Browser.Current?.Upload(File, Items.length == 1);
 
                 if (Success) { ItemsLeft--; }
 
@@ -569,7 +569,7 @@ async function HandleFileUploadDropRequest(DropEvent: JQuery.DropEvent): Promise
 
         const File = Files[i];
 
-        const Success = await GlobalStorage.Browser.Current?.Upload(File, false);
+        const Success = await GlobalStorage.Browser.Current?.Upload(File, Files.length == 1);
 
         if (Success) { ItemsLeft--; }
 
@@ -696,6 +696,22 @@ async function HandleCopyLinkAction(AssociatedItem: BackendFile | BackendDir): P
 
 async function HandleQRCodeAction(AssociatedItem: BackendFile | BackendDir): Promise<void> {
 
-    alert("Coming soon");
+    const QRCodeBlob = await GetFileQRCode(AssociatedItem.Path);
 
+    if (!QRCodeBlob) { return; }
+
+    const URLToBlob = URL.createObjectURL(QRCodeBlob);
+
+    // Display the QR code
+
+    const Dialog = $(".DashQRDialog") as JQuery<HTMLDialogElement>;
+
+    const Image = Dialog.find("img");
+
+    Image.attr("src", URLToBlob);
+
+    ShowDialog(Dialog);
+    await WaitForDialogResponse(Dialog);
+    HideDialog(Dialog);
+    
 }

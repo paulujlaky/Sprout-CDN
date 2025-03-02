@@ -1,6 +1,7 @@
 package Functions
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"math/rand"
@@ -8,7 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/skip2/go-qrcode"
+	"github.com/yeqown/go-qrcode/v2"
+	"github.com/yeqown/go-qrcode/writer/standard"
 )
 
 // HTTP Requests
@@ -67,19 +69,55 @@ func GetHTTPRequestJSONResponse(Response *http.Response) (map[string]interface{}
 
 // QR Code
 
+type BufferWriteCloser struct {
+	buf *bytes.Buffer
+}
+
+func (b *BufferWriteCloser) Write(p []byte) (n int, err error) {
+	return b.buf.Write(p)
+}
+
+func (b *BufferWriteCloser) Close() error {
+	// bytes.Buffer doesn't need closing, so this is a no-op
+	return nil
+}
+
 func GenerateQRCode(URL string) ([]byte, error) {
 
-	// Generate the QR code
+	QRCodeInstance, ErrorLoadingQr := qrcode.New(URL)
 
-	QRCode, Err := qrcode.Encode(URL, qrcode.Medium, 256)
+	if ErrorLoadingQr != nil {
 
-	if Err != nil {
-
-		return nil, Err
+		return nil, ErrorLoadingQr
 
 	}
 
-	return QRCode, nil
+	// QR code options
+
+	Options := []standard.ImageOption{
+
+		standard.WithFgColorRGBHex("#f2f2f2"),
+		standard.WithBgColorRGBHex("#161616"),
+	}
+
+	// Create buffer to store QR code
+
+	Buffer := bytes.NewBuffer(nil)
+	BufferToWrite := &BufferWriteCloser{buf: Buffer}
+
+	// Create writer with buffer and options
+
+	Writer := standard.NewWithWriter(BufferToWrite, Options...)
+
+	// Save QR code to buffer
+
+	if err := QRCodeInstance.Save(Writer); err != nil {
+
+		return nil, err
+
+	}
+
+	return Buffer.Bytes(), nil
 
 }
 
