@@ -710,6 +710,8 @@ async function HandleQRCodeAction(AssociatedItem: BackendFile | BackendDir): Pro
 
     Image.attr("src", URLToBlob);
 
+    Dialog.find(".DashDialogTitle").text(AssociatedItem.Name);
+
     ShowDialog(Dialog);
     await WaitForDialogResponse(Dialog);
     HideDialog(Dialog);
