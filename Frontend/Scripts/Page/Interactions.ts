@@ -5,7 +5,7 @@ import { GlobalStorage } from '../Main';
 import { MoveDir, MoveFile, NewDirectory } from '../Misc/API';
 import { FetchDir, FetchFile, ReducePath } from '../Misc/Utils';
 
-import { HideDialog, ShowDialog, ShowFooterMessage, ToggleDragAndDropUploadIndicator, WaitForDialogResponse } from './Rendering';
+import { HideDialog, ShowContextMenu, ShowDialog, ShowFooterMessage, ToggleDragAndDropUploadIndicator, WaitForDialogResponse, type ContextMenuOption } from './Rendering';
 
 const RelevantElements = {
 
@@ -51,6 +51,8 @@ export function WatchPageInteractions(): void {
     HandleDragAndDrops();
 
     HandleToggleClicks();
+
+    HandleContextMenuInteractions();
 
 }
 
@@ -179,6 +181,7 @@ const FileInteractionRouter = async (Event: JQuery.MouseEventBase | JQuery.Touch
     
 };
 
+
 function HandleCreationButtonsAndFileInteractions(): void {
 
     RelevantElements.Buttons.NewFile.on("click", HandleFileUploadButton);
@@ -186,6 +189,109 @@ function HandleCreationButtonsAndFileInteractions(): void {
     RelevantElements.Buttons.NewFolder.on("click", HandleNewFolderButton);
 
     RelevantElements.Document.on("click", FileInteractionRouter);
+
+}
+
+// Context Menu
+
+const ContextMenuRouter = async (Event: JQuery.MouseEventBase | JQuery.TouchEventBase | JQuery.ContextMenuEvent): Promise<void> => {
+
+    // Either called on ContextMenu or on click. For clicks, we must check if the clicked element is .InlineFileActions
+    // If a ContextMenu event, we must see if the element is an InlineFile 
+
+    if (Event.type == "contextmenu") { Event.preventDefault(); } // Prevent default context menu
+    
+    const Target = $(Event.target).closest(".InlineFileActions, .InlineFile");
+    const IsDir = $(Event.target).closest(".InlineFile").hasClass("Dir");
+
+    const FileOptions: ContextMenuOption[] = [
+
+        {
+
+            Name: "Open",
+            Icon: `<ion-icon name="open-outline"></ion-icon>`,
+            Action: () => { FileInteractionRouter(Event); }
+
+        },
+
+        {
+
+            Name: "Save",
+            Icon: `<ion-icon name="cloud-download-outline"></ion-icon>`,
+            Action: () => { console.log("Save"); }
+
+        },
+
+        {
+
+            Name: "Delete",
+            Icon: `<ion-icon name="trash-outline"></ion-icon>`,
+            Action: () => { console.log("Delete"); }
+
+        },
+
+        {
+
+            Name: "Copy Link",
+            Icon: `<ion-icon name="share-social-outline"></ion-icon>`,
+            Action: () => { console.log("Copy Link"); }
+
+        },
+
+        {
+
+            Name: "Get QR Code",
+            Icon: `<ion-icon name="qr-code-outline"></ion-icon>`,
+            Action: () => { console.log("QR Code"); }
+
+        },
+
+    ];
+
+    const DirOptions = [
+
+        {
+
+            Name: "Open",
+            Icon: `<ion-icon name="open-outline"></ion-icon>`,
+            Action: () => { FileInteractionRouter(Event); }
+
+        },
+
+        {
+
+            Name: "Delete",
+            Icon: `<ion-icon name="trash-outline"></ion-icon>`,
+            Action: () => { console.log("Delete"); }
+
+        },
+
+        {
+
+            Name: "Copy Link",
+            Icon: `<ion-icon name="share-social-outline"></ion-icon>`,
+            Action: () => { console.log("Copy Link"); }
+
+        },
+
+    ];
+
+    if (Target.hasClass("InlineFileActions") && Event.type == "click") { 
+
+        ShowContextMenu(Event, IsDir ? DirOptions : FileOptions);
+        
+    } else if ((Target.hasClass("InlineFile") || Target.hasClass("InlineFileActions")) && Event.type == "contextmenu") {
+
+        ShowContextMenu(Event, IsDir ? DirOptions : FileOptions);
+        
+    }
+
+}
+
+function HandleContextMenuInteractions(): void {
+
+    RelevantElements.Document.on("contextmenu", ContextMenuRouter);
+    RelevantElements.Document.on("click", ContextMenuRouter);
 
 }
 

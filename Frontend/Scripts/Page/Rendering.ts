@@ -175,6 +175,91 @@ export async function WaitForDialogResponse(Dialog: JQuery<HTMLDialogElement>): 
 
 }
 
+// Context Menu
+
+export interface ContextMenuOption {
+
+    Name: string,
+    Icon: string,
+
+    Action: () => void
+
+}
+
+export function ShowContextMenu(Event: JQuery.MouseEventBase | JQuery.TouchEventBase, Options: ContextMenuOption[]): void {
+
+    // Get Menu
+    
+    const Menu = $(".DashContextMenu");
+
+    // Position Menu
+
+    const MenuX = Event.pageX || 0;
+    const MenuY = Event.pageY || 0;
+
+    // Check for out of bounds
+
+    const WindowWidth = $(window).width() || 0;
+    const WindowHeight = $(window).height() || 0;
+
+    const MenuWidth = Menu.width() || 0;
+    const MenuHeight = Menu.height() || 0;
+
+    const X = MenuX + MenuWidth > WindowWidth ? MenuX - MenuWidth : MenuX;
+    const Y = MenuY + MenuHeight > WindowHeight ? MenuY - MenuHeight : MenuY;
+
+    // Show Menu
+
+    Menu.css("left", X + "px");
+    Menu.css("top", Y + "px");
+
+    Menu.css("display", "flex");
+
+    // Listen for next click (or scroll) to hide
+
+    $(document).one("click", () => {
+
+        Menu.hide();
+
+    });
+
+    $(document).one("scroll", () => {
+
+        Menu.hide();
+
+    });
+
+    // Populate Menu
+
+    Menu.html("");
+
+    Options.forEach((Option) => {
+
+        const OptionElement = $(`
+            
+            <div class="DashContextMenuItem">
+
+                ${Option.Name}
+    
+                ${Option.Icon}
+    
+            </div>
+            
+        `);
+
+        OptionElement.on("click", () => {
+
+            Option.Action();
+            Menu.hide();
+
+        });
+
+        Menu.append(OptionElement);
+
+    });
+
+}
+
 // Navigation
 
 export function UpdateNavigationStates(): void {

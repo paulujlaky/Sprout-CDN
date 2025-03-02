@@ -1,3 +1,5 @@
+// Inputs
+
 Input[type="text"], Input[type="password"], Input[type="email"] {
     
     @include Container;
@@ -71,6 +73,56 @@ Toggle.Active {
     ion-icon {
 
         opacity: 1;
+
+    }
+
+}
+
+// Context Menu 
+
+.DashContextMenu {
+
+    @include Container;
+    @include GlassBackground;
+    @include FlexVertical;
+
+    position: absolute;
+    z-index: 100;
+
+    gap: calc($SpacingSmall * 0.75);
+
+    padding: calc($SpacingSmall * 1.25) calc($SpacingSmall * 1.5);
+
+    color: $FontColor;
+
+    .DashContextMenuItem {
+
+        @include FlexHorizontal;
+        justify-content: space-between;
+
+        min-width: 100%;
+
+        padding: $SpacingSmall;
+
+        gap: $SpacingLarge;
+
+        border-radius: calc($BorderRadiusLarge * 0.75);
+
+        transition: background-color $TransitionTime;
+
+        cursor: pointer;
+
+        &:hover {
+
+            background-color: $ElementColorLight;
+
+        }
+
+        ion-icon {
+
+            font-size: $FontSizeLarge;
+
+        }
 
     }
 
