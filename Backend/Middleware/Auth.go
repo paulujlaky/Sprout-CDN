@@ -4,6 +4,7 @@ import (
 	"elucid503/SproutCDN/Models"
 	"elucid503/SproutCDN/Types"
 	"errors"
+	"slices"
 	"strings"
 	"time"
 
@@ -47,7 +48,7 @@ func Authorize() gin.HandlerFunc {
 
 		Account, AuthorizedError := AuthorizeFromRequest(GinContext)
 
-		if AuthorizedError != nil {
+		if AuthorizedError != nil || !(slices.Contains(Account.Flags, "Developer") || slices.Contains(Account.Flags, "CDNAccess")) {
 
 			GinContext.JSON(401, Types.Response{
 

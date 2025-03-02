@@ -63,11 +63,11 @@ export class FullDirectory extends PartialDirectory {
 
     }
 
-    public async Upload(IncomingFile: File): Promise<boolean> {
+    public async Upload(IncomingFile: File, ShowMsg: boolean = true): Promise<boolean> {
 
         // Show Loader
 
-        ShowFooterMessage("Loading", `Uploading ${IncomingFile.name}`);
+        if (ShowMsg) ShowFooterMessage("Loading", `Uploading ${IncomingFile.name}`);
 
         const File = await NewFile(this.Data.NormalizedPath, IncomingFile);
         
@@ -81,13 +81,13 @@ export class FullDirectory extends PartialDirectory {
 
             CopyToClipboard(File.URL); // Copy to clipboard the link 
 
-            ShowFooterMessage("Success", `Uploaded ${IncomingFile.name}`, 5_000); // Hides after 5s
+            if (ShowMsg) ShowFooterMessage("Success", `Uploaded ${IncomingFile.name}`, 5_000); // Hides after 5s
             
         } else {
 
             // Show error message
 
-            ShowFooterMessage("Error", `Failed to upload ${IncomingFile.name}`, 5_000); // Hides after 5s
+            if (ShowMsg) ShowFooterMessage("Error", `Failed to upload ${IncomingFile.name}`, 5_000); // Hides after 5s
 
         }
 

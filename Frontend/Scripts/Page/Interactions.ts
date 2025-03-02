@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { GlobalStorage } from '../Main';
 
 import { DeleteDir, DeleteFile, MoveDir, MoveFile, NewDirectory } from '../Misc/API';
-import { FetchDir, FetchFile, ReducePath } from '../Misc/Utils';
+import { FetchDir, FetchFile, PluralizeString, ReducePath } from '../Misc/Utils';
 
 import { HideDialog, ShowContextMenu, ShowDialog, ShowFooterMessage, ToggleDragAndDropUploadIndicator, WaitForDialogResponse, type ContextMenuOption } from './Rendering';
 import type { BackendDir, BackendFile } from '../Misc/Structs';
@@ -139,15 +139,67 @@ const HandleFileUploadButton = async (): Promise<void> => {
 
     FileInput.onchange = async () => {
 
-        for (let i = 0; i < (FileInput.files?.length || 0); i++) {
+        if (!FileInput.files) { return; }
+
+        FileInput.files.length > 1 && ShowFooterMessage("Loading", `Uploading ${FileInput.files?.length} ${PluralizeString("item", FileInput.files?.length)}`);
+
+        let ItemsLeft = 0;
+
+        for (let i = 0; i < (FileInput.files.length); i++) {
 
             const File = FileInput.files?.item(i);
 
-            File ? await GlobalStorage.Browser.Current?.Upload(File) : null;
+            if (File) {
+
+                const Success = await GlobalStorage.Browser.Current?.Upload(File, false);
+
+                if (Success) { ItemsLeft++; }
+
+            }
+
+            FileInput.files.length > 1 && ShowFooterMessage("Loading", `Uploading ${ItemsLeft} ${PluralizeString("item", ItemsLeft)}`);
 
         }
 
+        FileInput.files.length > 1 && (ItemsLeft == 0 ? ShowFooterMessage("Success", `Uploaded ${FileInput.files.length} ${PluralizeString("item", FileInput.files.length)}`, 5_000) : ShowFooterMessage("Error", `Failed to upload ${ItemsLeft} ${PluralizeString("item", ItemsLeft)}`, 5_000))
+
     };
+
+}
+
+const WatchForPastingFiles = async (Event: any): Promise<void> => {
+
+    const Items = Event.originalEvent?.clipboardData?.items;
+
+    if (!Items) { return; }
+
+    Items.length > 1 && ShowFooterMessage("Loading", `Uploading ${Items.length} ${PluralizeString("item", Items.length)}`);
+
+    let ItemsLeft = Items.length;
+
+    for (let i = 0; i < Items.length; i++) {
+
+        const Item = Items[i];
+
+        if (Item.kind === "file") {
+
+            const File = Item.getAsFile();
+
+            if (File) {
+                
+                const Success = await GlobalStorage.Browser.Current?.Upload(File);
+
+                if (Success) { ItemsLeft--; }
+
+            }
+
+            Items.length > 1 && ShowFooterMessage("Loading", `Uploading ${ItemsLeft} ${PluralizeString("item", ItemsLeft)}`); 
+
+        }
+
+    }
+
+    Items.length > 1 && (ItemsLeft == 0 ? ShowFooterMessage("Success", `Uploaded ${Items.length} ${PluralizeString("item", Items.length)}`, 5_000) : ShowFooterMessage("Error", `Failed to upload ${ItemsLeft} ${PluralizeString("item", ItemsLeft)}`, 5_000));
 
 }
 
@@ -172,7 +224,6 @@ const HandleNewFolderButton = async (): Promise<void> => {
     const Success = await NewDirectory(FolderName, GlobalStorage.Browser.Current.Data.NormalizedPath, ShouldBePrivate);
 
     Success ? ShowFooterMessage("Success", `Created new folder`, 5_000) : ShowFooterMessage("Error", `Failed to create folder`, 5_000);
-    
 
 }
 
@@ -204,7 +255,6 @@ const FileInteractionRouter = async (Event: JQuery.MouseEventBase | JQuery.Touch
     
 };
 
-
 function HandleCreationButtonsAndFileInteractions(): void {
 
     RelevantElements.Buttons.NewFile.on("click", HandleFileUploadButton);
@@ -212,6 +262,8 @@ function HandleCreationButtonsAndFileInteractions(): void {
     RelevantElements.Buttons.NewFolder.on("click", HandleNewFolderButton);
 
     RelevantElements.Document.on("click", FileInteractionRouter);
+
+    RelevantElements.Document.on("paste", WatchForPastingFiles);
 
 }
 
@@ -509,13 +561,23 @@ async function HandleFileUploadDropRequest(DropEvent: JQuery.DropEvent): Promise
 
     if (!Files) { return; }
 
+    Files.length > 1 && ShowFooterMessage("Loading", `Uploading ${Files.length} ${PluralizeString("item", Files.length)}`);
+
+    let ItemsLeft = Files.length;
+
     for (let i = 0; i < Files.length; i++) {
 
         const File = Files[i];
 
-        await GlobalStorage.Browser.Current?.Upload(File);
+        const Success = await GlobalStorage.Browser.Current?.Upload(File, false);
+
+        if (Success) { ItemsLeft--; }
+
+        Files.length > 1 && ShowFooterMessage("Loading", `Uploading ${ItemsLeft} ${PluralizeString("item", ItemsLeft)}`);
 
     }
+
+    Files.length > 1 && (ItemsLeft == 0 ? ShowFooterMessage("Success", `Uploaded ${Files.length} ${PluralizeString("item", Files.length)}`, 5_000) : ShowFooterMessage("Error", `Failed to upload ${ItemsLeft} ${PluralizeString("item", ItemsLeft)}`, 5_000));
         
 }
 

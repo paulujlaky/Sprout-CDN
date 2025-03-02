@@ -67,6 +67,23 @@
 
     },
 
+        
+    "GetFileQR": {
+
+        "Method": "GET",
+        "URL": "/API/Files/QR/*File",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 60,
+            "TimeWindow": 60
+
+        },
+
+        "Authorized": true
+
+    },
+
     "MoveFile": {
 
         "Method": "PATCH",

@@ -243,6 +243,12 @@ func (AssociatedFile *File) Delete(RequestingUser string) (error, error) {
 
 }
 
+func (AssociatedFile *File) GenerateQR() ([]byte, error) {
+
+	return Functions.GenerateQRCode(AssociatedFile.URL)
+
+}
+
 func (AssociatedFile *File) ToHTML() string {
 
 	MimeType, Icon := AssociatedFile.getMimeTypeAndIcon()

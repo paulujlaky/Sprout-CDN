@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"path/filepath"
 	"strings"
+
+	"github.com/skip2/go-qrcode"
 )
 
 // HTTP Requests
@@ -60,6 +62,24 @@ func GetHTTPRequestJSONResponse(Response *http.Response) (map[string]interface{}
 	}
 
 	return ResponseData, nil
+
+}
+
+// QR Code
+
+func GenerateQRCode(URL string) ([]byte, error) {
+
+	// Generate the QR code
+
+	QRCode, Err := qrcode.Encode(URL, qrcode.Medium, 256)
+
+	if Err != nil {
+
+		return nil, Err
+
+	}
+
+	return QRCode, nil
 
 }
 

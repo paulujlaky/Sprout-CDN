@@ -167,3 +167,11 @@ export function FetchFile(UID: string): BackendFile | null {
     return GlobalStorage.Cache.Files[UID]?.Data || null;
 
 }
+
+// Mandatory
+
+export function PluralizeString(Word: string, Count: number): string {
+
+    return Count == 1 ? Word : `${Word}s`;
+
+}

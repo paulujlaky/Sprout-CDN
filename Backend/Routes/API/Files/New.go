@@ -44,6 +44,19 @@ func NewFile(GinContext *gin.Context) {
 
 	}
 
+	// Check size
+
+	if FileHeader.Size > 1024*1024*10 { // 10MB
+
+		GinContext.JSON(400, Types.Response{
+
+			Message: "File is too large",
+		})
+
+		return
+
+	}
+
 	Path = Functions.SanitizePath(Path)
 
 	// Save file

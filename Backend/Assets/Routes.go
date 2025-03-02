@@ -95,6 +95,20 @@ func GetRoutes() map[string]RouteInfo {
 			Authorized: true,
 		},
 
+		"/API/Files/QR": {
+
+			Method:  "POST",
+			Handler: FileRoutes.GetFileQR,
+
+			RateLimitConfig: &Middleware.RouteRateLimitConfig{
+
+				MaxRequestsAllowed: 60,
+				TimeWindow:         60,
+			},
+
+			Authorized: true,
+		},
+
 		"/API/Files/Move": {
 
 			Method:  "PATCH",
