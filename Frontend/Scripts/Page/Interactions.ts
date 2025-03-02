@@ -2,10 +2,11 @@ import $ from 'jquery';
 
 import { GlobalStorage } from '../Main';
 
-import { MoveDir, MoveFile, NewDirectory } from '../Misc/API';
+import { DeleteDir, DeleteFile, MoveDir, MoveFile, NewDirectory } from '../Misc/API';
 import { FetchDir, FetchFile, ReducePath } from '../Misc/Utils';
 
 import { HideDialog, ShowContextMenu, ShowDialog, ShowFooterMessage, ToggleDragAndDropUploadIndicator, WaitForDialogResponse, type ContextMenuOption } from './Rendering';
+import type { BackendDir, BackendFile } from '../Misc/Structs';
 
 const RelevantElements = {
 
@@ -54,6 +55,10 @@ export function WatchPageInteractions(): void {
 
     HandleContextMenuInteractions();
 
+    WatchBrandingClick();
+
+    WatchForAccountMenu();
+
 }
 
 // Navigation
@@ -95,6 +100,24 @@ function HandleNavigation(): void {
             GlobalStorage.Browser.GoForward();
 
         }
+
+    });
+
+}
+
+// Account Menu
+
+function WatchForAccountMenu(): void {
+
+    $(".DashHeaderAccount").on("click", async () => {
+
+        const Dialog = $(".DashViewAccountDialog") as JQuery<HTMLDialogElement>;
+
+        ShowDialog(Dialog);
+
+        await WaitForDialogResponse(Dialog);
+
+        HideDialog(Dialog);
 
     });
 
@@ -153,11 +176,11 @@ const HandleNewFolderButton = async (): Promise<void> => {
 
 }
 
-const FileInteractionRouter = async (Event: JQuery.MouseEventBase | JQuery.TouchEventBase): Promise<void> => {
+const FileInteractionRouter = async (Event: JQuery.MouseEventBase | JQuery.TouchEventBase, FromContext: boolean = false): Promise<void> => {
 
     const Target = $(Event.target).closest(".InlineFile");
 
-    if ($(Event.target).closest(".InlineFileActions").length > 0) { return; } // Check that this isn't the context menu
+    if ($(Event.target).closest(".InlineFileActions").length > 0 && !FromContext) { return; } // Check that this isn't the context menu
 
     const UID = Target.attr("UID");
 
@@ -204,37 +227,71 @@ const ContextMenuRouter = async (Event: JQuery.MouseEventBase | JQuery.TouchEven
     const Target = $(Event.target).closest(".InlineFileActions, .InlineFile");
     const IsDir = $(Event.target).closest(".InlineFile").hasClass("Dir");
 
-    const FileOptions: ContextMenuOption[] = [
+    const FetchAssociatedItem = (): BackendFile | BackendDir | null => {
+
+        const UID = $(Event.target).closest(".InlineFile").attr("UID");
+
+        if (!UID) { return null; }
+
+        return FetchFile(UID) || FetchDir(UID);
+
+    }
+
+    const SharedOptions: ContextMenuOption[] = [
 
         {
 
             Name: "Open",
             Icon: `<ion-icon name="open-outline"></ion-icon>`,
-            Action: () => { FileInteractionRouter(Event); }
+            Action: () => { FileInteractionRouter(Event, true); } // telling router we *meant* to call it
 
         },
-
-        {
-
-            Name: "Save",
-            Icon: `<ion-icon name="cloud-download-outline"></ion-icon>`,
-            Action: () => { console.log("Save"); }
-
-        },
-
         {
 
             Name: "Delete",
             Icon: `<ion-icon name="trash-outline"></ion-icon>`,
-            Action: () => { console.log("Delete"); }
+            Action: async () => {
+             
+                const Item = FetchAssociatedItem();
+                if (!Item) { return; }
+
+                await HandleDeleteItemAction(Item); // must wait to actually delete the item
+
+                GlobalStorage.Browser.Refresh();
+
+            }
 
         },
-
         {
 
             Name: "Copy Link",
             Icon: `<ion-icon name="share-social-outline"></ion-icon>`,
-            Action: () => { console.log("Copy Link"); }
+            Action: () => {
+
+                const Item = FetchAssociatedItem();
+                if (!Item) { return; }
+
+                HandleCopyLinkAction(Item);
+
+            }
+
+        }
+    ]
+
+    let FileOptions: ContextMenuOption[] = [
+
+        {
+
+            Name: "Download",
+            Icon: `<ion-icon name="cloud-download-outline"></ion-icon>`,
+            Action: () => {
+
+                const Item = FetchAssociatedItem();
+                if (!Item) { return; }
+
+                HandleDownloadFileAction(Item as BackendFile);
+
+            }
 
         },
 
@@ -242,39 +299,21 @@ const ContextMenuRouter = async (Event: JQuery.MouseEventBase | JQuery.TouchEven
 
             Name: "Get QR Code",
             Icon: `<ion-icon name="qr-code-outline"></ion-icon>`,
-            Action: () => { console.log("QR Code"); }
+            Action: () => { 
+                
+                const Item = FetchAssociatedItem();
+                if (!Item) { return; }
+
+                HandleQRCodeAction(Item);
+
+            }
 
         },
 
     ];
-
-    const DirOptions = [
-
-        {
-
-            Name: "Open",
-            Icon: `<ion-icon name="open-outline"></ion-icon>`,
-            Action: () => { FileInteractionRouter(Event); }
-
-        },
-
-        {
-
-            Name: "Delete",
-            Icon: `<ion-icon name="trash-outline"></ion-icon>`,
-            Action: () => { console.log("Delete"); }
-
-        },
-
-        {
-
-            Name: "Copy Link",
-            Icon: `<ion-icon name="share-social-outline"></ion-icon>`,
-            Action: () => { console.log("Copy Link"); }
-
-        },
-
-    ];
+    
+    const DirOptions = SharedOptions; // Dirs get the same (base) options as files
+    FileOptions = [...SharedOptions, ...FileOptions]; // Files get the base options + file-specific options
 
     if (Target.hasClass("InlineFileActions") && Event.type == "click") { 
 
@@ -284,6 +323,42 @@ const ContextMenuRouter = async (Event: JQuery.MouseEventBase | JQuery.TouchEven
 
         ShowContextMenu(Event, IsDir ? DirOptions : FileOptions);
         
+    } else if (Event.type == "contextmenu") {
+        
+        if (Event.target.tagName === "HTML") {
+            
+            // No files, so show a custom context menu
+
+            ShowContextMenu(Event, [
+
+                {
+
+                    Name: "New File",
+                    Icon: `<ion-icon name="document-outline"></ion-icon>`,
+                    Action: HandleFileUploadButton
+
+                },
+
+                {
+
+                    Name: "New Folder",
+                    Icon: `<ion-icon name="folder-outline"></ion-icon>`,
+                    Action: HandleNewFolderButton
+
+                },
+
+                {
+
+                    Name: "Reload Content",
+                    Icon: `<ion-icon name="reload-outline"></ion-icon>`,
+                    Action: () => { GlobalStorage.Browser.Refresh(); }
+
+                },
+
+            ]); 
+
+        }
+ 
     }
 
 }
@@ -506,4 +581,59 @@ export function SubmitDialogOnEnter(Dialog: JQuery<HTMLDialogElement>, EnterButt
 
     });
     
+}
+
+function WatchBrandingClick(): void {
+    
+    $(".DashHeaderBranding").on("click", () => {
+
+        GlobalStorage.Browser.Home();
+
+    });
+
+}
+
+// Utils for Context Menu
+
+function HandleDownloadFileAction(AssociatedFile: BackendFile): void {
+
+    const Anchor = document.createElement("a");
+
+    Anchor.href = AssociatedFile.URL;
+    Anchor.download = AssociatedFile.Name;
+
+    Anchor.click();
+
+}
+
+async function HandleDeleteItemAction(AssociatedItem: BackendFile | BackendDir): Promise<void> {
+
+    const WasSuccess = "Size" in AssociatedItem ? await DeleteFile(AssociatedItem.Path) : await DeleteDir(AssociatedItem.Path, AssociatedItem.Name);
+
+    if (WasSuccess) {
+
+        ShowFooterMessage("Success", `Deleted item`, 5_000);
+
+    } else {
+
+        ShowFooterMessage("Error", `Failed to delete item`, 5_000);
+
+    }
+
+}
+
+async function HandleCopyLinkAction(AssociatedItem: BackendFile | BackendDir): Promise<void> {
+
+    const URL = AssociatedItem.URL;
+
+    await navigator.clipboard.writeText(URL);
+
+    ShowFooterMessage("Success", `Copied link to clipboard`, 5_000);
+
+}
+
+async function HandleQRCodeAction(AssociatedItem: BackendFile | BackendDir): Promise<void> {
+
+    alert("Coming soon");
+
 }

@@ -4,7 +4,6 @@ import (
 	"elucid503/SproutCDN/Functions"
 	"elucid503/SproutCDN/Models"
 	"elucid503/SproutCDN/Types"
-	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,10 +34,9 @@ func DeleteDir(GinContext *gin.Context) {
 
 	// Get config vals
 
-	Name, NameExists := Body["Name"].(string)
 	Path, PathExists := Body["Path"].(string)
 
-	if Name == "" || Path == "" || !NameExists || !PathExists {
+	if Path == "" || !PathExists {
 
 		GinContext.JSON(401, Types.Response{
 
@@ -51,13 +49,9 @@ func DeleteDir(GinContext *gin.Context) {
 
 	Path = Functions.SanitizePath(Path) // Prevent user from being able to go up
 
-	// Check if dir exists. must already exist to delete
-
-	DirToDeletePath := filepath.Join(Path, Name)
-
 	// Get Dir
 
-	DirToDelete, ErrLoadingDir := Models.LoadDirFromDotInfo(DirToDeletePath)
+	DirToDelete, ErrLoadingDir := Models.LoadDirFromDotInfo(Path)
 
 	if ErrLoadingDir != nil {
 
@@ -70,13 +64,13 @@ func DeleteDir(GinContext *gin.Context) {
 
 	}
 
-	DeleteFileError, DeleteInfoError := DirToDelete.Delete(User.UID)
+	DeleteFileError := DirToDelete.Delete(User.UID)
 
-	if DeleteFileError != nil || DeleteInfoError != nil {
+	if DeleteFileError != nil {
 
 		GinContext.JSON(500, Types.Response{
 
-			Message: DeleteFileError.Error() + "; " + DeleteInfoError.Error(),
+			Message: "Could not delete directory",
 		})
 
 		return
@@ -86,6 +80,9 @@ func DeleteDir(GinContext *gin.Context) {
 	GinContext.JSON(200, Types.Response{
 
 		Message: "Directory deleted",
+		JSON: map[string]any{
+			"Success": true,
+		},
 	})
 
 }

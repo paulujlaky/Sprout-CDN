@@ -151,7 +151,9 @@
           <label for="DirVisibility" class="DashDialogInputLabel">Private</label>
 
           <Toggle id="DirPrivate">
+
             <ion-icon name="checkmark-outline"></ion-icon>
+
           </Toggle>
           
         </div>
@@ -164,6 +166,42 @@
         <Button class="DashDialogButton DashDialogButtonSubmit">Create</Button>
 
       </div>
+
+  </dialog>
+
+  <!-- View Account Dialog -->
+
+  <dialog class="Container VerticalFlex DashDialog DashViewAccountDialog" style="display: none;">
+
+    <div class="Container Transparent HorizontalFlex DashDialogHeader">
+
+      <div class="DashDialogTitle">Sprout Account</div>
+
+    </div>
+
+    <div class="Container Transparent HorizontalFlex DashDialogBody AccountView">
+
+      <div class="Container Transparent Center DashDialogAccountIcon">
+
+        <ion-icon name="person-circle" class="DashDialogAccountIcon"></ion-icon>
+
+      </div>
+
+      <div class="Container Transparent VerticalFlex DashDialogAccountInfo" style="align-items: start;">
+
+          <div class="DashDialogAccountInfoItem DashHeaderMessageUser">Username</div>
+          <div class="DashDialogAccountInfoItem DashHeaderMessageEmail">Username</div>
+
+      </div>
+
+    </div>
+
+    <div class="Container Transparent HorizontalFlex DashDialogFooter">
+
+      <Button class="DashDialogButton DashDialogButtonCancel">Close</Button>
+      <Button class="DashDialogButton DashDialogButtonCancel" id="LogOut">Log Out</Button>
+
+    </div>
 
   </dialog>
   

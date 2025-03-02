@@ -79,3 +79,19 @@ export async function MoveDir(OldDirPath: string, PathOfNewDir: string): Promise
     return Response?.JSON?.UID ?? false;
 
 }
+
+export async function DeleteFile(FilePath: string): Promise<boolean> {
+
+    const Response = await MakeRequest(Routes.DeleteFile, { Path: FilePath });
+
+    return Response?.JSON?.Success ?? false;
+
+}
+
+export async function DeleteDir(DirPath: string, DirName: string): Promise<boolean> {
+
+    const Response = await MakeRequest(Routes.DeleteDir, { Path: DirPath, Name: DirName });
+
+    return Response?.JSON?.Success ?? false;
+
+}

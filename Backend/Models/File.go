@@ -33,6 +33,8 @@ type File struct {
 	NormalizedPath string `json:"NormalizedPath"` // Path without the store prefix
 }
 
+var Domain string = "http://localhost:50300"
+
 // General
 
 func NewFile(Name string, Size int64, Private bool, Authorized []string, Path string) *File {
@@ -47,7 +49,7 @@ func NewFile(Name string, Size int64, Private bool, Authorized []string, Path st
 
 		Name: Name,
 		Size: Size,
-		URL:  "http://localhost:50300/Files/" + NormalizedPath,
+		URL:  Domain + "/Files/" + NormalizedPath,
 
 		Private:    Private,
 		Authorized: Authorized,
@@ -133,8 +135,8 @@ func (AssociatedFile *File) writeInfo() error {
 
 func (AssociatedFile *File) updateDirectory(NewPath string, NewNormalizedPath string) error {
 
-	AssociatedFile.Path = filepath.Join(NewPath, AssociatedFile.Name)
-	AssociatedFile.NormalizedPath = filepath.Join(NewNormalizedPath, AssociatedFile.Name)
+	AssociatedFile.Path = NewPath
+	AssociatedFile.NormalizedPath = NewNormalizedPath
 	AssociatedFile.URL = "http://localhost:50300/Files/" + AssociatedFile.NormalizedPath
 
 	return AssociatedFile.writeInfo()

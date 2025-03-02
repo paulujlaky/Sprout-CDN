@@ -58,6 +58,7 @@ export interface BackendDir {
     UID: string;
 
     Name: string;
+    URL: string;
 
     NormalizedPath: string;
     Path: string;

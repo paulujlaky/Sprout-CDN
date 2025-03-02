@@ -18,6 +18,7 @@ type Dir struct {
 	NormalizedPath string `json:"NormalizedPath"` // Path without the store prefix
 
 	Name string `json:"Name"`
+	URL  string `json:"URL"`
 
 	Private bool `json:"Private"`
 
@@ -39,6 +40,7 @@ func NewDir(Path string, OriginalPath string, Authorized []string, Private bool)
 		NormalizedPath: Functions.NormalizePath(OriginalPath),
 
 		Name: filepath.Base(Path),
+		URL:  Domain + "/Dash/" + Functions.NormalizePath(OriginalPath),
 
 		Private: Private,
 
@@ -294,15 +296,15 @@ func (AssociatedDir *Dir) Move(RequestingUser string, NewPath string) error {
 
 }
 
-func (AssociatedDir *Dir) Delete(RequestingUser string) (error, error) {
+func (AssociatedDir *Dir) Delete(RequestingUser string) error {
 
 	if UserAuthed, Exists := AssociatedDir.checkPreconditions(RequestingUser, AssociatedDir.Path); !UserAuthed || !Exists {
 
-		return errors.New("Preconditions failed"), nil
+		return errors.New("Preconditions failed")
 
 	}
 
-	return os.RemoveAll(AssociatedDir.Path), AssociatedDir.deleteInfo()
+	return os.RemoveAll(AssociatedDir.Path)
 
 }
 

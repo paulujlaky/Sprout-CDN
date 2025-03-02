@@ -1,5 +1,7 @@
 import Routes from "../../Routes.json";
 
+import $ from "jquery";
+
 import { GlobalStorage } from "../Main";
 import type { SproutAccount } from "../Misc/Structs";
 
@@ -19,13 +21,7 @@ export async function Authorize(): Promise<void> {
 
         // We are authorized
 
-        Log("Info", `Welcome${CheckFirstLogin() ? "" : " back"}, ${Response.JSON.Username}!`);
-        
-        GlobalStorage.User = Response.JSON as SproutAccount;
-        
-        RemoveURLParameter("Auth"); // Removes token from URL
-
-        UpdateAuthElements(GlobalStorage.User, CheckFirstLogin());
+        SetAccountState(Response.JSON as SproutAccount);
 
         return;
 
@@ -33,6 +29,28 @@ export async function Authorize(): Promise<void> {
 
     window.location.href = "https://sprout.software/Accounts/Login?Redirect=SproutCDNNew"; // Redirects to sprout login page
 
+
+}
+
+function SetAccountState(Account: SproutAccount): void {
+
+    Log("Info", `Welcome${CheckFirstLogin() ? "" : " back"}, ${Account.Username}!`);
+        
+    GlobalStorage.User = Account;
+    
+    RemoveURLParameter("Auth"); // Removes token from URL
+
+    UpdateAuthElements(GlobalStorage.User, CheckFirstLogin());
+
+    // Watch for log out button clicks
+
+    $("#LogOut").on("click", async () => {
+
+        await MakeRequest(Routes.LogOut);
+
+        document.location.reload();
+
+    });
 
 }
 

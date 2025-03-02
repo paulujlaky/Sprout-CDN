@@ -64,7 +64,7 @@ func DeleteFile(GinContext *gin.Context) {
 
 		GinContext.JSON(500, Types.Response{
 
-			Message: DeleteFileError.Error() + "; " + DeleteInfoError.Error(),
+			Message: "Could not delete file",
 		})
 
 		return
@@ -74,6 +74,9 @@ func DeleteFile(GinContext *gin.Context) {
 	GinContext.JSON(200, Types.Response{
 
 		Message: "File deleted",
+		JSON: map[string]any{
+			"Success": true,
+		},
 	})
 
 }

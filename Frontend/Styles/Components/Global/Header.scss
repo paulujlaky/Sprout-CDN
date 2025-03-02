@@ -22,6 +22,16 @@
     
     gap: $SpacingSmall;
 
+    cursor: pointer;
+
+    transition: filter $TransitionTime;
+
+    &:hover {
+
+        filter: brightness(1.1);
+        
+    }
+
 }
 
 .DashHeaderImage {
@@ -83,6 +93,14 @@
     gap: $SpacingSmall;
 
     cursor: pointer;
+
+    transition: filter $TransitionTime;
+
+    &:hover {
+
+        filter: brightness(1.1);
+        
+    }
 
 }
 

@@ -100,6 +100,7 @@ export function UpdateAuthElements(Account: SproutAccount, IsFirstLogin: boolean
     const RelevantElements = {
 
         UsernameEmbeds: $(".DashHeaderMessageUser"),
+        EmailEmbeds: $(".DashHeaderMessageEmail"),
         
         Welcome: {
 
@@ -110,6 +111,7 @@ export function UpdateAuthElements(Account: SproutAccount, IsFirstLogin: boolean
     }
 
     RelevantElements.UsernameEmbeds.text(Account.Username);
+    RelevantElements.EmailEmbeds.text(Account.Email);
 
     if (!IsFirstLogin) RelevantElements.Welcome.Back.hide();
     
@@ -205,8 +207,8 @@ export function ShowContextMenu(Event: JQuery.MouseEventBase | JQuery.TouchEvent
     const MenuWidth = Menu.width() || 0;
     const MenuHeight = Menu.height() || 0;
 
-    const X = MenuX + MenuWidth > WindowWidth ? MenuX - MenuWidth : MenuX;
-    const Y = MenuY + MenuHeight > WindowHeight ? MenuY - MenuHeight : MenuY;
+    const X = (MenuX + MenuWidth + 15) > WindowWidth ? MenuX - MenuWidth : MenuX;
+    const Y = (MenuY + MenuHeight + 15) > WindowHeight ? MenuY - MenuHeight : MenuY;
 
     // Show Menu
 

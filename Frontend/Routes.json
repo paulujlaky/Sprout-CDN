@@ -159,6 +159,22 @@
 
         }
 
+    },
+
+    "LogOut": {
+
+        "Method": "POST",
+        "URL": "/API/Misc/LogOut",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 90,
+            "TimeWindow": 60
+
+        },
+
+        "Authorized": true
+
     }
 
 }

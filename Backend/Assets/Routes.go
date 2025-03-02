@@ -176,6 +176,18 @@ func GetRoutes() map[string]RouteInfo {
 				TimeWindow:         60,
 			},
 		},
+
+		"/API/Misc/LogOut": {
+
+			Method:  "POST",
+			Handler: MiscRoutes.LogOut,
+
+			RateLimitConfig: &Middleware.RouteRateLimitConfig{
+
+				MaxRequestsAllowed: 90,
+				TimeWindow:         60,
+			},
+		},
 	}
 
 }
