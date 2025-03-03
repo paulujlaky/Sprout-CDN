@@ -143,7 +143,7 @@ const HandleFileUploadButton = async (): Promise<void> => {
 
         FileInput.files.length > 1 && ShowFooterMessage("Loading", `Uploading ${FileInput.files?.length} ${PluralizeString("item", FileInput.files?.length)}`);
 
-        let ItemsLeft = 0;
+        let ItemsUploaded = 0;
 
         for (let i = 0; i < (FileInput.files.length); i++) {
 
@@ -153,15 +153,15 @@ const HandleFileUploadButton = async (): Promise<void> => {
 
                 const Success = await GlobalStorage.Browser.Current?.Upload(File, FileInput.files.length == 1);
 
-                if (Success) { ItemsLeft++; }
+                if (Success) { ItemsUploaded++; }
 
             }
 
-            FileInput.files.length > 1 && ShowFooterMessage("Loading", `Uploading ${ItemsLeft} ${PluralizeString("item", ItemsLeft)}`);
+            FileInput.files.length > 1 && ShowFooterMessage("Loading", `Uploading ${ItemsUploaded} ${PluralizeString("item", ItemsUploaded)}`);
 
         }
 
-        FileInput.files.length > 1 && (ItemsLeft == 0 ? ShowFooterMessage("Success", `Uploaded ${FileInput.files.length} ${PluralizeString("item", FileInput.files.length)}`, 5_000) : ShowFooterMessage("Error", `Failed to upload ${ItemsLeft} ${PluralizeString("item", ItemsLeft)}`, 5_000))
+        FileInput.files.length > 1 && (ItemsUploaded == FileInput.files.length ? ShowFooterMessage("Success", `Uploaded ${FileInput.files.length} ${PluralizeString("item", FileInput.files.length)}`, 5_000) : ShowFooterMessage("Error", `Failed to upload ${FileInput.files.length - ItemsUploaded} ${PluralizeString("item", FileInput.files.length - ItemsUploaded)}`, 5_000))
 
     };
 
