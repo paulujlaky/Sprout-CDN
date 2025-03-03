@@ -33,7 +33,7 @@ type File struct {
 	NormalizedPath string `json:"NormalizedPath"` // Path without the store prefix
 }
 
-var Domain string = "https://cdn.sprout.software/"
+var Domain string = "https://cdn.sprout.software"
 
 // General
 
@@ -137,7 +137,7 @@ func (AssociatedFile *File) updateDirectory(NewPath string, NewNormalizedPath st
 
 	AssociatedFile.Path = NewPath
 	AssociatedFile.NormalizedPath = NewNormalizedPath
-	AssociatedFile.URL = Domain + AssociatedFile.NormalizedPath
+	AssociatedFile.URL = Domain + "/Files/" + AssociatedFile.NormalizedPath
 
 	return AssociatedFile.writeInfo()
 
