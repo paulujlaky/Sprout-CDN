@@ -65,9 +65,7 @@ export async function MakeRequest(Route: { URL: string, Method: string }, Body?:
 
     const Response = await fetch(RouteURL, Options).catch((Err) => Log("Error", `Request Error: ${Err}`));
 
-    if (!Response?.ok) {  return null; }
-
-    const ResponseJSON = await Response.json().catch(() => null);
+    const ResponseJSON = await Response?.json().catch(() => null);
 
     if (!ResponseJSON) return null;
 

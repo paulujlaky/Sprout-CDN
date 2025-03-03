@@ -9,7 +9,7 @@ import { GetURLParameter, Log, MakeRequest, RemoveURLParameter } from "../Misc/U
 
 import { UpdateAuthElements } from "../Page/Rendering";
 
-export async function Authorize(): Promise<void> {
+export async function Authorize(): Promise<boolean> {
 
     const Token = GetURLParameter("Auth"); // In the case user has just logged in
 
@@ -23,12 +23,20 @@ export async function Authorize(): Promise<void> {
 
         SetAccountState(Response.JSON as SproutAccount);
 
-        return;
+        return true;
 
+    } else if (Response?.JSON?.WasFlagError) {
+
+        $(".DashNoAccessMessage").show();
+
+        return false;
+
+    } else {
+
+        window.location.href = "https://sprout.software/Accounts/Login?Redirect=SproutCDN"; // Redirects to sprout login page
+        return false;
+        
     }
-
-    window.location.href = "https://sprout.software/Accounts/Login?Redirect=SproutCDN"; // Redirects to sprout login page
-
 
 }
 

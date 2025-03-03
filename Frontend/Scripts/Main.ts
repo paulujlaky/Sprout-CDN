@@ -22,36 +22,40 @@ export const GlobalStorage: Storage = {
 
 };
 
-await Authorize();
+const IsAuthed = await Authorize();
 
-// If page is still executing, we are authorized
+if (IsAuthed) {
 
-// We must see if we have an implicit path to go to
+    // If page is still executing, we are authorized
 
-if (window.location.pathname == "/") {
+    // We must see if we have an implicit path to go to
 
-    Log("Info", "Navigating to user home...");
+    if (window.location.pathname == "/") {
 
-    await GlobalStorage.Browser.Home();
-
-} else {
-
-    Log("Info", "Navigating to implicit path...");
-
-    const WasSuccessful = await GlobalStorage.Browser.GoTo(window.location.pathname.replace("/Dash/", ""));
-
-    if (!WasSuccessful) {
-
-        Log("Error", "Implicit path navigation failed, navigating to user home...");
+        Log("Info", "Navigating to user home...");
 
         await GlobalStorage.Browser.Home();
 
+    } else {
+
+        Log("Info", "Navigating to implicit path...");
+
+        const WasSuccessful = await GlobalStorage.Browser.GoTo(window.location.pathname.replace("/Dash/", ""));
+
+        if (!WasSuccessful) {
+
+            Log("Error", "Implicit path navigation failed, navigating to user home...");
+
+            await GlobalStorage.Browser.Home();
+
+        }
+
     }
 
+    Log("Info", "Initial navigation complete.");
+
+    HideLoadingView();
+
+    WatchPageInteractions();
+
 }
-
-Log("Info", "Initial navigation complete.");
-
-HideLoadingView();
-
-WatchPageInteractions();

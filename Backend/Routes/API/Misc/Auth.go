@@ -4,6 +4,7 @@ import (
 	"elucid503/SproutCDN/Middleware"
 	"elucid503/SproutCDN/Models"
 	"elucid503/SproutCDN/Types"
+	"slices"
 
 	"github.com/gin-gonic/gin"
 )
@@ -57,6 +58,21 @@ func Authorize(GinContext *gin.Context) {
 			})
 
 		}
+
+	}
+
+	if !slices.Contains(Account.Flags, "Developer") && !slices.Contains(Account.Flags, "CDNAccess") {
+
+		GinContext.JSON(401, Types.Response{
+
+			Message: "Unauthorized",
+			JSON: &gin.H{
+
+				"WasFlagError": true,
+			},
+		})
+
+		return
 
 	}
 

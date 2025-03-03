@@ -88,6 +88,15 @@ body {
     
 }
 
+.DashNoAccessMessage {
+
+    font-size: $FontSizeMedium;
+    margin-top: calc($SpacingLarge * 2);
+
+    text-align: center;
+
+}
+
 .Container.DashHeaderBranding.DashLoadingVariant {
     
     animation: ExpandAndFadeIn 0.5s ease-in-out forwards;

@@ -33,7 +33,7 @@ type File struct {
 	NormalizedPath string `json:"NormalizedPath"` // Path without the store prefix
 }
 
-var Domain string = "https://cdn.sprout.software"
+var Domain string = "http://localhost:50300"
 
 // General
 
