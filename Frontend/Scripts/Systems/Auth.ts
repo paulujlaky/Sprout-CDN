@@ -27,7 +27,7 @@ export async function Authorize(): Promise<void> {
 
     }
 
-    window.location.href = "https://sprout.software/Accounts/Login?Redirect=SproutCDNNew"; // Redirects to sprout login page
+    window.location.href = "https://sprout.software/Accounts/Login?Redirect=SproutCDN"; // Redirects to sprout login page
 
 
 }
