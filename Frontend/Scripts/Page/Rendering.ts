@@ -246,8 +246,8 @@ export function ShowContextMenu(Event: JQuery.MouseEventBase | JQuery.TouchEvent
     const MenuWidth = Menu.width() || 0;
     const MenuHeight = Menu.height() || 0;
 
-    const X = (MenuX + MenuWidth + 15) > WindowWidth ? MenuX - MenuWidth : MenuX;
-    const Y = (MenuY + MenuHeight + 15) > WindowHeight ? MenuY - MenuHeight : MenuY;
+    const X = (MenuX + MenuWidth + 15) > WindowWidth ? (MenuX - MenuWidth - 15) : MenuX;
+    const Y = (MenuY + MenuHeight + 15) > WindowHeight ? (MenuY - MenuHeight - 15) : MenuY;
 
     // Show Menu at correct position
 
