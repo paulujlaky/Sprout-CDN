@@ -194,43 +194,6 @@ export function ShowContextMenu(Event: JQuery.MouseEventBase | JQuery.TouchEvent
     
     const Menu = $(".DashContextMenu");
 
-    // Position Menu
-
-    const MenuX = Event.pageX || 0;
-    const MenuY = Event.pageY || 0;
-
-    // Check for out of bounds
-
-    const WindowWidth = $(window).width() || 0;
-    const WindowHeight = $(window).height() || 0;
-
-    const MenuWidth = Menu.width() || 0;
-    const MenuHeight = Menu.height() || 0;
-
-    const X = (MenuX + MenuWidth + 15) > WindowWidth ? MenuX - MenuWidth : MenuX;
-    const Y = (MenuY + MenuHeight + 15) > WindowHeight ? MenuY - MenuHeight : MenuY;
-
-    // Show Menu
-
-    Menu.css("left", X + "px");
-    Menu.css("top", Y + "px");
-
-    Menu.css("display", "flex");
-
-    // Listen for next click (or scroll) to hide
-
-    $(document).one("click", (E) => {
-
-        if (!$(E.target).closest(".InlineFileActions").length) Menu.hide();
-
-    });
-
-    $(document).one("scroll", () => {
-
-        Menu.hide();
-
-    });
-
     // Populate Menu
 
     Menu.html("");
@@ -257,6 +220,53 @@ export function ShowContextMenu(Event: JQuery.MouseEventBase | JQuery.TouchEvent
         });
 
         Menu.append(OptionElement);
+
+    });    
+
+    // Force render off-screen to calculate dimensions
+
+    Menu.css({
+
+        "left": "-9999px",
+        "top": "-9999px",
+        "display": "flex"
+
+    });
+
+    // Position Menu
+
+    const MenuX = Event.pageX || 0;
+    const MenuY = Event.pageY || 0;
+
+    // Check for out of bounds
+
+    const WindowWidth = $(window).width() || 0;
+    const WindowHeight = $(window).height() || 0;
+
+    const MenuWidth = Menu.width() || 0;
+    const MenuHeight = Menu.height() || 0;
+
+    const X = (MenuX + MenuWidth + 15) > WindowWidth ? MenuX - MenuWidth : MenuX;
+    const Y = (MenuY + MenuHeight + 15) > WindowHeight ? MenuY - MenuHeight : MenuY;
+
+    // Show Menu at correct position
+
+    Menu.css({
+        "left": X + "px",
+        "top": Y + "px"
+    });
+
+    // Listen for next click (or scroll) to hide
+
+    $(document).one("click", (E) => {
+
+        if (!$(E.target).closest(".InlineFileActions").length) Menu.hide();
+
+    });
+
+    $(document).one("scroll", () => {
+
+        Menu.hide();
 
     });
 
