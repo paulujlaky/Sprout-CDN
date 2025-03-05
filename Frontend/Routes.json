@@ -67,7 +67,38 @@
 
     },
 
-        
+    "RenameFile": {
+
+        "Method": "PATCH",
+        "URL": "/API/Files/Rename",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 60,
+            "TimeWindow": 60
+
+        },
+
+        "Authorized": true
+
+    },
+
+    "UpdateFileAccess": {
+
+        "Method": "PATCH",
+        "URL": "/API/Files/Access",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 60,
+            "TimeWindow": 60
+
+        },
+
+        "Authorized": true
+
+    },
+
     "GetFileQR": {
 
         "Method": "POST",
@@ -132,6 +163,22 @@
 
     },
 
+    "RenameDir": {
+
+        "Method": "PATCH",
+        "URL": "/API/Dirs/Rename",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 60,
+            "TimeWindow": 60
+
+        },
+
+        "Authorized": true
+
+    },
+
     "MoveDir": {
 
         "Method": "PATCH",
@@ -140,6 +187,22 @@
         "RateLimitConfig": {
 
             "MaxRequestsAllowed": 120,
+            "TimeWindow": 60
+
+        },
+
+        "Authorized": true
+
+    },
+
+    "UpdateDirAccess": {
+
+        "Method": "PATCH",
+        "URL": "/API/Dirs/Access",
+
+        "RateLimitConfig": {
+
+            "MaxRequestsAllowed": 60,
             "TimeWindow": 60
 
         },

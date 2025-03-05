@@ -33,7 +33,7 @@ type File struct {
 	NormalizedPath string `json:"NormalizedPath"` // Path without the store prefix
 }
 
-var Domain string = "https://cdn.sprout.software"
+var Domain string = "http://localhost:50300"
 
 // General
 
@@ -219,6 +219,76 @@ func (AssociatedFile *File) Move(RequestingUser string, NewPath string) error {
 
 }
 
+func (AssociatedFile *File) UpdateAccess(RequestingUser string, Private bool) error {
+
+	if Authorized, Exists := AssociatedFile.checkPreconditions(RequestingUser); !Authorized || !Exists {
+
+		return errors.New("Preconditions failed.")
+
+	}
+
+	AssociatedFile.Private = Private
+	// AssociatedFile.Authorized = Authorized
+
+	return AssociatedFile.writeInfo()
+
+}
+
+func (AssociatedFile *File) Rename(RequestingUser string, NewName string) error {
+
+	if Authorized, Exists := AssociatedFile.checkPreconditions(RequestingUser); !Authorized || !Exists {
+
+		return errors.New("Preconditions failed.")
+
+	}
+
+	// Check if the new path has an extension. If it does, lets update the extension. If not, we'll keep the old one
+
+	if !strings.Contains(NewName, ".") {
+
+		NewName += filepath.Ext(AssociatedFile.Path)
+
+	}
+
+	// Get the new path
+
+	UnmodifiedNewPath := filepath.Join(filepath.Dir(AssociatedFile.Path), NewName)
+
+	NewPath := Functions.AdjustPathToStore(filepath.Join(filepath.Dir(AssociatedFile.Path), NewName))
+
+	// Move the file
+
+	MoveError := os.Rename(AssociatedFile.Path, NewPath)
+
+	if MoveError != nil {
+
+		return errors.New("Failed to move file.")
+
+	}
+
+	// Delete the old info
+
+	AssociatedFile.deleteInfo()
+
+	// Update the directory
+
+	AssociatedFile.updateDirectory(NewPath, Functions.NormalizePath(UnmodifiedNewPath))
+	AssociatedFile.Name = NewName
+
+	// Write the new info
+
+	WriteInfoError := AssociatedFile.writeInfo()
+
+	if WriteInfoError != nil {
+
+		return errors.New("Failed to write new info.")
+
+	}
+
+	return nil
+
+}
+
 func (AssociatedFile *File) Read(RequestingUser string) ([]byte, error) {
 
 	if Exists, Authorized := AssociatedFile.checkPreconditions(RequestingUser); !Exists || !Authorized {
@@ -256,6 +326,14 @@ func (AssociatedFile *File) ToHTML() string {
 	HumanReadableType := Types.MimeTypeToReadableName[MimeType]
 	HumanReadableSize := FileUtil.NormalizeSize(AssociatedFile.Size)
 
+	PrivateIndicatorVisibility := "none"
+
+	if AssociatedFile.Private == true {
+
+		PrivateIndicatorVisibility = "block"
+
+	}
+
 	return Functions.CleanEscapedString(fmt.Sprintf(`
 	
 		<div class="Container HorizontalFlex InlineFile" UID="%s" draggable="true">
@@ -278,6 +356,8 @@ func (AssociatedFile *File) ToHTML() string {
 
 						<li class="InlineFileStat Type">%s</li>
 
+						<li class="InlineFileStat PrivateIndicator" style="display:%s">Private</li>
+
 					</ul>
 				
 				</div>
@@ -292,6 +372,6 @@ func (AssociatedFile *File) ToHTML() string {
 
 		</div>
 
-	`, AssociatedFile.UID, Icon, AssociatedFile.Name, HumanReadableSize, HumanReadableType))
+	`, AssociatedFile.UID, Icon, AssociatedFile.Name, HumanReadableSize, HumanReadableType, PrivateIndicatorVisibility))
 
 }

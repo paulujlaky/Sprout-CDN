@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 import { GlobalStorage } from '../Main';
 
-import { DeleteDir, DeleteFile, GetFileQRCode, MoveDir, MoveFile, NewDirectory } from '../Misc/API';
+import { DeleteDir, DeleteFile, GetFileQRCode, MoveDir, MoveFile, NewDirectory, RenameDir, RenameFile, UpdateDirAccess, UpdateFileAccess } from '../Misc/API';
 import { FetchDir, FetchFile, PluralizeString, ReducePath } from '../Misc/Utils';
 
 import { HideDialog, ShowContextMenu, ShowDialog, ShowFooterMessage, ToggleDragAndDropUploadIndicator, WaitForDialogResponse, type ContextMenuOption } from './Rendering';
@@ -29,6 +29,7 @@ const RelevantElements = {
     Dialogs: {
 
         NewFolder: $(".DashCreateDirDialog") as JQuery<HTMLDialogElement>,
+        RenameItem: $(".DashRenameDialog") as JQuery<HTMLDialogElement>,
 
     },
 
@@ -289,6 +290,8 @@ const ContextMenuRouter = async (Event: JQuery.MouseEventBase | JQuery.TouchEven
 
     }
 
+    const AssociatedItem = FetchAssociatedItem();
+
     const SharedOptions: ContextMenuOption[] = [
 
         {
@@ -303,14 +306,52 @@ const ContextMenuRouter = async (Event: JQuery.MouseEventBase | JQuery.TouchEven
             Name: "Delete",
             Icon: `<ion-icon name="trash-outline"></ion-icon>`,
             Action: async () => {
-             
-                const Item = FetchAssociatedItem();
-                if (!Item) { return; }
 
-                await HandleDeleteItemAction(Item); // must wait to actually delete the item
+                if (!AssociatedItem) { return; }
+
+                await HandleDeleteItemAction(AssociatedItem); // must wait to actually delete the item
 
                 GlobalStorage.Browser.Refresh();
 
+            }
+
+        },
+        {
+
+            Name: "Rename",
+            Icon: `<ion-icon name="create-outline"></ion-icon>`,
+            Action: async () => {
+
+                if (!AssociatedItem) { return; }
+
+                // Show dialog
+
+                ShowDialog(RelevantElements.Dialogs.RenameItem);
+
+                const DidRespond = await WaitForDialogResponse(RelevantElements.Dialogs.RenameItem);
+
+                HideDialog(RelevantElements.Dialogs.RenameItem); // hide either way
+
+                if (!DidRespond) { return; } // cancelled operation
+
+                const NewName = RelevantElements.Dialogs.RenameItem.find("#RenameName").val() as string;
+
+                if (!NewName || !NewName.length) { ShowFooterMessage("Error", "Name cannot be empty", 5_000); return; }
+
+                const Success = await (IsDir ? RenameDir : RenameFile)(AssociatedItem.Path, NewName);
+
+                if (Success) {
+
+                    ShowFooterMessage("Success", `Renamed item to <span class="DashCodeInfill">${NewName}</span>`, 5_000);
+
+                } else {
+
+                    ShowFooterMessage("Error", `Failed to rename item`, 5_000);
+
+                }
+
+                GlobalStorage.Browser.Refresh();
+                
             }
 
         },
@@ -320,10 +361,9 @@ const ContextMenuRouter = async (Event: JQuery.MouseEventBase | JQuery.TouchEven
             Icon: `<ion-icon name="share-social-outline"></ion-icon>`,
             Action: () => {
 
-                const Item = FetchAssociatedItem();
-                if (!Item) { return; }
+                if (!AssociatedItem) { return; }
 
-                HandleCopyLinkAction(Item);
+                HandleCopyLinkAction(AssociatedItem);
 
             }
 
@@ -338,10 +378,7 @@ const ContextMenuRouter = async (Event: JQuery.MouseEventBase | JQuery.TouchEven
             Icon: `<ion-icon name="cloud-download-outline"></ion-icon>`,
             Action: () => {
 
-                const Item = FetchAssociatedItem();
-                if (!Item) { return; }
-
-                HandleDownloadFileAction(Item as BackendFile);
+                HandleDownloadFileAction(AssociatedItem as BackendFile);
 
             }
 
@@ -352,21 +389,51 @@ const ContextMenuRouter = async (Event: JQuery.MouseEventBase | JQuery.TouchEven
             Name: "Get QR Code",
             Icon: `<ion-icon name="qr-code-outline"></ion-icon>`,
             Action: () => { 
-                
-                const Item = FetchAssociatedItem();
-                if (!Item) { return; }
 
-                HandleQRCodeAction(Item);
+                if (!AssociatedItem) { return; }
+
+                HandleQRCodeAction(AssociatedItem);
 
             }
 
         },
 
     ];
-    
+
     const DirOptions = SharedOptions; // Dirs get the same (base) options as files
     FileOptions = [...SharedOptions, ...FileOptions]; // Files get the base options + file-specific options
 
+    if (AssociatedItem) {
+
+        const Option = {
+
+            Name: `Make ${AssociatedItem.Private ? "Public" : "Private"}`,
+            Icon: `<ion-icon name="lock-${AssociatedItem.Private ? "open" : "closed"}-outline"></ion-icon>`,
+            Action: async () => {
+
+                const Success = await (IsDir ? UpdateDirAccess : UpdateFileAccess)(AssociatedItem.Path, !AssociatedItem.Private, AssociatedItem.Authorized);
+            
+                if (Success) {
+
+                    ShowFooterMessage("Success", `Changed visibility to ${AssociatedItem.Private ? "Public" : "Private"}`, 5_000);
+
+                } else {
+
+                    ShowFooterMessage("Error", `Failed to update item access`, 5_000);
+
+                }
+
+                GlobalStorage.Browser.Refresh();
+
+            }
+
+        };
+
+        DirOptions.push(Option);
+        FileOptions.push(Option);
+        
+    }
+    
     if (Target.hasClass("InlineFileActions") && Event.type == "click") { 
 
         ShowContextMenu(Event, IsDir ? DirOptions : FileOptions);

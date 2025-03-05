@@ -198,8 +198,6 @@ func (AssociatedDir *Dir) moveContents(NewPath string) {
 
 			NewDir(NewContentPath, Functions.NormalizePath(NewContentPath), OriginalDir.Authorized, OriginalDir.Private)
 
-			fmt.Println("Moving dir to: ", NewContentPath)
-
 			OriginalDir.moveContents(NewContentPath) // Performs a recursive move
 
 		} else {
@@ -211,6 +209,8 @@ func (AssociatedDir *Dir) moveContents(NewPath string) {
 			NewFileInstance := NewFile(OriginalFile.Name, OriginalFile.Size, OriginalFile.Private, OriginalFile.Authorized, NewPath)
 
 			NewFileInstance.writeInfo()
+
+			// Write contents
 
 			OriginalContents, _ := OriginalFile.Read(OriginalFile.Authorized[0])
 
@@ -296,6 +296,78 @@ func (AssociatedDir *Dir) Move(RequestingUser string, NewPath string) error {
 
 }
 
+func (AssociatedDir *Dir) UpdateAccess(RequestingUser string, Private bool) error {
+
+	if UserAuthed, Exists := AssociatedDir.checkPreconditions(RequestingUser, AssociatedDir.Path); !UserAuthed || !Exists {
+
+		return errors.New("Preconditions failed")
+
+	}
+
+	AssociatedDir.Private = Private
+
+	return AssociatedDir.writeInfo()
+
+}
+
+func (AssociatedDir *Dir) Rename(RequestingUser string, NewName string) error {
+
+	if UserAuthed, Exists := AssociatedDir.checkPreconditions(RequestingUser, AssociatedDir.Path); !UserAuthed || !Exists {
+
+		return errors.New("Preconditions failed")
+
+	}
+
+	// Get the new path
+
+	NewPath := filepath.Join(filepath.Dir(AssociatedDir.Path), NewName)
+
+	// Create a "new" directory with the new name
+
+	MakeDirError := DirUtil.Create(NewPath)
+
+	if MakeDirError != nil {
+
+		return errors.New("Failed to create new directory")
+
+	}
+
+	// Update contents with the new name as the updated path
+
+	AssociatedDir.moveContents(NewPath)
+
+	// Delete the old info
+
+	AssociatedDir.deleteInfo()
+
+	// Delete the directory
+
+	DeleteDirError := os.RemoveAll(AssociatedDir.Path)
+
+	if DeleteDirError != nil {
+
+		return errors.New("Failed to remove old directory/details")
+
+	}
+
+	// Update the path in the struct
+
+	AssociatedDir.Path = NewPath
+	AssociatedDir.NormalizedPath = Functions.NormalizePath(NewPath)
+	AssociatedDir.Name = NewName
+
+	WriteInfoError := AssociatedDir.writeInfo()
+
+	if WriteInfoError != nil {
+
+		return errors.New("Failed to write new info")
+
+	}
+
+	return nil
+
+}
+
 func (AssociatedDir *Dir) Delete(RequestingUser string) error {
 
 	if UserAuthed, Exists := AssociatedDir.checkPreconditions(RequestingUser, AssociatedDir.Path); !UserAuthed || !Exists {
@@ -326,7 +398,7 @@ func (AssociatedDir *Dir) ToHTML() string {
 
 	PrivateIndicatorVisibility := "none"
 
-	if AssociatedDir.Private {
+	if AssociatedDir.Private == true {
 
 		PrivateIndicatorVisibility = "block"
 

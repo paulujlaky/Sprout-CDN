@@ -72,9 +72,41 @@ export async function MoveFile(OldFilePath: string, PathOfNewDir: string): Promi
 
 }
 
+export async function UpdateFileAccess(FilePath: string, Private: boolean, Authorized: string[]): Promise<boolean> {
+
+    const Response = await MakeRequest(Routes.UpdateFileAccess, { Path: FilePath, Private, Authorized });
+
+    return Response?.JSON?.UID ?? false;
+
+}
+
+export async function RenameFile(OldFilePath: string, NewFileName: string): Promise<boolean> {
+
+    const Response = await MakeRequest(Routes.RenameFile, { Path: OldFilePath, Name: NewFileName });
+
+    return Response?.JSON?.UID ?? false;
+
+}
+
+export async function RenameDir(OldDirPath: string, NewDirName: string): Promise<boolean> {
+
+    const Response = await MakeRequest(Routes.RenameDir, { Path: OldDirPath, Name: NewDirName });
+
+    return Response?.JSON?.UID ?? false;
+
+}
+
 export async function MoveDir(OldDirPath: string, PathOfNewDir: string): Promise<boolean> {
 
     const Response = await MakeRequest(Routes.MoveDir, { OldPath: OldDirPath, NewPath: PathOfNewDir });
+
+    return Response?.JSON?.UID ?? false;
+
+}
+
+export async function UpdateDirAccess(DirPath: string, Private: boolean, Authorized: string[]): Promise<boolean> {
+
+    const Response = await MakeRequest(Routes.UpdateDirAccess, { Path: DirPath, Private, Authorized });
 
     return Response?.JSON?.UID ?? false;
 

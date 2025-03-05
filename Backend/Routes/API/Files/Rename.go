@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func MoveFile(GinContext *gin.Context) {
+func RenameFile(GinContext *gin.Context) {
 
 	Account, Exists := GinContext.Get("Account")
 
@@ -32,21 +32,23 @@ func MoveFile(GinContext *gin.Context) {
 
 	// Parse any data
 
-	OldPath, OldPathExists := Body["OldPath"].(string)
-	NewPath, NewPathExists := Body["NewPath"].(string)
+	Path, PathExists := Body["Path"].(string)
+	NewName, NewNameExists := Body["Name"].(string)
 
-	if !OldPathExists || !NewPathExists {
+	if !PathExists || !NewNameExists {
 
 		GinContext.JSON(400, Types.Response{
 
 			Message: "Invalid request",
 		})
 
+		return
+
 	}
 
-	// Attempt to move file
+	// Attempt to rename file
 
-	FileToMove, ErrLoadingFile := Models.LoadFileFromDotInfo(Functions.AdjustPathToStore(OldPath))
+	FileToRename, ErrLoadingFile := Models.LoadFileFromDotInfo(Functions.AdjustPathToStore(Path))
 
 	if ErrLoadingFile != nil {
 
@@ -61,7 +63,7 @@ func MoveFile(GinContext *gin.Context) {
 
 	// Move the file
 
-	if Err := FileToMove.Move(User.Username, NewPath); Err != nil {
+	if Err := FileToRename.Rename(User.UID, NewName); Err != nil {
 
 		GinContext.JSON(500, Types.Response{
 
@@ -74,11 +76,11 @@ func MoveFile(GinContext *gin.Context) {
 
 	GinContext.JSON(200, Types.Response{
 
-		Message: "File moved",
+		Message: "File renamed",
 
 		JSON: map[string]any{
 
-			"UID": FileToMove.UID,
+			"UID": FileToRename.UID,
 		},
 	})
 

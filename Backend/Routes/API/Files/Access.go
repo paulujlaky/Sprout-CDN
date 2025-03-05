@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func MoveFile(GinContext *gin.Context) {
+func UpdateAccess(GinContext *gin.Context) {
 
 	Account, Exists := GinContext.Get("Account")
 
@@ -32,21 +32,25 @@ func MoveFile(GinContext *gin.Context) {
 
 	// Parse any data
 
-	OldPath, OldPathExists := Body["OldPath"].(string)
-	NewPath, NewPathExists := Body["NewPath"].(string)
+	Path, PathExists := Body["Path"].(string)
 
-	if !OldPathExists || !NewPathExists {
+	Private, PrivateExists := Body["Private"].(bool)
+	// var _ []string = Body["Collaborators"].([]string) // Collaborators. Not to be used yet, but will be in the future
+
+	if !PathExists {
 
 		GinContext.JSON(400, Types.Response{
 
 			Message: "Invalid request",
 		})
 
+		return
+
 	}
 
-	// Attempt to move file
+	// Attempt to rename file
 
-	FileToMove, ErrLoadingFile := Models.LoadFileFromDotInfo(Functions.AdjustPathToStore(OldPath))
+	FileToUpdate, ErrLoadingFile := Models.LoadFileFromDotInfo(Functions.AdjustPathToStore(Path))
 
 	if ErrLoadingFile != nil {
 
@@ -59,26 +63,32 @@ func MoveFile(GinContext *gin.Context) {
 
 	}
 
-	// Move the file
+	if !PrivateExists {
 
-	if Err := FileToMove.Move(User.Username, NewPath); Err != nil {
+		Private = FileToUpdate.Private // Keep existing value
+
+	}
+
+	// Update the Dir
+
+	ErrorUpdatingAccess := FileToUpdate.UpdateAccess(User.UID, Private) // TODO: Eventually add Collaborators
+
+	if ErrorUpdatingAccess != nil {
 
 		GinContext.JSON(500, Types.Response{
 
-			Message: Err.Error(),
+			Message: ErrorUpdatingAccess.Error(),
 		})
-
-		return
 
 	}
 
 	GinContext.JSON(200, Types.Response{
 
-		Message: "File moved",
+		Message: "File updated",
 
 		JSON: map[string]any{
 
-			"UID": FileToMove.UID,
+			"UID": FileToUpdate.UID,
 		},
 	})
 

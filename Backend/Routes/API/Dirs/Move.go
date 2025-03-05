@@ -42,6 +42,8 @@ func MoveDir(GinContext *gin.Context) {
 			Message: "Invalid request",
 		})
 
+		return
+
 	}
 
 	// Attempt to move dir
@@ -54,6 +56,8 @@ func MoveDir(GinContext *gin.Context) {
 
 			Message: "Could not load/find dir",
 		})
+
+		return
 
 	}
 

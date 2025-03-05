@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func MoveFile(GinContext *gin.Context) {
+func RenameDir(GinContext *gin.Context) {
 
 	Account, Exists := GinContext.Get("Account")
 
@@ -32,10 +32,10 @@ func MoveFile(GinContext *gin.Context) {
 
 	// Parse any data
 
-	OldPath, OldPathExists := Body["OldPath"].(string)
-	NewPath, NewPathExists := Body["NewPath"].(string)
+	Path, PathExists := Body["Path"].(string)
+	NewName, NewNameExists := Body["Name"].(string)
 
-	if !OldPathExists || !NewPathExists {
+	if !PathExists || !NewNameExists {
 
 		GinContext.JSON(400, Types.Response{
 
@@ -44,28 +44,30 @@ func MoveFile(GinContext *gin.Context) {
 
 	}
 
-	// Attempt to move file
+	// Attempt to rename dir
 
-	FileToMove, ErrLoadingFile := Models.LoadFileFromDotInfo(Functions.AdjustPathToStore(OldPath))
+	DirToRename, ErrLoadingDir := Models.LoadDirFromDotInfo(Functions.AdjustPathToStore(Path))
 
-	if ErrLoadingFile != nil {
+	if ErrLoadingDir != nil {
 
 		GinContext.JSON(500, Types.Response{
 
-			Message: "Could not load/find file",
+			Message: "Could not load/find dir",
 		})
 
 		return
 
 	}
 
-	// Move the file
+	// Rename dir
 
-	if Err := FileToMove.Move(User.Username, NewPath); Err != nil {
+	RenameError := DirToRename.Rename(User.UID, NewName)
+
+	if RenameError != nil {
 
 		GinContext.JSON(500, Types.Response{
 
-			Message: Err.Error(),
+			Message: "Could not rename dir",
 		})
 
 		return
@@ -74,11 +76,11 @@ func MoveFile(GinContext *gin.Context) {
 
 	GinContext.JSON(200, Types.Response{
 
-		Message: "File moved",
+		Message: "Dir renamed",
 
 		JSON: map[string]any{
 
-			"UID": FileToMove.UID,
+			"UID": DirToRename.UID,
 		},
 	})
 

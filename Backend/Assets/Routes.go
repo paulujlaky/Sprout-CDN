@@ -123,6 +123,34 @@ func GetRoutes() map[string]RouteInfo {
 			Authorized: true,
 		},
 
+		"/API/Files/Rename": {
+
+			Method:  "PATCH",
+			Handler: FileRoutes.RenameFile,
+
+			RateLimitConfig: &Middleware.RouteRateLimitConfig{
+
+				MaxRequestsAllowed: 60,
+				TimeWindow:         60,
+			},
+
+			Authorized: true,
+		},
+
+		"/API/Files/Access": {
+
+			Method:  "PATCH",
+			Handler: FileRoutes.UpdateAccess,
+
+			RateLimitConfig: &Middleware.RouteRateLimitConfig{
+
+				MaxRequestsAllowed: 60,
+				TimeWindow:         60,
+			},
+
+			Authorized: true,
+		},
+
 		"/API/Files/Delete": {
 
 			Method:  "DELETE",
@@ -151,6 +179,20 @@ func GetRoutes() map[string]RouteInfo {
 			Authorized: true,
 		},
 
+		"/API/Dirs/Rename": {
+
+			Method:  "PATCH",
+			Handler: DirRoutes.RenameDir,
+
+			RateLimitConfig: &Middleware.RouteRateLimitConfig{
+
+				MaxRequestsAllowed: 60,
+				TimeWindow:         60,
+			},
+
+			Authorized: true,
+		},
+
 		"/API/Dirs/Move": {
 
 			Method:  "PATCH",
@@ -159,6 +201,20 @@ func GetRoutes() map[string]RouteInfo {
 			RateLimitConfig: &Middleware.RouteRateLimitConfig{
 
 				MaxRequestsAllowed: 120,
+				TimeWindow:         60,
+			},
+
+			Authorized: true,
+		},
+
+		"/API/Dirs/Access": {
+
+			Method:  "PATCH",
+			Handler: DirRoutes.UpdateAccess,
+
+			RateLimitConfig: &Middleware.RouteRateLimitConfig{
+
+				MaxRequestsAllowed: 60,
 				TimeWindow:         60,
 			},
 

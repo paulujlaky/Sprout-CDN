@@ -122,7 +122,7 @@ func AllFiles(GinContext *gin.Context) {
 
 	PrivateIndicatorDisplay := "none"
 
-	if Directory.Private {
+	if Directory.Private == true {
 
 		PrivateIndicatorDisplay = "block"
 
@@ -138,7 +138,7 @@ func AllFiles(GinContext *gin.Context) {
 
 					<li class="DashMainHeaderDetailItem SubFiles">%s</li>
 					<li class="DashMainHeaderDetailItem SubDirs">%s</li>
-					<li class="InlineFileStat PrivateIndicator" style="display="%s"">Private</li>
+					<li class="InlineFileStat PrivateIndicator" style="display:%s">Private</li>
 				
 				</ul>
 
