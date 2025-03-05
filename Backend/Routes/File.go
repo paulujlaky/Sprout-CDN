@@ -46,7 +46,7 @@ func GetFile(GinContext *gin.Context) {
 
 	// Check if the dir
 
-	if FileRequested.Private || DirAbove.Private {
+	if FileRequested.Private == true || DirAbove.Private == true {
 
 		// Authorize request (only doing here to avoid higher loading overhead on all requests)
 
