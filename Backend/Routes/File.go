@@ -68,7 +68,7 @@ func GetFile(GinContext *gin.Context) {
 
 		}
 
-		// All private checks passed
+		// All private checks are passed
 
 	}
 
