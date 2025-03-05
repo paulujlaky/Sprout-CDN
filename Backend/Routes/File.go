@@ -48,17 +48,11 @@ func GetFile(GinContext *gin.Context) {
 
 	if FileRequested.Private == true || DirAbove.Private == true {
 
-		fmt.Println("Private file")
-
 		// Authorize request (only doing here to avoid higher loading overhead on all requests)
 
 		Account, AuthError := Middleware.AuthorizeFromRequest(GinContext)
 
-		fmt.Println(Account.Flags...)
-
 		if AuthError != nil {
-
-			fmt.Println("Auth error")
 
 			ReturnArbitraryNonExistsError(GinContext, Path)
 			return
@@ -73,8 +67,6 @@ func GetFile(GinContext *gin.Context) {
 			return
 
 		}
-
-		fmt.Println("Authorized")
 
 		// All private checks passed
 
