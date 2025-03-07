@@ -42,11 +42,11 @@
     margin-bottom: $SpacingSmall;
 
     font-size: clamp(1.5rem, 4vw, 2rem);
+    
+    // Break anywhere 
 
-    // break wherever 
-
-    white-space: break-spaces;
-    text-wrap: wrap;
+    word-break: break-word;
+    
     
 }
 
