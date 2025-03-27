@@ -72,6 +72,11 @@ func GetFile(GinContext *gin.Context) {
 
 	}
 
+	// Set CORS headers
+
+	GinContext.Header("Access-Control-Allow-Origin", "*")
+	GinContext.Header("Access-Control-Allow-Methods", "GET, OPTIONS")
+
 	// Serve file
 
 	GinContext.File(FileRequested.Path)
