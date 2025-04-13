@@ -236,6 +236,6 @@ func Log(Level Logs.LogLevel, Title string, Message string) {
 
 	// Wrapper just for the service UID not to need to be used multiple times
 
-        go Logs.Log("WhUUH4xhsWCKhCs6", Level, Title, Message)
+    Logs.Log("WhUUH4xhsWCKhCs6", Level, Title, Message)
 
 }

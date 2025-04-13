@@ -7,7 +7,7 @@ require (
 	github.com/yeqown/go-qrcode/writer/standard v1.2.5
 )
 
-require github.com/elucid503/Sprout-API-Go v1.0.5
+require github.com/elucid503/Sprout-API-Go v1.0.6
 
 require (
 	github.com/bytedance/sonic v1.12.7 // indirect
