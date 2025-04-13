@@ -326,9 +326,15 @@ func (AssociatedFile *File) ToHTML() string {
 	HumanReadableType := Types.MimeTypeToReadableName[MimeType]
 	HumanReadableSize := FileUtil.NormalizeSize(AssociatedFile.Size)
 
+	if (HumanReadableType == "") {
+
+		HumanReadableType = "Unknown Type"
+
+	}
+
 	PrivateIndicatorVisibility := "none"
 
-	if AssociatedFile.Private == true {
+	if AssociatedFile.Private {
 
 		PrivateIndicatorVisibility = "block"
 

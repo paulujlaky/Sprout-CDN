@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/elucid503/Sprout-API-Go/Logs"
 	"github.com/gin-gonic/gin"
 
 	"elucid503/SproutCDN/Assets"
+	"elucid503/SproutCDN/Functions"
 
 	"elucid503/SproutCDN/Middleware"
 	"elucid503/SproutCDN/Types"
@@ -83,7 +85,7 @@ func main() {
 
 	}
 
-	fmt.Printf("Sprout CDN Backend; Version %s\n", Config.Versions.Server)
+	Functions.Log(Logs.LogLevelInfo, "Startup", fmt.Sprintf("Sprout CDN Backend; Version %s", Config.Versions.Server))
 
 	gin.SetMode(Config.GinMode)
 
@@ -91,10 +93,10 @@ func main() {
 
 	LoadRoutes(GinRouter)
 
-	fmt.Printf("Loaded %d routes...\n", len(RouteHandlers))
+	Functions.Log(Logs.LogLevelInfo, "Startup", fmt.Sprintf("Loaded %d routes...", len(RouteHandlers)))
 
-	fmt.Printf("Listening on port %d...\n", Config.Server.Port)
-
+	Functions.Log(Logs.LogLevelInfo, "Startup", fmt.Sprintf("Listening on port %d...", Config.Server.Port))
+	
 	// Serve Static files
 
 	GinRouter.Static("/Out", "../Frontend/Out")

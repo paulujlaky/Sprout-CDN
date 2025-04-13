@@ -1,11 +1,13 @@
 module elucid503/SproutCDN
 
-go 1.23.5
+go 1.24.1
 
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/yeqown/go-qrcode/writer/standard v1.2.5
 )
+
+require github.com/elucid503/Sprout-API-Go v1.0.5
 
 require (
 	github.com/bytedance/sonic v1.12.7 // indirect

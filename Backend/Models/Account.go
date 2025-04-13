@@ -24,6 +24,7 @@ var SproutAPIURLs = SproutURLSchema{
 	BaseAPIURL: "https://sprout.software/API",
 
 	GetMyAccount: "/Accounts/Me",
+	
 }
 
 type SproutAccount struct {

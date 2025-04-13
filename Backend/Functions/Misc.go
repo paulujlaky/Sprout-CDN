@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/elucid503/Sprout-API-Go/Logs"
 	"github.com/yeqown/go-qrcode/v2"
 	"github.com/yeqown/go-qrcode/writer/standard"
 )
@@ -16,7 +17,9 @@ import (
 // HTTP Requests
 
 type RequestOptions struct {
+
 	Headers map[string]string
+	
 }
 
 var HTTPClient = &http.Client{}
@@ -222,5 +225,17 @@ func RemoveStoreFromPath(Path string) string {
 func NormalizePath(Path string) string {
 
 	return RemoveStoreFromPath(RemovePathDoubleSlashes(ReplacePathWithForwardSlashes(Path)))
+
+}
+
+// Logging 
+
+func Log(Level Logs.LogLevel, Title string, Message string) {
+	
+	fmt.Printf("[%s] %s: %s\n", Logs.GetLogLevelString(Level), Title, Message)
+
+	// Wrapper just for the service UID not to need to be used multiple times
+
+	go Logs.Log("WhUUH4xhsWCKhCs6", Level, Title, Message) // run this in a goroutine to avoid blocking the main thread
 
 }

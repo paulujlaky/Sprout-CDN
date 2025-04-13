@@ -1,13 +1,16 @@
 package Middleware
 
 import (
+	"elucid503/SproutCDN/Functions"
 	"elucid503/SproutCDN/Models"
 	"elucid503/SproutCDN/Types"
 	"errors"
+	"fmt"
 	"slices"
 	"strings"
 	"time"
 
+	"github.com/elucid503/Sprout-API-Go/Logs"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,6 +27,8 @@ func CheckAccountFromCache(Token string) (Models.SproutAccount, bool) {
 func AddAccountToCache(Token string, Account Models.SproutAccount) {
 
 	AccountCache[Token] = Account
+
+	Functions.Log(Logs.LogLevelInfo, "Accounts", fmt.Sprintf("Authorized new user %s (UID %s)", Account.Username, Account.UID))
 
 	RemoveAccountFromCacheAfter(Token, 60*60) // 1 hour
 
