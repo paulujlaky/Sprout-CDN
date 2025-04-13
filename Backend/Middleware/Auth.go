@@ -26,6 +26,18 @@ func CheckAccountFromCache(Token string) (Models.SproutAccount, bool) {
 
 func AddAccountToCache(Token string, Account Models.SproutAccount) {
 
+	if Account, Exists := AccountCache[Token]; Exists {
+
+		if AccountCache[Token].UID == Account.UID {
+
+			// Account already exists in cache, no need to add again
+
+			return 
+
+		}
+
+	}
+
 	AccountCache[Token] = Account
 
 	Functions.Log(Logs.LogLevelInfo, "Accounts", fmt.Sprintf("Authorized new user %s (UID %s)", Account.Username, Account.UID))
