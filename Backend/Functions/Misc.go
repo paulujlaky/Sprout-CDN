@@ -8,16 +8,11 @@ import (
 	"net/http"
 	"path/filepath"
 	"strings"
-	"sync"
 
 	"github.com/elucid503/Sprout-API-Go/Logs"
 	"github.com/yeqown/go-qrcode/v2"
 	"github.com/yeqown/go-qrcode/writer/standard"
 )
-
-// Globals
-
-var LogMutex sync.Mutex
 
 // HTTP Requests
 
@@ -241,15 +236,6 @@ func Log(Level Logs.LogLevel, Title string, Message string) {
 
 	// Wrapper just for the service UID not to need to be used multiple times
 
-    // Use a goroutine but ensure Logs.Log is thread-safe
-
-    go func() {
-
-        LogMutex.Lock()
-        defer LogMutex.Unlock()
-
-        Logs.Log("WhUUH4xhsWCKhCs6", Level, Title, Message)
-
-    }()
+    Logs.Log("WhUUH4xhsWCKhCs6", Level, Title, Message)
 
 }
