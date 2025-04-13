@@ -26,6 +26,10 @@ func CheckAccountFromCache(Token string) (Models.SproutAccount, bool) {
 
 func AddAccountToCache(Token string, Account Models.SproutAccount) {
 
+	AccountCache[Token] = Account
+
+	RemoveAccountFromCacheAfter(Token, 60*60) // 1 hour
+
 	if Account, Exists := AccountCache[Token]; Exists {
 
 		if AccountCache[Token].UID == Account.UID {
@@ -38,11 +42,7 @@ func AddAccountToCache(Token string, Account Models.SproutAccount) {
 
 	}
 
-	AccountCache[Token] = Account
-
 	Functions.Log(Logs.LogLevelInfo, "Accounts", fmt.Sprintf("Authorized new user %s (UID %s)", Account.Username, Account.UID))
-
-	RemoveAccountFromCacheAfter(Token, 60*60) // 1 hour
 
 }
 
