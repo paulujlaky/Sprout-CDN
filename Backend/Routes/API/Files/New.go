@@ -4,6 +4,7 @@ import (
 	"elucid503/SproutCDN/Functions"
 	"elucid503/SproutCDN/Models"
 	"elucid503/SproutCDN/Types"
+	"slices"
 
 	"github.com/gin-gonic/gin"
 )
@@ -46,7 +47,9 @@ func NewFile(GinContext *gin.Context) {
 
 	// Check size
 
-	if FileHeader.Size > 1024*1024*10 { // 10MB
+	IsDeveloper := slices.Contains(User.Flags, "Developer")
+
+	if FileHeader.Size > 1024*1024*10 && !IsDeveloper {
 
 		GinContext.JSON(400, Types.Response{
 
