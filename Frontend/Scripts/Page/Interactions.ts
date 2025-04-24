@@ -499,6 +499,8 @@ const IsTargetItem = (Event: JQuery.DragEventBase): boolean => { return GetItemD
 
 const HandleDragStart = (Event: JQuery.DragEventBase): void => {
 
+    console.log("Drag Start", Event.originalEvent?.dataTransfer?.types);
+
     const Target = $(Event.target);
 
     if (Target.hasClass("InlineFile")) {
@@ -530,7 +532,19 @@ const HandleDragOver = (Event: JQuery.DragEventBase): void => {
     
     } else {
 
-        ToggleDragAndDropUploadIndicator("Show");
+        // Check if the drag is within the "upload area"
+
+        const IsCloseToWindowEdge = (Event: JQuery.DragEventBase) => ((Event.clientY || 0) < 50 || (Event.clientX || 0) < 50 || (Event.clientX || 0) > window.innerWidth - 50 || (Event.clientY || 0) > window.innerHeight - 50);
+
+        if (IsCloseToWindowEdge(Event)) {
+
+            ToggleDragAndDropUploadIndicator("Hide");
+
+        } else {
+
+            ToggleDragAndDropUploadIndicator("Show");
+
+        }
         
     }
 
@@ -552,15 +566,6 @@ const HandleDrops = (Event: JQuery.DropEvent): void => {
 
 }
     
-
-const HandleDragLeave = (Event: JQuery.DragEventBase): void => {
-
-    if (IsItemDrag(Event)) { return; }
-    
-    ToggleDragAndDropUploadIndicator("Hide");
-
-}
-
 // Drag/Drop Heavy Lifters 
 
 async function HandleMoveItemDropRequest(DropEvent: JQuery.DropEvent): Promise<void> {
@@ -651,7 +656,6 @@ async function HandleFileUploadDropRequest(DropEvent: JQuery.DropEvent): Promise
 function HandleDragAndDrops(): void {
 
     RelevantElements.Document.on("dragstart", HandleDragStart);
-    RelevantElements.Document.on("dragleave", HandleDragLeave);
 
     RelevantElements.Document.on("dragover", HandleDragOver);
     RelevantElements.Document.on("drop", HandleDrops);
