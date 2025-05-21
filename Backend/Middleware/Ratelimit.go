@@ -4,8 +4,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-
-	"elucid503/SproutCDN/Types"
 )
 
 type RouteRateLimitConfig struct {
@@ -27,20 +25,24 @@ func RateLimit(RouteConfig *RouteRateLimitConfig) gin.HandlerFunc {
 
 	return func(Context *gin.Context) {
 
-		UUID := Context.ClientIP()
-
-		ShouldBlock := CheckAndUpdateRateLimit(UUID, RouteConfig.TimeWindow, RouteConfig.MaxRequestsAllowed)
-
-		if ShouldBlock {
-
-			Context.JSON(429, Types.Response{Message: "Rate limit exceeded"})
-			Context.Abort()
-
-			return
-
-		}
+		// TODO: Reimplement 
 
 		Context.Next()
+
+		// UUID := Context.ClientIP()
+
+		// ShouldBlock := CheckAndUpdateRateLimit(UUID, RouteConfig.TimeWindow, RouteConfig.MaxRequestsAllowed)
+
+		// if ShouldBlock {
+
+		// 	Context.JSON(429, Types.Response{Message: "Rate limit exceeded"})
+		// 	Context.Abort()
+
+		// 	return
+
+		// }
+
+		// Context.Next()
 
 	}
 
