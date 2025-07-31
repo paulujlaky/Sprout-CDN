@@ -104,14 +104,14 @@ func GetFileNotFoundTemplate(Path string) string {
 	
 		<title>Sprout CDN</title>
 
-		<link rel="stylesheet" href="https://use.typekit.net/pge8obf.css">
+		<link rel="stylesheet" href="https://cdn.sprout.software/Files/Sprout/Hosting/Fonts/Din.css">
 
 		<style>
 	
 			body {
 	
-				font-family: "din-2014", sans-serif;
-				font-weight: 400;
+				font-family: "DIN 2014", sans-serif;
+				font-weight: 500;
 				font-style: normal;
 
 				display: flex;
